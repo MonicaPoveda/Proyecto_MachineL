@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+
+{% block title %}Unsupervised Learning Concepts{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <div class="d-inline-flex align-items-center text-primary text-uppercase fw-semibold mb-3">
+            <span class="border-top border-primary opacity-75 me-3" style="width: 50px;"></span>
+            Unsupervised Learning
+            <span class="border-top border-primary opacity-75 ms-3" style="width: 50px;"></span>
+        </div>
+        <h1 class="display-4 fw-bold text-white mb-3">Unsupervised Learning <span class="text-primary">Concepts</span></h1>
+        <p class="text-light lead mx-auto" style="max-width: 780px;">
+            Learn how algorithms discover hidden structure in data without predefined labels,
+            with a focus on clustering and the K-Means algorithm.
+        </p>
+    </div>
+
+    <nav class="nav nav-pills justify-content-center flex-wrap gap-1 mx-auto mb-5 px-2 py-2 rounded-pill border border-primary border-opacity-50 shadow-sm sticky-top"
+         aria-label="Learning path"
+         style="top: 78px; max-width: 1100px; background-color: rgba(3, 12, 25, 0.88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 1020;">
+        <a class="nav-link active text-white" href="#definition">Definition</a>
+        <a class="nav-link text-white" href="#clustering">Clustering</a>
+        <a class="nav-link text-white" href="#kmeans">K-Means</a>
+        <a class="nav-link text-white" href="#centroids">Centroids</a>
+        <a class="nav-link text-white" href="#iterations">Iterations</a>
+        <a class="nav-link text-white" href="#example">Example</a>
+    </nav>
+
+    <section id="definition" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5 text-white">
+            <div class="row align-items-center g-4">
+                <div class="col-12 col-lg-7">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;">
+                            <i class="bi bi-search fs-4"></i>
+                        </div>
+                        <h2 class="h3 mb-0 fw-bold">What Is Unsupervised Learning?</h2>
+                    </div>
+                    <p class="text-light fs-5 mb-4">
+                        Unsupervised learning is a type of Machine Learning in which an algorithm
+                        studies <strong class="text-white">unlabeled data</strong>. There is no target
+                        column telling the model the correct answer.
+                    </p>
+                    <p class="text-light mb-4">
+                        Instead of learning from examples such as “this image is a cat,” the model
+                        searches for repeated patterns, similarities, differences, and relationships.
+                        The result helps us understand the organization of the data.
+                    </p>
+                    <p class="text-light mb-4">
+                        This approach is especially useful during exploration, when the important
+                        relationships are not known yet. It can help analysts discover natural
+                        segments, summarize complex datasets, and generate questions for later analysis.
+                    </p>
+                    <div class="p-3 rounded-3 bg-primary bg-opacity-25 border-start border-primary border-4">
+                        <strong class="text-white d-block mb-1">Core idea</strong>
+                        <span class="text-light">Give the algorithm observations without answers and let it discover meaningful structure.</span>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100" style="background-color: #00152a;">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-database fs-1 text-primary"></i>
+                            <h3 class="h5 text-white fw-bold mt-2">Data Without Labels</h3>
+                        </div>
+                        <div class="row g-2 text-center">
+                            <div class="col-6"><div class="p-3 rounded-3 bg-info bg-opacity-25 border border-info border-opacity-50"><i class="bi bi-person fs-3 text-info d-block"></i><small class="text-light">Customer</small></div></div>
+                            <div class="col-6"><div class="p-3 rounded-3 bg-warning bg-opacity-25 border border-warning border-opacity-50"><i class="bi bi-cart3 fs-3 text-warning d-block"></i><small class="text-light">Purchase</small></div></div>
+                            <div class="col-6"><div class="p-3 rounded-3 bg-success bg-opacity-25 border border-success border-opacity-50"><i class="bi bi-clock fs-3 text-success d-block"></i><small class="text-light">Activity</small></div></div>
+                            <div class="col-6"><div class="p-3 rounded-3 bg-danger bg-opacity-25 border border-danger border-opacity-50"><i class="bi bi-geo-alt fs-3 text-danger d-block"></i><small class="text-light">Location</small></div></div>
+                        </div>
+                        <p class="text-center text-light small mt-3 mb-0">The algorithm finds groups that are not supplied in advance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="clustering" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5 text-white">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;"><i class="bi bi-diagram-3 fs-4"></i></div>
+                <div><h2 class="h3 mb-1 fw-bold">What Is Clustering?</h2><p class="text-light opacity-75 mb-0">Grouping similar observations together.</p></div>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                Clustering is an unsupervised learning task that divides observations into groups
+                called <strong class="text-white">clusters</strong>. Items in the same cluster should
+                be more similar to one another than to items in other clusters.
+            </p>
+            <p class="text-light mb-4">
+                Similarity depends on the features selected and on the distance measure used by
+                the algorithm. For example, customers may be grouped by spending and visit frequency,
+                while documents may be grouped by the words and topics they contain.
+            </p>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-4"><div class="h-100 p-4 rounded-3 border border-info border-opacity-50 bg-info bg-opacity-10"><i class="bi bi-people fs-2 text-info"></i><h3 class="h5 text-white mt-3">Similarity</h3><p class="text-light small mb-0">A distance measure determines which observations are close to each other.</p><p class="text-light small mt-2 mb-0">Points with similar feature values tend to receive the same cluster assignment.</p></div></div>
+                <div class="col-12 col-md-4"><div class="h-100 p-4 rounded-3 border border-warning border-opacity-50 bg-warning bg-opacity-10"><i class="bi bi-collection fs-2 text-warning"></i><h3 class="h5 text-white mt-3">Groups</h3><p class="text-light small mb-0">The algorithm creates groups from the patterns it finds in the data.</p><p class="text-light small mt-2 mb-0">A cluster is useful when its members share a meaningful characteristic.</p></div></div>
+                <div class="col-12 col-md-4"><div class="h-100 p-4 rounded-3 border border-success border-opacity-50 bg-success bg-opacity-10"><i class="bi bi-lightbulb fs-2 text-success"></i><h3 class="h5 text-white mt-3">Insight</h3><p class="text-light small mb-0">The groups can reveal segments, behaviors, or unusual observations.</p><p class="text-light small mt-2 mb-0">The final interpretation comes from connecting each group to the real-world problem.</p></div></div>
+            </div>
+            <div class="p-4 rounded-3 border border-primary border-opacity-25" style="background-color: #00152a;">
+                <h3 class="h5 text-white fw-bold mb-3">Visual intuition: similar points form a cluster</h3>
+                <div class="row g-2 justify-content-center text-center">
+                    <div class="col-12 col-md-4"><div class="p-3 rounded-3 border border-info border-2"><div class="d-flex justify-content-center gap-2 mb-2"><span class="rounded-circle bg-info" style="width: 18px; height: 18px;"></span><span class="rounded-circle bg-info" style="width: 18px; height: 18px;"></span><span class="rounded-circle bg-info" style="width: 18px; height: 18px;"></span></div><span class="badge bg-info text-dark">Cluster A</span></div></div>
+                    <div class="col-12 col-md-4"><div class="p-3 rounded-3 border border-warning border-2"><div class="d-flex justify-content-center gap-2 mb-2"><span class="rounded-circle bg-warning" style="width: 18px; height: 18px;"></span><span class="rounded-circle bg-warning" style="width: 18px; height: 18px;"></span><span class="rounded-circle bg-warning" style="width: 18px; height: 18px;"></span></div><span class="badge bg-warning text-dark">Cluster B</span></div></div>
+                    <div class="col-12 col-md-4"><div class="p-3 rounded-3 border border-success border-2"><div class="d-flex justify-content-center gap-2 mb-2"><span class="rounded-circle bg-success" style="width: 18px; height: 18px;"></span><span class="rounded-circle bg-success" style="width: 18px; height: 18px;"></span><span class="rounded-circle bg-success" style="width: 18px; height: 18px;"></span></div><span class="badge bg-success">Cluster C</span></div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="kmeans" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5 text-white">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;"><i class="bi bi-bezier2 fs-4"></i></div>
+                <div><h2 class="h3 mb-1 fw-bold">How Does K-Means Work?</h2><p class="text-light opacity-75 mb-0">A repeated process that assigns points to the nearest center.</p></div>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                K-Means is a popular clustering algorithm. The letter <strong class="text-white">K</strong>
+                represents the number of clusters we want to create. The algorithm uses a representative
+                point for each cluster and repeatedly improves its position.
+            </p>
+            <p class="text-light mb-4">
+                K-Means tries to keep points close to the center of their assigned cluster. It does
+                this by alternating between a decision step, where points are assigned, and a correction
+                step, where the centers are recalculated from the current assignments.
+            </p>
+            <div class="row g-3">
+                <div class="col-12 col-md-3"><div class="h-100 text-center p-3 rounded-3 border border-primary border-opacity-50"><span class="badge rounded-pill bg-primary fs-6 mb-3">1</span><h3 class="h6 text-white">Choose K</h3><p class="text-light small mb-0">Decide how many clusters the data should have.</p><p class="text-light small mt-2 mb-0">K is a modeling decision and can affect the final interpretation.</p></div></div>
+                <div class="col-12 col-md-3"><div class="h-100 text-center p-3 rounded-3 border border-info border-opacity-50"><span class="badge rounded-pill bg-info text-dark fs-6 mb-3">2</span><h3 class="h6 text-white">Place centroids</h3><p class="text-light small mb-0">Start with one center for each cluster.</p><p class="text-light small mt-2 mb-0">These initial positions provide the starting point for the first assignment.</p></div></div>
+                <div class="col-12 col-md-3"><div class="h-100 text-center p-3 rounded-3 border border-warning border-opacity-50"><span class="badge rounded-pill bg-warning text-dark fs-6 mb-3">3</span><h3 class="h6 text-white">Assign points</h3><p class="text-light small mb-0">Send every point to its nearest centroid.</p><p class="text-light small mt-2 mb-0">The nearest center is selected by comparing the distances to all centroids.</p></div></div>
+                <div class="col-12 col-md-3"><div class="h-100 text-center p-3 rounded-3 border border-success border-opacity-50"><span class="badge rounded-pill bg-success fs-6 mb-3">4</span><h3 class="h6 text-white">Move centers</h3><p class="text-light small mb-0">Recalculate each centroid and repeat.</p><p class="text-light small mt-2 mb-0">Moving the centers allows the clusters to better represent their assigned points.</p></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="centroids" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5 text-white">
+            <div class="row align-items-center g-4">
+                <div class="col-12 col-lg-6">
+                    <div class="d-flex align-items-center mb-4"><div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;"><i class="bi bi-bullseye fs-4"></i></div><h2 class="h3 mb-0 fw-bold">The Role of Centroids</h2></div>
+                    <p class="text-light fs-5">A <strong class="text-white">centroid</strong> is the center or average position of the observations currently assigned to a cluster.</p>
+                    <p class="text-light">For every feature, K-Means calculates the mean value of all points in that cluster. In two dimensions, the centroid is the average of the x-coordinates and the average of the y-coordinates.</p>
+                    <p class="text-light">After points are reassigned, the centroid may move because the membership of its cluster has changed. This movement is the mechanism that gradually improves the grouping.</p>
+                    <div class="p-3 rounded-3 bg-warning bg-opacity-10 border-start border-warning border-4"><strong class="text-white d-block mb-1">Important</strong><span class="text-light">A centroid is not necessarily an original data point. It is a calculated representative location.</span></div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="p-4 rounded-3 border border-warning border-opacity-50" style="background-color: #00152a;">
+                        <h3 class="h5 text-white text-center mb-4">Cluster average</h3>
+                        <div class="row g-2 align-items-center text-center">
+                            <div class="col-4"><div class="p-3 rounded-3 border border-info"><span class="rounded-circle bg-info d-inline-block mb-2" style="width: 22px; height: 22px;"></span><small class="text-light d-block">Point 1</small></div></div>
+                            <div class="col-1 text-warning fs-4">+</div>
+                            <div class="col-4"><div class="p-3 rounded-3 border border-info"><span class="rounded-circle bg-info d-inline-block mb-2" style="width: 22px; height: 22px;"></span><small class="text-light d-block">Point 2</small></div></div>
+                            <div class="col-3 text-warning fs-4">=</div>
+                            <div class="col-12"><div class="p-3 rounded-3 border border-warning border-2 bg-warning bg-opacity-10"><i class="bi bi-star-fill text-warning fs-3"></i><strong class="text-white d-block mt-1">Centroid</strong><small class="text-light">The mean location of the cluster</small></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="iterations" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5 text-white">
+            <div class="d-flex align-items-center mb-4"><div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;"><i class="bi bi-arrow-repeat fs-4"></i></div><div><h2 class="h3 mb-1 fw-bold">Iterations and Convergence</h2><p class="text-light opacity-75 mb-0">Why K-Means repeats the same two operations.</p></div></div>
+            <p class="text-light fs-5 mb-4">One <strong class="text-white">iteration</strong> consists of assigning points to centroids and then updating the centroids. The assignments change at first, but they usually become more stable after several iterations.</p>
+            <p class="text-light mb-4">The process is not learning from a correct answer; it is optimizing an internal objective: keeping the total distance between each point and its assigned centroid as small as possible.</p>
+            <div class="row g-3 mb-4">
+                <div class="col-12 col-md-6"><div class="p-4 rounded-3 border border-info border-opacity-50 h-100"><div class="d-flex justify-content-between mb-2"><strong class="text-white">Assignment step</strong><span class="badge bg-info text-dark">Nearest center</span></div><p class="text-light small mb-0">Measure the distance from each observation to every centroid. Assign the observation to the closest one.</p></div></div>
+                <div class="col-12 col-md-6"><div class="p-4 rounded-3 border border-warning border-opacity-50 h-100"><div class="d-flex justify-content-between mb-2"><strong class="text-white">Update step</strong><span class="badge bg-warning text-dark">New average</span></div><p class="text-light small mb-0">For each cluster, calculate the mean of its assigned points. That mean becomes the new centroid.</p></div></div>
+            </div>
+            <div class="p-4 rounded-3 border border-success border-opacity-50" style="background-color: #00152a;">
+                <h3 class="h5 text-white mb-3">Centroid movement across iterations</h3>
+                <div class="row g-2 text-center align-items-center">
+                    <div class="col-12 col-md-3"><span class="badge bg-secondary mb-2">Iteration 0</span><div class="progress" role="progressbar" aria-label="Initial progress"><div class="progress-bar bg-secondary" style="width: 20%"></div></div><small class="text-light d-block mt-2">Initial centers</small></div>
+                    <div class="col-12 col-md-1 text-success fs-4"><i class="bi bi-arrow-right"></i></div>
+                    <div class="col-12 col-md-3"><span class="badge bg-info text-dark mb-2">Iteration 1</span><div class="progress" role="progressbar" aria-label="First iteration"><div class="progress-bar bg-info" style="width: 50%"></div></div><small class="text-light d-block mt-2">Centers move</small></div>
+                    <div class="col-12 col-md-1 text-success fs-4"><i class="bi bi-arrow-right"></i></div>
+                    <div class="col-12 col-md-3"><span class="badge bg-success mb-2">Converged</span><div class="progress" role="progressbar" aria-label="Converged result"><div class="progress-bar bg-success" style="width: 100%"></div></div><small class="text-light d-block mt-2">Minimal movement</small></div>
+                </div>
+            </div>
+            <p class="text-light mt-4 mb-0">K-Means stops when the centroids barely move, the assignments stop changing, or a maximum number of iterations is reached. This stable state is called <strong class="text-white">convergence</strong>.</p>
+        </div>
+    </section>
+
+    <section id="example" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5 text-white">
+            <div class="d-flex align-items-center mb-4"><div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;"><i class="bi bi-diagram-3 fs-4"></i></div><div><h2 class="h3 mb-1 fw-bold">A Complete K-Means Example</h2><p class="text-light opacity-75 mb-0">Imagine grouping customers by annual spending and visit frequency.</p></div></div>
+            <p class="text-light mb-4">This example shows how an abstract mathematical result can become a practical segmentation. The two input features describe each customer, while the final clusters provide a compact way to compare their behavior.</p>
+            <div class="row g-3">
+                <div class="col-12 col-md-4"><div class="h-100 p-4 rounded-3 border border-primary border-opacity-50"><span class="badge bg-primary mb-3">Step 1</span><h3 class="h5 text-white">Choose K = 3</h3><p class="text-light small mb-0">We decide to create three customer groups: occasional, regular, and frequent customers.</p><p class="text-light small mt-2 mb-0">The choice should be supported by domain knowledge or a comparison of different K values.</p></div></div>
+                <div class="col-12 col-md-4"><div class="h-100 p-4 rounded-3 border border-info border-opacity-50"><span class="badge bg-info text-dark mb-3">Step 2</span><h3 class="h5 text-white">Assign customers</h3><p class="text-light small mb-0">Each customer is assigned to the nearest of the three initial centroids.</p><p class="text-light small mt-2 mb-0">A customer with high spending and frequent visits will tend to move toward the corresponding cluster center.</p></div></div>
+                <div class="col-12 col-md-4"><div class="h-100 p-4 rounded-3 border border-success border-opacity-50"><span class="badge bg-success mb-3">Step 3</span><h3 class="h5 text-white">Repeat and interpret</h3><p class="text-light small mb-0">After convergence, examine the final groups and give them meaningful business names.</p><p class="text-light small mt-2 mb-0">The names are interpretations added by people; K-Means itself only returns assignments and centroids.</p></div></div>
+            </div>
+            <div class="alert alert-primary bg-primary bg-opacity-10 border-primary text-light mt-4 mb-0" role="alert"><i class="bi bi-info-circle me-2"></i><strong class="text-white">Remember:</strong> K-Means discovers mathematical groups. The human analyst interprets what those groups mean in the real world.</div>
+        </div>
+    </section>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('home') }}" class="btn btn-outline-light btn-lg px-5 rounded-pill"><i class="bi bi-arrow-left"></i> Back to Home</a>
+    </div>
+</div>
+{% endblock %}

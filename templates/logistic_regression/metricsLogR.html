@@ -1,0 +1,370 @@
+{% extends "base.html" %}
+
+{% block title %}
+Evaluation Metrics - Logistic Regression
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/concepts.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div class="concepts-page pt-5 mt-5 pb-5">
+    <div class="container">
+
+        <!-- PAGE HEADER -->
+        <div class="text-center mb-5">
+            <span class="section-label text-uppercase fw-bold text-primary">
+                <span class="section-line"></span>
+                SUPERVISED LEARNING
+                <span class="section-line"></span>
+            </span>
+
+            <h1 class="section-title display-4 fw-bold text-white mt-2 mb-3">
+                Logistic Regression Evaluation Metrics
+            </h1>
+
+            <p class="section-description mx-auto lead text-light fs-5 max-w-760">
+                Evaluate the performance of the Logistic Regression model
+                using classification metrics and the confusion matrix.
+            </p>
+        </div>
+
+        <!-- LEARNING PATH -->
+        <nav class="path-nav mb-5" id="pathNav" aria-label="Learning path">
+            <a href="#metrics" data-target="metrics">Metrics</a>
+            <a href="#confusion-matrix" data-target="confusion-matrix">Confusion Matrix</a>
+            <a href="#interpretation" data-target="interpretation">Interpretation</a>
+        </nav>
+
+        <!-- 1. EVALUATION METRICS -->
+        <section id="metrics" class="concept-section mb-5">
+            <div class="concept-card p-4 p-md-5 rounded-4 shadow-lg border border-secondary border-opacity-25"
+                 style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px);">
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle me-3 bg-primary text-white rounded-circle p-3 d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px;">
+                        <i class="bi bi-bar-chart-line fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="h3 text-white mb-1 fw-bold">
+                            Evaluation Metrics
+                        </h2>
+                        <span class="text-primary small fw-semibold">
+                            MODEL PERFORMANCE
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-light fs-5 mb-4">
+                    The Logistic Regression model was evaluated using the
+                    test dataset. Each metric provides a different view
+                    of the binary classification performance.
+                </p>
+
+                <div class="row g-3">
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="p-4 rounded-3 bg-white bg-opacity-10 h-100 text-center">
+                            <i class="bi bi-check2-circle text-primary fs-2 mb-3"></i>
+                            <h5 class="text-white fw-bold mb-2">Accuracy</h5>
+                            <h2 class="text-primary fw-bold mb-2">
+                                {{ "%.2f"|format(accuracy * 100) }}%
+                            </h2>
+                            <p class="text-light opacity-75 small mb-0">
+                                Proportion of all test predictions that were correct.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="p-4 rounded-3 bg-white bg-opacity-10 h-100 text-center">
+                            <i class="bi bi-bullseye text-primary fs-2 mb-3"></i>
+                            <h5 class="text-white fw-bold mb-2">Precision</h5>
+                            <h2 class="text-primary fw-bold mb-2">
+                                {{ "%.2f"|format(precision * 100) }}%
+                            </h2>
+                            <p class="text-light opacity-75 small mb-0">
+                                Proportion of predicted Spam cases that were actually Spam.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="p-4 rounded-3 bg-white bg-opacity-10 h-100 text-center">
+                            <i class="bi bi-search text-primary fs-2 mb-3"></i>
+                            <h5 class="text-white fw-bold mb-2">Recall</h5>
+                            <h2 class="text-primary fw-bold mb-2">
+                                {{ "%.2f"|format(recall * 100) }}%
+                            </h2>
+                            <p class="text-light opacity-75 small mb-0">
+                                Proportion of actual Spam cases correctly detected.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="p-4 rounded-3 bg-white bg-opacity-10 h-100 text-center">
+                            <i class="bi bi-speedometer2 text-primary fs-2 mb-3"></i>
+                            <h5 class="text-white fw-bold mb-2">F1-score</h5>
+                            <h2 class="text-primary fw-bold mb-2">
+                                {{ "%.2f"|format(f1 * 100) }}%
+                            </h2>
+                            <p class="text-light opacity-75 small mb-0">
+                                Harmonic mean of precision and recall.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. CONFUSION MATRIX -->
+        <section id="confusion-matrix" class="concept-section mb-5">
+            <div class="concept-card p-4 p-md-5 rounded-4 shadow-lg border border-secondary border-opacity-25"
+                 style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px);">
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle me-3 bg-primary text-white rounded-circle p-3 d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px;">
+                        <i class="bi bi-grid-3x3-gap fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="h3 text-white mb-1 fw-bold">
+                            Confusion Matrix
+                        </h2>
+                        <span class="text-primary small fw-semibold">
+                            CLASSIFICATION RESULTS
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-light fs-5 mb-4">
+                    The confusion matrix compares the actual classes from
+                    the test dataset with the classes predicted by the
+                    Logistic Regression model.
+                </p>
+
+                <div class="row align-items-center g-4">
+
+                    <div class="col-12 col-lg-7">
+                        <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                            <div class="table-responsive">
+                                <table class="table table-dark table-bordered text-center align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Predicted: 0</th>
+                                            <th>Predicted: 1</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th>Actual: 0</th>
+                                            <td>
+                                                <strong class="text-success">TN</strong><br>
+                                                {{ confusion_matrix[0][0] }}
+                                            </td>
+                                            <td>
+                                                <strong class="text-danger">FP</strong><br>
+                                                {{ confusion_matrix[0][1] }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Actual: 1</th>
+                                            <td>
+                                                <strong class="text-danger">FN</strong><br>
+                                                {{ confusion_matrix[1][0] }}
+                                            </td>
+                                            <td>
+                                                <strong class="text-success">TP</strong><br>
+                                                {{ confusion_matrix[1][1] }}
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-5">
+                        <div class="p-4 rounded-3 bg-white bg-opacity-10 h-100">
+                            <h5 class="text-white fw-bold mb-3">
+                                How to read the matrix
+                            </h5>
+
+                            <p class="text-light small">
+                                <strong class="text-success">TN:</strong>
+                                No Spam correctly classified as No Spam.
+                            </p>
+
+                            <p class="text-light small">
+                                <strong class="text-danger">FP:</strong>
+                                No Spam incorrectly classified as Spam.
+                            </p>
+
+                            <p class="text-light small">
+                                <strong class="text-danger">FN:</strong>
+                                Spam incorrectly classified as No Spam.
+                            </p>
+
+                            <p class="text-light small mb-0">
+                                <strong class="text-success">TP:</strong>
+                                Spam correctly classified as Spam.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 3. INTERPRETATION -->
+        <section id="interpretation" class="concept-section mb-5">
+            <div class="concept-card p-4 p-md-5 rounded-4 shadow-lg border border-secondary border-opacity-25"
+                 style="background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px);">
+
+                <div class="d-flex align-items-center mb-4">
+                    <div class="icon-circle me-3 bg-primary text-white rounded-circle p-3 d-flex align-items-center justify-content-center"
+                         style="width: 50px; height: 50px;">
+                        <i class="bi bi-clipboard-data fs-4"></i>
+                    </div>
+                    <div>
+                        <h2 class="h3 text-white mb-1 fw-bold">
+                            Interpretation of Results
+                        </h2>
+                        <span class="text-primary small fw-semibold">
+                            MODEL ANALYSIS
+                        </span>
+                    </div>
+                </div>
+
+                <p class="text-light fs-5 mb-4">
+                    On the test dataset, the model achieved an accuracy of
+                    <strong class="text-white">{{ "%.2f"|format(accuracy * 100) }}%</strong>.
+                    This means that this proportion of the test observations
+                    was classified correctly.
+                </p>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded-3 bg-white bg-opacity-10 h-100">
+                            <strong class="text-white d-block mb-1">
+                                Precision
+                            </strong>
+                            <p class="text-light small mb-0">
+                                A precision of
+                                <strong class="text-white">{{ "%.2f"|format(precision * 100) }}%</strong>
+                                means that this proportion of messages predicted
+                                as Spam were actually Spam.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6">
+                        <div class="p-3 rounded-3 bg-white bg-opacity-10 h-100">
+                            <strong class="text-white d-block mb-1">
+                                Recall
+                            </strong>
+                            <p class="text-light small mb-0">
+                                A recall of
+                                <strong class="text-white">{{ "%.2f"|format(recall * 100) }}%</strong>
+                                means that this proportion of actual Spam messages
+                                were correctly detected.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="p-3 rounded-3 bg-white bg-opacity-10">
+                            <strong class="text-white d-block mb-1">
+                                F1-score
+                            </strong>
+                            <p class="text-light small mb-0">
+                                The F1-score of
+                                <strong class="text-white">{{ "%.2f"|format(f1 * 100) }}%</strong>
+                                combines precision and recall into a single metric,
+                                making it useful when both types of classification
+                                errors need to be considered.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 rounded-3 bg-white bg-opacity-10 mt-4">
+                    <p class="text-light mb-0">
+                        The confusion matrix contains
+                        <strong class="text-white">{{ confusion_matrix[0][0] }}</strong>
+                        True Negatives,
+                        <strong class="text-white">{{ confusion_matrix[0][1] }}</strong>
+                        False Positives,
+                        <strong class="text-white">{{ confusion_matrix[1][0] }}</strong>
+                        False Negatives, and
+                        <strong class="text-white">{{ confusion_matrix[1][1] }}</strong>
+                        True Positives.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- BACK BUTTON -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('logistic_regression_menu') }}"
+               class="btn btn-outline-light btn-lg px-5 rounded-pill">
+                <i class="bi bi-arrow-left"></i>
+                Back to Logistic Regression
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const sections = document.querySelectorAll(".concept-section");
+    const navLinks = document.querySelectorAll(".path-nav a");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("is-visible");
+
+                const id = entry.target.getAttribute("id");
+
+                navLinks.forEach((link) => {
+                    link.classList.toggle(
+                        "active",
+                        link.getAttribute("data-target") === id
+                    );
+                });
+            }
+        });
+    }, { root: null, threshold: 0.25 });
+
+    sections.forEach((section) => observer.observe(section));
+
+    navLinks.forEach((link) => {
+        link.addEventListener("click", function (event) {
+            event.preventDefault();
+
+            const target = document.getElementById(
+                this.getAttribute("data-target")
+            );
+
+            if (target) {
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            }
+        });
+    });
+});
+</script>
+
+{% endblock %}

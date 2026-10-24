@@ -1,0 +1,695 @@
+{% extends "base.html" %}
+
+{% block title %}
+Reinforcement Learning Application
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Page header -->
+    <div class="text-center mb-5">
+        <div class="d-inline-flex align-items-center text-primary text-uppercase fw-semibold mb-3">
+            <span class="border-top border-primary opacity-75 me-3" style="width: 50px;"></span>
+            Reinforcement Learning
+            <span class="border-top border-primary opacity-75 ms-3" style="width: 50px;"></span>
+        </div>
+        <h1 class="display-4 fw-bold text-white mb-3">Reinforcement Learning Application</h1>
+        <p class="lead text-light mx-auto mb-0" style="max-width: 760px;">
+            A virtual agent learns, through trial and error, to navigate a 10×10 grid from the 
+            start cell to the target while avoiding walls and minimizing time spent in danger zones.
+        </p>
+    </div>
+
+    <!-- Navigation pills -->
+    <nav class="nav nav-pills justify-content-center 
+    flex-wrap gap-1 mx-auto mb-5 px-2 py-2 rounded-pill border 
+    border-primary border-opacity-50 shadow-sm sticky-top" 
+    style="top: 78px; max-width: 1100px; background-color: rgba(3, 12, 25, 0.88); 
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    z-index: 1020;">
+        <a class="nav-link active text-white" href="#environment">Environment</a>
+        <a class="nav-link text-white" href="#rewards">Rewards</a>
+        <a class="nav-link text-white" href="#logic">Logic</a>
+        <a class="nav-link text-white" href="#qlearning">Q-Learning</a>
+        <a class="nav-link text-white" href="#exploration">Exploration</a>
+        <a class="nav-link text-white" href="#training">Training</a>
+        <a class="nav-link text-white" href="#results">Results</a>
+        <a class="nav-link text-white" href="#learned-path">Learned Path</a>
+        <a class="nav-link text-white" href="#evaluation">Evaluation</a>
+        <a class="nav-link text-white" href="#qvalues">Q-Values</a>
+    </nav>
+
+    <!-- Simple grid table styling -->
+    <style>
+        .rl-table { border-collapse: collapse; margin: 0 auto; }
+        .rl-table td {
+            width: 34px; height: 34px; text-align: center;
+            border: 1px solid #335; font-family: monospace; font-size: 15px;
+            background: #002e5f; color: #cfe3ff;
+        }
+        .rl-table td.wall   { background: #0b1b2b; color: #5c7290; }
+        .rl-table td.danger { background: #7a1f1f; color: #ffd9d9; }
+        .rl-table td.start  { background: #0d6efd; color: #fff; font-weight: bold; }
+        .rl-table td.target { background: #198754; color: #fff; font-weight: bold; }
+        .rl-table td.path   { outline: 3px solid #ffc107; outline-offset: -3px; }
+    </style>
+
+    <!-- 1-2-3. Environment -->
+    <section id="environment" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" 
+                style="width: 48px; height: 48px;">
+                    <i class="bi bi-grid-3x3-gap-fill fs-4"></i>
+                </div>
+                <h2 class="h3 text-white fw-bold mb-0">The Environment</h2>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                The reference 4×4 maze was expanded into a 
+                <strong class="text-white">10×10 grid</strong> 
+                (100 cells) with enough open paths, walls, and danger zones to require the agent to actually learn a route, 
+                rather than simply walking in a straight line to the goal.
+            </p>
+            <div class="row g-3 mb-4">
+                <div class="col-6 col-lg-2">
+                    <div class="p-3 rounded-3 border border-primary border-opacity-25 text-center h-100"
+                     style="background-color: #00152a;">
+                        <span class="badge mb-2" style="background-color:#0d6efd;">A</span>
+                        <div class="h6 text-white fw-bold mb-0">{{ env_counts.A }}</div>
+                        <div class="text-light small">Agent start</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="p-3 rounded-3 border border-primary border-opacity-25 text-center h-100" 
+                    style="background-color: #00152a;">
+                        <span class="badge mb-2" style="background-color:#198754;">T</span>
+                        <div class="h6 text-white fw-bold mb-0">{{ env_counts.T }}</div>
+                        <div class="text-light small">Target</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="p-3 rounded-3 border border-primary border-opacity-25 text-center h-100" 
+                    style="background-color: #00152a;">
+                        <span class="badge mb-2" style="background-color:#002e5f;">o</span>
+                        <div class="h6 text-white fw-bold mb-0">{{ env_counts.o }}</div>
+                        <div class="text-light small">Available path</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="p-3 rounded-3 border border-primary border-opacity-25 text-center h-100" 
+                    style="background-color: #00152a;">
+                        <span class="badge mb-2" style="background-color:#0b1b2b;">#</span>
+                        <div class="h6 text-white fw-bold mb-0">{{ env_counts['#'] }}</div>
+                        <div class="text-light small">Wall / obstacle</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="p-3 rounded-3 border border-primary border-opacity-25 text-center h-100" 
+                    style="background-color: #00152a;">
+                        <span class="badge mb-2" style="background-color:#7a1f1f;">D</span>
+                        <div class="h6 text-white fw-bold mb-0">{{ env_counts.D }}</div>
+                        <div class="text-light small">Danger zone</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <div class="p-3 rounded-3 border border-primary border-opacity-25 text-center h-100"
+                     style="background-color: #00152a;">
+                        <i class="bi bi-table text-primary fs-4"></i>
+                        <div class="h6 text-white fw-bold mt-1 mb-0">{{ rows }}×{{ columns }}</div>
+                        <div class="text-light small">Grid size</div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-light small mb-3">
+                The agent can enter a Danger Zone (it is not a wall), but doing so carries a penalty, 
+                which teaches the agent to route around them when a safer path is available.
+            </p>
+
+            <table class="rl-table" aria-label="Environment grid">
+                {% for row in range(grid|length) %}
+                <tr>
+                    {% for column in range(grid[row]|length) %}
+                    {% set position = (row, column) %}
+                    {% set char = grid[row][column] %}
+                    <td class="{% if position == start %}
+                    start{% elif position == goal %}
+                    target{% elif char == '#' %}
+                    wall{% elif char == 'D' %}
+                    danger{% endif %}">
+                        {% if position == start %}A
+                        {% elif position == goal %}T
+                        {% elif char == '#' %}#
+                        {% elif char == 'D' %}D
+                        {% else %}o{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+
+    <!-- 4. Reward System -->
+<section id="rewards" class="mb-5" style="scroll-margin-top: 105px;">
+    <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" 
+            style="width: 48px; height: 48px;">
+                <i class="bi bi-coin fs-4"></i>
+            </div>
+            <h2 class="h3 text-white fw-bold mb-0">Reward System</h2>
+        </div>
+        <p class="text-light fs-5 mb-4">
+            Every action the agent takes returns a reward. Small negative rewards discourage wasted movement,
+             larger negative rewards discourage unsafe or invalid moves, and a large positive reward marks success.
+        </p>
+        <div class="table-responsive rounded-3 overflow-auto">
+            <table class="table table-hover align-middle mb-0 text-light" 
+            style="background-color: #002e5f;">
+                <thead>
+                    <tr>
+                        <th class="py-3 px-4 text-light" 
+                        style="background-color: transparent;">Situation</th>
+                        <th class="py-3 px-4 text-light" 
+                        style="background-color: transparent;">Reward</th>
+                        <th class="py-3 px-4 text-light" 
+                        style="background-color: transparent;">Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 px-4">Moving to a valid normal position</td>
+                        <td class="py-2 px-4"><span class="badge bg-secondary">{{ rewards.normal }}</span></td>
+                        <td class="py-2 px-4 text-dark small">Small penalty per step so the agent prefers shorter routes.</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4">Attempting an invalid movement (outside the grid)</td>
+                        <td class="py-2 px-4"><span class="badge bg-danger">{{ rewards.invalid }}</span></td>
+                        <td class="py-2 px-4 text-dark small">Discourages trying to leave the boundaries of the grid.</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4">Hitting a wall</td>
+                        <td class="py-2 px-4"><span class="badge bg-danger">{{ rewards.wall }}</span></td>
+                        <td class="py-2 px-4 text-dark small">Teaches the agent that walls are impassable obstacles.</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4">Entering a Danger Zone</td>
+                        <td class="py-2 px-4"><span class="badge" style="background-color:#7a1f1f;">{{ rewards.danger }}</span></td>
+                        <td class="py-2 px-4 text-dark small">The move is allowed, but the strong penalty teaches the agent
+                             to avoid danger zones when a safer path exists.</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4">Reaching the goal</td>
+                        <td class="py-2 px-4"><span class="badge bg-success">+{{ rewards.goal }}</span></td>
+                        <td class="py-2 px-4 text-dark small">Large positive reward that reinforces the sequence of actions leading to success.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+    <!-- 5. Environment Logic -->
+    <section id="logic" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" 
+                style="width: 48px; height: 48px;">
+                    <i class="bi bi-diagram-2 fs-4"></i>
+                </div>
+                <h2 class="h3 text-white fw-bold mb-0">Environment Logic</h2>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                For every action, the environment resolves <strong class="text-white">current state → selected action → next state → cell type → reward → episode end</strong>.
+                 The 4 possible actions (Up, Down, Left, Right) always move the agent by one cell in the corresponding direction.
+            </p>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-box-arrow-in-right text-primary fs-4"></i>
+                            <div>
+                                <strong class="text-white d-block mb-1">Outside the grid or into a wall</strong>
+                                <p class="text-light small mb-0">The move is rejected: the agent stays in its current state and receives the "invalid" or "wall" penalty.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-exclamation-triangle text-primary fs-4"></i>
+                            <div>
+                                <strong class="text-white d-block mb-1">Into a Danger Zone</strong>
+                                <p class="text-light small mb-0">The move succeeds — the agent occupies the danger cell — but it receives the danger penalty.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-arrow-right-circle text-primary fs-4"></i>
+                            <div>
+                                <strong class="text-white d-block mb-1">Into a normal path cell</strong>
+                                <p class="text-light small mb-0">The move succeeds with the standard step penalty, and the episode continues.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex gap-3">
+                            <i class="bi bi-flag-fill text-primary fs-4"></i>
+                            <div>
+                                <strong class="text-white d-block mb-1">Reaching the Target</strong>
+                                <p class="text-light small mb-0">The agent receives the goal reward and the episode ends immediately.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 p-3 rounded-3 border border-primary border-opacity-25" style="background-color: #001d3b;">
+                <p class="text-light small mb-0">
+                    An episode also ends if the agent reaches the maximum number of allowed steps (<strong class="text-white">{{ max_steps }}</strong>) without reaching the target.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. Q-Learning Implementation -->
+    <section id="qlearning" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" 
+                style="width: 48px; height: 48px;">
+                    <i class="bi bi-cpu fs-4"></i>
+                </div>
+                <h2 class="h3 text-white fw-bold mb-0">Q-Learning Implementation</h2>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                Q-values are estimated with an incremental linear model 
+                (<code>SGDRegressor</code>) 
+                instead of a lookup table:
+                <code>predict()</code> estimates the Q-value of each action for a given state, and
+                <code>partial_fit()</code> updates the model after every single step using the observed reward 
+                and the best estimated Q-value of the next state.
+            </p>
+            <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                <div class="text-center">
+                    {% for label in [
+                        "Environment", 
+                        "Initial State",
+                        "Action Selection",
+                        "Exploration / Exploitation",
+                        "Environment Interaction",
+                        "Reward", 
+                        "Next State", 
+                        "Q-value Update", 
+                        "Next Action"]
+                     %}
+                    <span class="badge bg-primary px-3 py-2">{{ label }}</span>
+                    <div class="my-2"><i class="bi bi-arrow-down text-primary fs-4"></i></div>
+                    {% endfor %}
+                    <span class="badge bg-success px-3 py-2">Goal / End of Episode</span>
+                </div>
+            </div>
+            <p class="text-light small mt-4 mb-0">
+                The model is never told the correct route in advance — the final evaluated path is entirely a product of the Q-values learned
+                 from repeated interaction with the environment.
+            </p>
+        </div>
+    </section>
+
+    <!-- 7. Exploration & Exploitation -->
+    <section id="exploration" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
+                 style="width: 48px; height: 48px;">
+                    <i class="bi bi-shuffle fs-4"></i>
+                </div>
+                <h2 class="h3 text-white fw-bold mb-0">Exploration &amp; Exploitation</h2>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                The agent follows an <strong class="text-white">Epsilon-Greedy</strong> strategy: with probability ε it explores
+                 (a random action, to discover the environment), and with probability 1-ε it exploits (the action with the highest estimated Q-value). 
+                 ε starts high so the agent explores freely, and decays after every episode so the agent increasingly relies on what it has learned.
+            </p>
+            <div class="row g-3">
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 h-100 text-center"
+                     style="background-color: #00152a;">
+                        <i class="bi bi-compass text-primary fs-2"></i>
+                        <h3 class="h6 text-white fw-bold mt-2 mb-1">Initial ε</h3>
+                        <p class="text-light small mb-0">1.0</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 h-100 text-center"
+                     style="background-color: #00152a;">
+                        <i class="bi bi-dash-circle text-primary fs-2"></i>
+                        <h3 class="h6 text-white fw-bold mt-2 mb-1">Minimum ε</h3>
+                        <p class="text-light small mb-0">0.05</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 h-100 text-center"
+                     style="background-color: #00152a;">
+                        <i class="bi bi-graph-down text-primary fs-2"></i>
+                        <h3 class="h6 text-white fw-bold mt-2 mb-1">ε Decay</h3>
+                        <p class="text-light small mb-0">0.995 / episode</p>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-4 rounded-3 h-100 text-center"
+                     style="background-color: #00152a;">
+                        <i class="bi bi-hourglass-split text-primary fs-2"></i>
+                        <h3 class="h6 text-white fw-bold mt-2 mb-1">Discount γ</h3>
+                        <p class="text-light small mb-0">0.95</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3 p-3 rounded-3 border border-primary border-opacity-25"
+             style="background-color: #001d3b;">
+                <p class="text-light small mb-0">
+                    <strong class="text-white">Training episodes:</strong>
+                     300 — <strong class="text-white">Max steps per episode:</strong> 
+                     {{ max_steps }} — enough repetitions for the agent to experience the 10×10 grid, 
+                     including walls and Danger Zones, many times before the Q-value estimates stabilize.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Training -->
+    <section id="training" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" 
+                style="width: 48px; height: 48px;">
+                    <i class="bi bi-play-circle fs-4"></i>
+                </div>
+                <h2 class="h3 text-white fw-bold mb-0">Training</h2>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                Pressing the button below runs the Q-Learning process for 300 episodes against the 10×10 environment. Training is
+                 triggered on demand through a POST request — the agent is not retrained automatically when the page loads.
+            </p>
+
+            <div class="p-3 rounded-3 border border-warning border-opacity-50 mb-4" style="background-color: #241a00;">
+                <div class="d-flex gap-3">
+                    <i class="bi bi-info-circle-fill text-warning fs-4"></i>
+                    <div>
+                        <strong class="text-white d-block mb-1">Why 300 episodes instead of 1,000?</strong>
+                        <p class="text-light small mb-0">
+                            Training runs synchronously inside a single web request: the server does not respond until all episodes have finished. On the free hosting tier used for deployment, the web process is killed if a single request takes too long to complete. With 1,000 episodes, training this 10×10 environment occasionally exceeded that time budget and caused the request to fail. Reducing training to 300 episodes keeps every request comfortably within that limit while still giving the agent enough repetitions to converge — the success rate and average reward for this environment stabilize well before 300 episodes are reached. The episode count is defined once, as <code>TRAINING_EPISODES</code> in <code>app.py</code>, and can be raised again in environments without this time restriction (for example, when running the project locally).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <form method="post" action="{{ url_for('reinforcement_application') }}" class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg fw-bold shadow px-5">
+                    <i class="bi bi-play-fill me-2"></i>Train Agent
+                </button>
+            </form>
+
+            {% if not result %}
+            <div class="mt-4 p-4 rounded-3 border border-primary border-opacity-25 text-center"
+             style="background-color: #00152a;">
+                <i class="bi bi-hourglass text-primary fs-2 mb-2"></i>
+                <p class="text-light mb-0">No training has been run yet. Click "Train Agent" to start the Q-Learning process and see the results below.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- 11. Training Results -->
+    <section id="results" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" 
+                style="width: 48px; height: 48px;">
+                    <i class="bi bi-clipboard-data fs-4"></i>
+                </div>
+                <h2 class="h3 text-white fw-bold mb-0">Training Results</h2>
+            </div>
+            {% if result %}
+            <div class="row g-3 mb-3">
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-repeat text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.episodes }}</div>
+                        <div class="text-light small">Total episodes</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-check2-circle text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.successes }}</div>
+                        <div class="text-light small">Successful episodes</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-percent text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.success_percentage }}%</div>
+                        <div class="text-light small">Success percentage</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-graph-up text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.average_reward }}</div>
+                        <div class="text-light small">Average reward (all episodes)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-graph-up-arrow text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.final_average }}</div>
+                        <div class="text-light small">Average reward (last 100 episodes)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-sliders text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.final_epsilon }}</div>
+                        <div class="text-light small">Final ε</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-signpost-split text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.movements }}</div>
+                        <div class="text-light small">Moves (final evaluation)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        <i class="bi bi-coin text-primary fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">{{ result.evaluation_reward }}</div>
+                        <div class="text-light small">Total reward (final evaluation)</div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 text-center" 
+                    style="background-color: #00152a;">
+                        {% if result.reached_goal %}
+                        <i class="bi bi-trophy-fill text-success fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">Yes</div>
+                        {% else %}
+                        <i class="bi bi-x-circle-fill text-danger fs-2"></i>
+                        <div class="h6 text-white fw-bold mt-2 mb-1">No</div>
+                        {% endif %}
+                        <div class="text-light small">Goal reached</div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 rounded-3 border border-primary border-opacity-25" 
+            style="background-color: #001d3b;">
+                <p class="text-light small mb-0">
+                    Goal reached: <strong class="text-white">{{ "Yes" if result.reached_goal else "No" }}</strong>
+                     in <strong class="text-white">{{ result.movements }}</strong> 
+                     moves. See the highlighted route in the Learned Path section below.
+                </p>
+            </div>
+            {% else %}
+            <div class="p-4 rounded-3 border border-primary border-opacity-25 text-center"
+             style="background-color: #00152a;">
+                <i class="bi bi-hourglass text-primary fs-2 mb-2"></i>
+                <p class="text-light mb-0">Results will appear here once the agent has been trained.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- 9. Learned Path Visualization -->
+    <section id="learned-path" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3"
+                 style="width: 48px; height: 48px;">
+                    <i class="bi bi-signpost-split fs-4"></i>
+                </div>
+                <h2 class="h3 text-white fw-bold mb-0">Learned Path Visualization</h2>
+            </div>
+            <p class="text-light fs-5 mb-4">
+                {% if result %}
+                The grid below shows the environment with the path followed by the trained agent during its final evaluation (no exploration)
+                 highlighted with an amber outline, without replacing the original A / T / o / # / D symbols.
+                {% else %}
+                Train the agent above to see its learned path highlighted on the grid.
+                {% endif %}
+            </p>
+
+            <table class="rl-table mb-4" aria-label="Learned path grid">
+                {% for row in range(grid|length) %}
+                <tr>
+                    {% for column in range(grid[row]|length) %}
+                    {% set position = (row, column) %}
+                    {% set char = grid[row][column] %}
+                    <td class="{% if position == start %}
+                    start{% elif position == goal %}
+                    target{% elif char == '#' %}
+                    wall{% elif char == 'D' %}
+                    danger{% endif %}{% if result and position in result.path and position != start and position != goal and char != '#' %} path{% endif %}">
+                        {% if position == start %}A
+                        {% elif position == goal %}T
+                        {% elif char == '#' %}#
+                        {% elif char == 'D' %}D
+                        {% else %}o{% endif %}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+
+            <div class="row g-2 justify-content-center text-center">
+                <div class="col-4 col-md-2"><span class="badge" style="background-color:#0d6efd;">A</span> <span class="text-light small">Start</span></div>
+                <div class="col-4 col-md-2"><span class="badge" style="background-color:#198754;">T</span> <span class="text-light small">Target</span></div>
+                <div class="col-4 col-md-2"><span class="badge" style="background-color:#002e5f;">o</span> <span class="text-light small">Path</span></div>
+                <div class="col-4 col-md-2"><span class="badge" style="background-color:#0b1b2b;">#</span> <span class="text-light small">Wall</span></div>
+                <div class="col-4 col-md-2"><span class="badge" style="background-color:#7a1f1f;">D</span> <span class="text-light small">Danger</span></div>
+                <div class="col-4 col-md-2"><span class="badge" style="background-color:transparent; border:3px solid #ffc107;">&nbsp;</span> <span class="text-light small">Visited</span></div>
+            </div>
+        </div>
+    </section>
+     <!-- 10. Step-by-Step Evaluation -->
+    <section id="evaluation" class="mt-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                 style="width: 48px; height: 48px; min-width: 48px;">
+                <i class="bi bi-list-ol fs-4"></i>
+            </div>
+            <h3 class="mb-0 text-white fw-bold">Step-by-Step Evaluation</h3>
+        </div>
+            <p class="text-light fs-5 mb-4">
+                The table below shows the agent's step-by-step evaluation after training, including the state, action taken, next state, cell type, and reward received for each step.
+            </p>
+            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                {% if result and result.steps %}
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover align-middle">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Step</th>
+                                    <th>State</th>
+                                    <th>Action</th>
+                                    <th>Next State</th>
+                                    <th>Cell Type</th>
+                                    <th>Reward</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for step in result.steps %}
+                                <tr>
+                                    <td>{{ step.number }}</td>
+                                    <td>{{ step.state }}</td>
+                                    <td>{{ step.action }}</td>
+                                    <td>{{ step.next_state }}</td>
+                                    <td>{{ step.cell_type }}</td>
+                                    <td>{{ step.reward }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                <div class="p-4 rounded-3 border border-primary border-opacity-25 text-center"
+                    style="background-color: #00152a;">
+                    <i class="bi bi-hourglass text-primary fs-2 mb-2"></i>
+                    <p class="text-light mb-0">Results will appear here once the agent has been trained.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+    <!-- 12. Q-Values -->
+    <section id="qvalues" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-table fs-4"></i>
+                </div>
+                <h2 class="h3 text-white mb-0 fw-bold">Q-Values</h2>
+            </div>
+
+            <p class="text-light fs-5 mb-4">
+                The Q-values represent the agent's learned estimates of the expected future rewards for each action in each state. 
+                The table below shows the Q-values for all states after training, with the actions ordered as Up, Down, Left, Right.
+            </p>
+
+            <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
+                {% if result and result.q_table %}
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>State</th>
+                                    <th>Up</th>
+                                    <th>Down</th>
+                                    <th>Left</th>
+                                    <th>Right</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for row in result.q_table %}
+                                <tr>
+                                    <td>{{ row.state }}</td>
+                                    <td>{{ row.action_values[0] }}</td>
+                                    <td>{{ row.action_values[1] }}</td>
+                                    <td>{{ row.action_values[2] }}</td>
+                                    <td>{{ row.action_values[3] }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                <div class="p-4 rounded-3 border border-primary border-opacity-25 text-center"
+                    style="background-color: #00152a;">
+                    <i class="bi bi-hourglass text-primary fs-2 mb-2"></i>
+                    <p class="text-light mb-0">Results will appear here once the agent has been trained.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+</div>
+
+{% endblock %}

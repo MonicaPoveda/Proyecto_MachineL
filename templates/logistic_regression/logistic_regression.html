@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Logistic Regression{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="padding-top: 120px !important;">
+    <div class="text-center mb-5">
+        <div class="d-inline-flex align-items-center text-primary text-uppercase fw-semibold mb-3">SUPERVISED LEARNING</div>
+        <h1 class="display-2 fw-bold text-white">Logistic <span class="text-primary">Regression</span></h1>
+        <p class="text-light lead mx-auto mt-4" style="max-width: 760px;">
+            Explore the concepts, application flow, and evaluation metrics used for classification with logistic regression.
+        </p>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+            <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg text-white text-center w-100">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-book"></i></div>
+                    <h2 class="card-title mb-3">Concepts</h2>
+                    <p class="card-text mb-4">Review probabilities, the sigmoid function, and binary classification.</p>
+                    <a href="{{ url_for('logistic_concepts') }}" class="explore-link">Explore →</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+            <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg text-white text-center w-100">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-bullseye"></i></div>
+                    <h2 class="card-title mb-3">Application</h2>
+                    <p class="card-text mb-4">See the workflow for using a logistic regression model to classify new data.</p>
+                    <a href="{{ url_for('logistic_regression_application') }}" class="explore-link">Explore →</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 d-flex">
+            <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg text-white text-center w-100">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-bar-chart"></i></div>
+                    <h2 class="card-title mb-3">Evaluation Metrics</h2>
+                    <p class="card-text mb-4">Understand the metrics used to evaluate classification performance.</p>
+                    <a href="{{ url_for('logistic_regression_metrics') }}" class="explore-link">Explore →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('home') }}" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}

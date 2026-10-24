@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reinforcement Learning - Maze test</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        td {
+            width: 36px; height: 36px; text-align: center;
+            border: 1px solid #999; font-family: monospace; font-size: 18px;
+        }
+        .wall { background: #333; color: #fff; }
+        .danger { background: #f8b4b4; }
+        .start { background: #b4d8f8; font-weight: bold; }
+        .target { background: #b4f8c4; font-weight: bold; }
+        .path { background: #fff3a0; }
+    </style>
+</head>
+<body>
+    <h1>Q-Learning: maze test</h1>
+
+    <form method="post" action="{{ url_for('reinforcement') }}">
+        <button type="submit">Train Agent</button>
+    </form>
+
+    <table aria-label="Grid">
+        {% for row in range(grid|length) %}
+        <tr>
+            {% for column in range(grid[row]|length) %}
+            {% set char = grid[row][column] %}
+            <td class="{% if char == '#' %}wall{% elif char == 'D' %}danger{% elif char == 'A' %}start{% elif char == 'T' %}target{% endif %}{% if (row, column) in path and char != '#' %} path{% endif %}">
+                {{ char }}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% if result %}
+    <p>Goal reached: {{ "Yes" if result.reached_goal else "No" }}
+       in {{ result.movements }} moves.</p>
+    {% endif %}
+</body>
+</html>

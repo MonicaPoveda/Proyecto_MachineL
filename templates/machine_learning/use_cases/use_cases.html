@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Use Cases{% endblock %}
+
+{% block content %}
+
+<div class="container py-5" style="padding-top: 120px !important;">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <div class="section-label mb-3">
+            USE CASES
+        </div>
+        <h1 class="display-2 fw-bold text-white">
+            Machine Learning <span class="brand-highlight">Use Cases</span>
+        </h1>
+        <p class="section-description mx-auto mt-4">
+            Explore real-world applications of machine learning in different industries and everyday situations.
+        </p>
+    </div>
+
+    <!-- TARJETAS -->
+    <div class="row g-4">
+
+        <!-- Use Case 1 -->
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+            <div class="card explore-card text-center w-100">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-car-front"></i></div>
+                    <h3 class="card-title mb-3">Use Case 1</h3>
+                    <p class="card-text mb-4">Autonomous Vehicles</p>
+                    <a href="{{ url_for('case1') }}" class="explore-link">Explore →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Use Case 2 -->
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+            <div class="card explore-card text-center w-100">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-person-lines-fill"></i></div>
+                    <h3 class="card-title mb-3">Use Case 2</h3>
+                    <p class="card-text mb-4">Recommendations in Social Media</p>
+                    <a href="{{ url_for('case2') }}" class="explore-link">Explore →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Use Case 3 -->
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+            <div class="card explore-card text-center w-100">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-credit-card"></i></div>
+                    <h3 class="card-title mb-3">Use Case 3</h3>
+                    <p class="card-text mb-4">Fraud Detection</p>
+                    <a href="{{ url_for('case3') }}" class="explore-link">Explore →</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Use Case 4 -->
+        <div class="col-12 col-md-6 col-lg-3 d-flex">
+            <div class="card explore-card text-center w-100">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-chat-dots"></i></div>
+                    <h3 class="card-title mb-3">Use Case 4</h3>
+                    <p class="card-text mb-4">Chatbots & NLP</p>
+                    <a href="{{ url_for('case4') }}" class="explore-link">Explore →</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BACK BUTTON -->
+    <div class="text-center mt-5">
+        <a href="/" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

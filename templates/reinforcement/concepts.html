@@ -1,0 +1,548 @@
+{% extends "base.html" %}
+
+{% block title %}Reinforcement Learning - Concepts{% endblock %}
+
+{% block content %}
+
+<div class="container py-5" style="padding-top: 120px !important;">
+
+    <!-- HEADER -->
+    <div class="text-center mb-5">
+        <div class="section-label mb-3">REINFORCEMENT LEARNING</div>
+        <h1 class="display-4 fw-bold text-white mb-3">
+            <span class="brand-highlight">Concepts</span>
+        </h1>
+        <p class="text-light lead mx-auto mb-0" style="max-width: 760px;">
+            Understand the theoretical foundations of Reinforcement Learning 
+            and how they apply to the maze environment.
+        </p>
+    </div>
+
+    <!-- NAVIGATION PILLS -->
+    <nav class="nav nav-pills justify-content-center flex-wrap gap-1 mx-auto mb-5 px-2 py-2 rounded-pill border border-primary border-opacity-50 shadow-sm sticky-top" 
+         style="top: 78px; max-width: 980px; background-color: rgba(3, 12, 25, 0.88); backdrop-filter: blur(10px); z-index: 1020;">
+        <a class="nav-link text-white" href="#what-is-rl">What is RL?</a>
+        <a class="nav-link text-white" href="#types">Types</a>
+        <a class="nav-link text-white" href="#core">Core Concepts</a>
+        <a class="nav-link text-white" href="#rewards">Rewards</a>
+        <a class="nav-link text-white" href="#learning">Learning</a>
+        <a class="nav-link text-white" href="#exploration">Exploration</a>
+        <a class="nav-link text-white" href="#qlearning">Q-Learning</a>
+    </nav>
+
+    <!-- 1. WHAT IS REINFORCEMENT LEARNING? -->
+    <section id="what-is-rl" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="row align-items-center g-4">
+                <div class="col-12 col-lg-7">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                            <i class="bi bi-question-circle fs-4"></i>
+                        </div>
+                        <h2 class="h3 text-white mb-0 fw-bold">What is Reinforcement Learning?</h2>
+                    </div>
+                    <p class="text-light fs-5 mb-4">
+                        <strong class="text-white">Reinforcement Learning (RL)</strong> is a type of Machine Learning 
+                        in which an <strong class="text-white">agent</strong> learns to make decisions by interacting 
+                        with an <strong class="text-white">environment</strong>.
+                    </p>
+                    <p class="text-light fs-5 mb-4">
+                        Unlike supervised learning, there are no labeled examples. Instead, the agent learns 
+                        from <strong class="text-white">rewards</strong> and <strong class="text-white">penalties</strong> 
+                        received after each action. The goal is to learn a <strong class="text-white">policy</strong> 
+                        that maximizes the total reward over time.
+                    </p>
+                    <div class="p-3 rounded-3 border-start border-primary border-4" style="background-color: #00152a;">
+                        <strong class="text-white fs-6 d-block mb-1">In our exercise</strong>
+                        <p class="text-light mb-0 fs-6">
+                            The agent is a virtual robot navigating a 10×10 maze. It must learn the best path 
+                            from the start to the goal while avoiding walls and danger zones.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <p class="text-primary text-uppercase fw-bold small mb-4">RL Cycle</p>
+                        <div class="text-center">
+                            <div class="mb-2 text-light small">Agent</div>
+                            <i class="bi bi-arrow-down text-primary fs-3"></i>
+                            <div class="my-3"><span class="badge bg-primary px-3 py-2">ACTION</span></div>
+                            <i class="bi bi-arrow-down text-primary fs-3"></i>
+                            <div class="mb-2 text-light small">Environment</div>
+                            <i class="bi bi-arrow-down text-primary fs-3"></i>
+                            <div class="my-3"><span class="badge bg-success px-3 py-2">REWARD</span></div>
+                            <i class="bi bi-arrow-down text-primary fs-3"></i>
+                            <div class="mb-2 text-light small">Learning</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. TYPES OF LEARNING -->
+    <section id="types" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-diagram-2 fs-4"></i>
+                </div>
+                <h2 class="h3 text-white mb-0 fw-bold">Types of Learning</h2>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-book text-info fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Supervised</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            Learns from examples that include a known answer. 
+                            Example: classifying emails as spam or not spam.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-grid text-warning fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Unsupervised</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            Identifies patterns without labels. 
+                            Example: grouping customers by behavior.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="p-4 rounded-3 h-100 border border-primary border-opacity-50" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-trophy text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Reinforcement</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            Learns sequential decisions through interaction and rewards.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. CORE CONCEPTS -->
+    <section id="core" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-diagram-3 fs-4"></i>
+                </div>
+                <h2 class="h3 text-white mb-0 fw-bold">Core Concepts</h2>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-robot text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Agent</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            The learner or decision-maker. In our exercise, the agent is the 
+                            <strong class="text-white">virtual robot</strong> navigating the maze.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-grid-3x3 text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Environment</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            Everything the agent interacts with. In our exercise, the environment is the 
+                            <strong class="text-white">10×10 maze</strong> with walls and danger zones.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-geo-alt text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">State</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            The current situation of the agent. In our exercise, the state is the 
+                            <strong class="text-white">current row and column</strong> of the agent in the maze.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-arrow-down-up text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Action</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            The decision made by the agent. The four possible actions are:
+                            <strong class="text-white">Up, Down, Left, Right</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. REWARDS AND PENALTIES -->
+    <section id="rewards" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-trophy fs-4"></i>
+                </div>
+                <h2 class="h3 text-white mb-0 fw-bold">Rewards and Penalties</h2>
+            </div>
+
+            <div class="accordion" id="rewardsAccordion">
+                <div class="accordion-item bg-transparent border-secondary mb-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#reward1">
+                            <i class="bi bi-arrow-right text-primary me-2"></i> Reward
+                        </button>
+                    </h2>
+                    <div id="reward1" class="accordion-collapse collapse" data-bs-parent="#rewardsAccordion">
+                        <div class="accordion-body text-light">
+                            Positive feedback received after an action. In our exercise, the agent receives 
+                            <strong class="text-white">+20</strong> when it reaches the goal.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-secondary mb-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#reward2">
+                            <i class="bi bi-exclamation-triangle text-warning me-2"></i> Penalty
+                        </button>
+                    </h2>
+                    <div id="reward2" class="accordion-collapse collapse" data-bs-parent="#rewardsAccordion">
+                        <div class="accordion-body text-light">
+                            Negative feedback received after an action. In our exercise:
+                            <ul class="mt-2 mb-0">
+                                <li><strong class="text-white">-1</strong> for a valid normal movement</li>
+                                <li><strong class="text-white">-5</strong> for hitting a wall or invalid movement</li>
+                                <li><strong class="text-white">-10</strong> for entering a Danger Zone</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-secondary mb-2">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#reward3">
+                            <i class="bi bi-clock text-info me-2"></i> Immediate Reward
+                        </button>
+                    </h2>
+                    <div id="reward3" class="accordion-collapse collapse" data-bs-parent="#rewardsAccordion">
+                        <div class="accordion-body text-light">
+                            The reward received right after taking an action. It helps the agent learn 
+                            which actions are good in each state.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item bg-transparent border-secondary">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#reward4">
+                            <i class="bi bi-graph-up text-success me-2"></i> Return
+                        </button>
+                    </h2>
+                    <div id="reward4" class="accordion-collapse collapse" data-bs-parent="#rewardsAccordion">
+                        <div class="accordion-body text-light">
+                            The total discounted reward accumulated over an episode. It is calculated as:
+                            <br><code class="text-info">Return = R₁ + γR₂ + γ²R₃ + ...</code>
+                            <br>where γ is the discount factor.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. LEARNING PROCESS -->
+    <section id="learning" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-book fs-4"></i>
+                </div>
+                <h2 class="h3 text-white mb-0 fw-bold">Learning Process</h2>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-gear text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Policy</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            The strategy used by the agent to choose actions based on the current state. 
+                            The goal of RL is to find the <strong class="text-white">optimal policy</strong>.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-arrow-repeat text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Episode</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            A complete sequence of actions from the start state until the agent reaches 
+                            the goal or the maximum number of steps is reached.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-1-circle text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Step</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            A single interaction between the agent and the environment: 
+                            state → action → next state → reward.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-lightbulb text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Experience</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            The information collected by the agent: (state, action, reward, next state). 
+                            It is used to update the Q-values.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. EXPLORATION VS EXPLOITATION -->
+    <section id="exploration" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-compass fs-4"></i>
+                </div>
+                <h2 class="h3 text-white mb-0 fw-bold">Exploration vs Exploitation</h2>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-search text-info fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Exploration</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            Trying new actions to discover the environment. This helps the agent 
+                            find better paths it might not know yet.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-check-circle text-success fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Exploitation</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            Using the best-known action to maximize reward. This helps the agent 
+                            refine its policy.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="p-4 rounded-3" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-shuffle text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Epsilon-Greedy Strategy</h5>
+                        </div>
+                        <p class="text-light small mb-3">
+                            A common strategy to balance exploration and exploitation:
+                        </p>
+                        <ul class="text-light small">
+                            <li>With probability <strong class="text-white">ε</strong> (epsilon), the agent explores (random action).</li>
+                            <li>With probability <strong class="text-white">1 - ε</strong>, the agent exploits (best-known action).</li>
+                        </ul>
+                        <div class="row g-3 mt-3">
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 text-center" style="background-color: #001d3b;">
+                                    <div class="text-primary small">Initial ε</div>
+                                    <div class="text-white fw-bold">1.00</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 text-center" style="background-color: #001d3b;">
+                                    <div class="text-primary small">Minimum ε</div>
+                                    <div class="text-white fw-bold">0.05</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 text-center" style="background-color: #001d3b;">
+                                    <div class="text-primary small">Decay</div>
+                                    <div class="text-white fw-bold">0.995</div>
+                                </div>
+                            </div>
+                            <div class="col-6 col-md-3">
+                                <div class="p-3 rounded-3 text-center" style="background-color: #001d3b;">
+                                    <div class="text-primary small">γ (Gamma)</div>
+                                    <div class="text-white fw-bold">0.95</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Q-LEARNING -->
+    <section id="qlearning" class="mb-5" style="scroll-margin-top: 105px;">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 50px; height: 50px;">
+                    <i class="bi bi-cpu fs-4"></i>
+                </div>
+                <h2 class="h3 text-white mb-0 fw-bold">Q-Learning</h2>
+            </div>
+
+            <p class="text-light fs-5 mb-4">
+                <strong class="text-white">Q-Learning</strong> is a model-free RL algorithm that learns 
+                the value of taking an action in a given state.
+            </p>
+
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-graph-up-arrow text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">State Value V(s)</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            The expected return starting from state <strong class="text-white">s</strong>. 
+                            It represents how good it is to be in a particular state.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-6">
+                    <div class="p-4 rounded-3 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-bar-chart text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Action Value Q(s,a)</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            The expected return when taking action <strong class="text-white">a</strong> 
+                            in state <strong class="text-white">s</strong>. It represents how good 
+                            it is to take a specific action in a given state.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="p-4 rounded-3" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-percent text-primary fs-4 me-3"></i>
+                            <h5 class="text-white fw-bold mb-0">Discount Factor (γ)</h5>
+                        </div>
+                        <p class="text-light small mb-0">
+                            A value between 0 and 1 that determines the importance of future rewards. 
+                            A value close to 1 means the agent values long-term rewards; a value close to 0 
+                            means it only cares about immediate rewards. In our exercise, we use 
+                            <strong class="text-white">γ = 0.95</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-3 mt-4" style="background-color: #00152a;">
+                <p class="text-primary text-uppercase fw-bold small mb-3">Q-Learning Update Rule</p>
+                <div class="text-center p-3 bg-dark bg-opacity-50 rounded-3">
+                    <code class="text-info fs-5">
+                        Q(s, a) ← Q(s, a) + α [r + γ · max Q(s', a') - Q(s, a)]
+                    </code>
+                </div>
+                <p class="text-light small mt-3 mb-0">
+                    Where <strong class="text-white">α</strong> is the learning rate, 
+                    <strong class="text-white">r</strong> is the reward, 
+                    <strong class="text-white">γ</strong> is the discount factor, and 
+                    <strong class="text-white">s'</strong> is the next state.
+                </p>
+            </div>
+
+            <!-- Numerical Example -->
+            <div class="p-4 rounded-3 mt-4" style="background-color: #00152a;">
+                <p class="text-primary text-uppercase fw-bold small mb-3">Numerical Example</p>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded-3 text-center" style="background-color: #001d3b;">
+                            <div class="text-light small">Q current</div>
+                            <div class="text-white fw-bold">0</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded-3 text-center" style="background-color: #001d3b;">
+                            <div class="text-light small">Reward</div>
+                            <div class="text-white fw-bold">-1</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded-3 text-center" style="background-color: #001d3b;">
+                            <div class="text-light small">γ (Gamma)</div>
+                            <div class="text-white fw-bold">0.95</div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="p-2 rounded-3 text-center" style="background-color: #001d3b;">
+                            <div class="text-light small">Max future Q</div>
+                            <div class="text-white fw-bold">10</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 p-3 bg-dark bg-opacity-50 rounded-3">
+                    <p class="text-light small mb-2"><strong class="text-white">Target:</strong> -1 + 0.95 × 10 = 8.5</p>
+                    <p class="text-light small mb-0"><strong class="text-white">New Q:</strong> 0 + 0.1 × (8.5 - 0) = 0.85</p>
+                </div>
+                <p class="text-light small mt-3 mb-0">
+                    <i class="bi bi-lightbulb text-primary"></i> 
+                    A short-term cost (-1) can lead to a good long-term decision (8.5).
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- BACK BUTTON -->
+    <div class="text-center mt-4">
+        <a href="/" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
+    </div>
+
+</div>
+
+{% endblock %}

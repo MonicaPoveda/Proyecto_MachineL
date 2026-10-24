@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- PURPOSE: Defines page title block -->
+    <title>{% block title %}Machine Learning{% endblock %}</title>
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_css %}{% endblock %}
+</head>
+<!-- PURPOSE: Document body | BOOTSTRAP: text-white -->
+<body
+    class="text-white"
+    data-bs-spy="scroll"
+    data-bs-target="#pathNav"
+    data-bs-offset="120"
+    tabindex="0"
+    style="font-family: 'Outfit', sans-serif; background-color: #050a18b6;"
+>
+    <!-- NAVIGATION BAR -->
+    <!-- 
+      PURPOSE: Responsive navigation header
+      BOOTSTRAP CLASSES: navbar, navbar-expand-lg, navbar-dark, fixed-top, container, 
+      navbar-brand, fs-4, fw-bold, text-primary, navbar-toggler, navbar-toggler-icon, 
+      collapse, navbar-collapse, navbar-nav, ms-auto, nav-item, nav-link, dropdown, 
+      dropdown-toggle, dropdown-menu, dropdown-menu-dark, dropdown-item, dropdown-divider, dropdown-header
+    -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: rgba(3, 12, 25, 0.795); border-bottom: 1px solid rgba(20, 120, 255, 0.25);">
+        <div class="container">
+            <a class="navbar-brand fs-4 fw-bold" href="{{ url_for('home') }}">
+                <span class="text-primary">MACHINE</span> LEARNING
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNavbar">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                    </li>
+                    <!-- Machine Learning Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Machine Learning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border border-primary border-opacity-25 shadow" style="background-color: rgba(3, 12, 25, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                            <li><h6 class="dropdown-header fw-medium mb-0" style="color: rgba(255, 255, 255, 0.45);">Machine Learning</h6></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('what_is_ml') }}">Concepts</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('types') }}">Types of Machine Learning</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header fw-medium mb-0" style="color: rgba(255, 255, 255, 0.45);">Use Cases</h6></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('case1') }}">Use Case 1</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('case2') }}">Use Case 2</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('case3') }}">Use Case 3</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('case4') }}">Use Case 4</a></li>
+                        </ul>
+                    </li>
+                    <!-- Supervised Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Supervised
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border border-primary border-opacity-25 shadow" style="background-color: rgba(3, 12, 25, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                            <li><h6 class="dropdown-header fw-medium mb-0" style="color: rgba(255, 255, 255, 0.45);">Linear Regression</h6></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('linear_regression_concepts') }}">Concepts</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('linear_regression_application') }}">Application</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header fw-medium mb-0" style="color: rgba(255, 255, 255, 0.45);">Logistic Regression</h6></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('logistic_concepts') }}">Concepts</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('logistic_regression_application') }}">Application</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('logistic_regression_metrics') }}">Evaluation Metrics</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><h6 class="dropdown-header fw-medium mb-0" style="color: rgba(255, 255, 255, 0.45);">Support Vector Machine (SVM)</h6></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('svm_concepts') }}">Concepts</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('svm_application') }}">Application</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('svm_evalMetrics') }}">Evaluation Metrics</a></li>
+                        </ul>
+                    </li>
+                    <!-- Unsupervised Dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Unsupervised
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border border-primary border-opacity-25 shadow" style="background-color: rgba(3, 12, 25, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                            <li><h6 class="dropdown-header fw-medium mb-0" style="color: rgba(255, 255, 255, 0.45);">Unsupervised Learning</h6></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('unsupervised_concepts') }}">Concepts</a></li>
+                            <li><a class="dropdown-item text-white" href="/unsupervised/manual-exercise">Manual Exercise</a></li>
+                            <li><a class="dropdown-item text-white" href="/unsupervised/application">Clustering Application</a></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('unsupervised_evalMetrics') }}">Evaluation Metrics</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Reinforcement Learning
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end border border-primary border-opacity-25 shadow" style="background-color: rgba(3, 12, 25, 0.92); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                            <li><h6 class="dropdown-header fw-medium mb-0" style="color: rgba(255, 255, 255, 0.45);">Reinforcement</h6></li>
+                            <li><a class="dropdown-item text-white" href="{{ url_for('reinforcement_concepts') }}">Concepts</a></li>
+                            <!-- <li><a class="dropdown-item text-white" href="{{ url_for('reinforcement_teacher_example') }}">Teacher's Example</a></li> -->
+                            <li><a class="dropdown-item text-white" href="{{ url_for('reinforcement_application') }}">Application</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    {% set background_image = url_for('static', filename='images/image_home.webp') %}
+
+    <!-- GLOBAL BACKGROUND -->
+    <!-- PURPOSE: Viewport wrapper with background image | BOOTSTRAP: min-vh-100, text-white -->
+    <div class="min-vh-100 text-white" style="background-image: linear-gradient(180deg, rgba(3, 8, 28, 0.76), rgba(3, 8, 28, 0.90)), url('{{ background_image }}'); background-size: cover; background-position: center; background-attachment: fixed;">
+        <!-- MAIN CONTENT -->
+        <!-- PURPOSE: Dynamic content injection container | BOOTSTRAP: pt-5 -->
+        <main class="pt-5">
+        {% block content %}
+        {% endblock %}
+        </main>
+        <!-- FOOTER -->
+        <!-- 
+          PURPOSE: Page footer and info
+          BOOTSTRAP CLASSES: py-4, mt-5, border-top, border-primary, border-opacity-25, 
+          container, text-center, text-white-50, small, mb-0, mt-2, mt-1, text-info, text-decoration-none
+        -->
+        <footer class="py-4 mt-5 border-top border-primary border-opacity-25" style="background-color: rgba(3, 12, 25, 0.875);">
+            <div class="container text-center">
+                <p class="text-white-50 small mb-0">
+                    <i class="bi bi-mortarboard"></i> Universidad de Cundinamarca - Systems Engineering <br> Machine Learning - Sixth Semester
+                </p>
+                <p class="text-white-50 small mt-2 mb-0">
+                    <strong>Team Members:</strong>
+                    <span class="text-info">Anderson Fuel</span> · <span class="text-info">Mónica Poveda</span> · <span class="text-info">Lizeth Moreno</span> · <span class="text-info">Tomás Poveda</span>
+                </p>
+                <p class="text-white-50 small mt-1 mb-0">
+                    <i class="bi bi-github"></i>
+                    <a href="https://github.com/MonicaPoveda/Machinegroup" target="_blank" class="text-info text-decoration-none">GitHub Repository</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

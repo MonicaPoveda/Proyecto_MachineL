@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="padding-top: 120px !important;">
+    <div class="text-center mb-5">
+        <div class="section-label mb-3">LOGISTIC REGRESSION</div>
+        <h1 class="display-2 fw-bold text-white">{{ page_title }}</h1>
+        <p class="section-description mx-auto mt-4">
+            The {{ page_type|lower }} module is ready to be added to this learning path.
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6">
+            <div class="card explore-card text-center">
+                <div class="card-body p-4 p-lg-5">
+                    <div class="card-icon mb-4"><i class="bi bi-hourglass-split"></i></div>
+                    <h2 class="card-title mb-3">Module in preparation</h2>
+                    <p class="card-text mb-4">This page is connected and ready for the Logistic Regression content and model implementation.</p>
+                    <a href="{{ url_for('logistic_regression_menu') }}" class="explore-link">Back to Logistic Regression →</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="{{ url_for('home') }}" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+            <i class="bi bi-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</div>
+{% endblock %}
