@@ -1,204 +1,22 @@
 {% extends "base.html" %}
 
-<!-- PURPOSE: Defines the title block for the page.-->
-{% block title %}
-Machine Learning
-{% endblock %}
+{% block title %}Phishing Risk Detection | Welcome{% endblock %}
 
 {% block content %}
-<section class="d-flex align-items-center py-4">
-    <div class="container pt-3 pb-4">
+<section class="hero welcome-hero d-flex align-items-center">
+    <div class="container py-5">
         <div class="row">
             <div class="col-12 col-lg-10 col-xl-9">
-
-                <!-- Main Title -->
-                <h1 class="fw-bold mb-4" style="font-size: clamp(4rem, 7vw, 6.8rem); line-height: 0.95; letter-spacing: -3px;">
-                    <span class="d-block text-white">Welcome to</span>
-                    <span class="d-block text-primary">Machine Learning</span>
-                </h1>
-
-                <!-- Primary Description -->
-                <p class="text-white mb-4" style="max-width: 650px; font-size: 1.2rem; font-weight: 400; line-height: 1.7; letter-spacing: 0.2px;">
-                    Machine Learning is a branch of artificial intelligence that allows computers to learn from data, 
-                    identify patterns, and make predictions without being explicitly programmed for every task.
+                <p class="eyebrow mb-3">Faculty of Engineering · PGC Project</p>
+                <h1 class="mb-4">Welcome to <span class="text-accent">Phishing Risk Detection</span></h1>
+                <p class="col-lg-9 mb-4 text-white-50 fs-5">
+                    An intelligent web system that uses machine learning to identify phishing risks in web links and support safer browsing.
                 </p>
-
-                <!-- Secondary Description -->
-                <p class="text-white-50 mb-0" style="max-width: 650px; font-size: 1.05rem; font-weight: 400; line-height: 1.7; letter-spacing: 0.2px;">
-                    Explore its fundamental concepts, discover the different types of machine learning, and learn how supervised 
-                    learning algorithms can be applied to real problems.
-                </p>
-
+                <a class="btn btn-primary btn-lg rounded-pill px-4" href="{{ url_for('pgc') }}">
+                    Explore the PGC guidelines
+                </a>
             </div>
         </div>
     </div>
 </section>
-
-
-<section class="py-4 pb-5">
-    <div class="container">
-
-        <!-- Section Label -->
-        <div class="text-center mb-3">
-            <div class="d-inline-flex align-items-center text-primary text-uppercase fs-5 fw-semibold">
-                <span class="border-top border-primary opacity-75 me-3" style="width: 50px;"></span>
-                Explore
-                <span class="border-top border-primary opacity-75 ms-3" style="width: 50px;"></span>
-            </div>
-        </div>
-
-        <!-- Section Heading -->
-        <div class="row justify-content-center">
-            <div class="col-12 col-lg-8 text-center">
-                <h2 class="display-4 fw-bold text-white mb-3">
-                    Explore the Application
-                </h2>
-                <p class="text-white-50 mb-5">
-                    Access all sections of the project and discover how machine learning transforms data into intelligent solutions.
-                </p>
-            </div>
-        </div>
-
-        <!-- Cards Grid -->
-        <div class="row g-4 justify-content-center">
-            {% set cards = [
-                {
-                    'icon': 'bi-cpu',
-                    'title': 'Machine Learning Concepts',
-                    'desc': 'Learn the fundamentals of machine learning, how it works, and its key elements.',
-                    'url': 'what_is_ml'
-                },
-                {
-                    'icon': 'bi-pie-chart',
-                    'title': 'Types of Machine Learning',
-                    'desc': 'Discover supervised, unsupervised, and reinforcement learning and their applications.',
-                    'url': 'types'
-                },
-                {
-                    'icon': 'bi-briefcase',
-                    'title': 'Use Cases',
-                    'desc': 'Explore real-world applications of machine learning in different industries and everyday situations.',
-                    'url': 'use_cases'
-                },
-                {
-                    'icon': 'bi-graph-up',
-                    'title': 'Linear Regression',
-                    'desc': 'Review its concepts and use a trained model to generate predictions from real data.',
-                    'url': 'linear_regression_menu'
-                },
-                {
-                    'icon': 'bi-bar-chart-steps',
-                    'title': 'Logistic Regression',
-                    'desc': 'Learn how classification models estimate the probability of belonging to a category.',
-                    'url': 'logistic_regression_menu'
-                },
-                {
-                    'icon': 'bi-diagram-3',
-                    'title': 'Support Vector Machine',
-                    'desc': 'Explore SVM concepts, classify observations, and review the model evaluation metrics.',
-                    'url': 'svm_menu'
-                }
-            ] %}
-
-            {% for card in cards %}
-            <div class="col-12 col-md-6 col-lg-4 d-flex">
-    <div class="card border border-primary border-opacity-50 rounded-4 shadow-lg text-center text-light w-100"
-         style="background-color: rgba(3, 12, 25, 0.40);">
-
-        <div class="card-body p-4 p-lg-5 d-flex flex-column align-items-center">
-
-            <!-- Icon Container -->
-            <div class="rounded-circle border border-primary d-flex align-items-center justify-content-center flex-shrink-0 mb-4"
-                 style="width: 64px; height: 64px;">
-                <i class="bi {{ card.icon }} fs-3 text-primary"></i>
-            </div>
-
-                        <!-- Card Title -->
-                        <h3 class="h5 fw-bold text-white mb-3">
-                            {{ card.title }}
-                        </h3>
-
-                        <!-- Card Description -->
-                        <p class="card-text text-white-50 mb-4">
-                            {{ card.desc }}
-                        </p>
-
-                        <!-- Card Action Link -->
-                        <a href="{{ url_for(card.url) }}" class="btn btn-link text-primary text-decoration-none fw-semibold mt-auto">
-                            Explore →
-                        </a>
-
-                    </div>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-
-    </div>
-</section>
-
 {% endblock %}
-<!--  HERO SECTION  
-  PURPOSE: Renders the welcome hero banner introduction with typography and layout sizing.
-  BOOTSTRAP CLASSES:
-  - d-flex: Applies flexbox display.
-  - align-items-center: Centers flex items vertically.
-  - py-4: Adds top and bottom padding.
-  - container: Centers content and sets responsive max-width.
-  - pt-3: Adds top padding.
-  - pb-4: Adds bottom padding.
-  - row: Creates a horizontal grid container.
-  - col-12 / col-lg-10 / col-xl-9: Responsive column width configuration across devices.
-  - fw-bold: Applies bold font weight.
-  - mb-4: Adds bottom margin.
-  - d-block: Forces block-level display behavior.
-  - text-white: Applies white text color.
-  - text-primary: Applies primary accent color.
-  - fs-5 / fs-6: Sets font sizes.
-  - text-white-50: Mutes text with 50% opacity white.
-  - mb-0: Resets bottom margin.
-
-    EXPLORE SECTION  
- 
-  PURPOSE: Displays the application feature cards grid with descriptive titles and custom headers.
-  BOOTSTRAP CLASSES:
-  - py-4 / pb-5: Vertical spacing paddings.
-  - container: Responsive wrapper container.
-  - text-center: Centers text layout.
-  - mb-3 / mb-5: Bottom margins.
-  - d-inline-flex: Inline flexbox display wrapper.
-  - align-items-center: Centers items vertically.
-  - text-primary: Primary theme color.
-  - text-uppercase: Transforms text characters to uppercase.
-  - small: Reduces font size.
-  - fw-semibold: Sets semi-bold font weight.
-  - border-top: Adds a top border line.
-  - opacity-75: Sets opacity level to 75%.
-  - me-3 / ms-3: Margins for horizontal separation.
-  - row: Grid row wrapper.
-  - justify-content-center: Centers grid columns horizontally.
-  - col-12 / col-lg-8 / col-md-6 / col-lg-4: Grid column sizing rules.
-  - display-4: Large display heading scale.
-  - fw-bold: Bold typography.
-  - text-white: White font color.
-  - g-4: Sets gutters (gaps) between grid items.
-  - d-flex: Flexible box layout.
-  - card: Core card component structure.
-  - border / border-primary / border-opacity-50: Card border configuration.
-  - rounded-4: Applies smooth large rounded corners.
-  - shadow-lg: Applies a large box-shadow depth effect.
-  - text-light: Light theme text styling.
-  - w-100: Full width (100%).
-  - card-body: Internal card padding container.
-  - p-4 / p-lg-5: Responsive padding utilities.
-  - flex-column: Stacks flex items vertically.
-  - rounded-circle: Rounds containers into a perfect circle.
-  - flex-shrink-0: Prevents flex items from shrinking.
-  - mb-4: Bottom margin utility.
-  - fs-3: Font size utility scale.
-  - h5: Heading size 5 element.
-  - card-text: Card paragraph content styling.
-  - btn / btn-link: Button layout and link-styled button class.
-  - text-decoration-none: Strips underlines from anchor links.
-  - mt-auto: Pushes item to the bottom of flex containers.
---> 

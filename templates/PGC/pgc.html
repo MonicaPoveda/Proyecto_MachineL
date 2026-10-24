@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}PGC Guidelines | Faculty of Engineering{% endblock %}
+
+{% block content %}
+<section class="hero pb-4">
+    <div class="container">
+        <p class="eyebrow mb-3">Faculty of Engineering</p>
+        <h1 class="mb-3">PGC <span class="text-accent">Guidelines</span></h1>
+        <p class="text-white-50 fs-5 mb-0">Project overview, objectives, methodology, and references.</p>
+    </div>
+</section>
+
+<section class="content-section pt-3">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-12">
+                <div class="info-card">
+                    <p class="eyebrow mb-2">Project Title</p>
+                    <h2 class="mb-0">Developing a Web System to Detect Phishing Risks</h2>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="info-card">
+                    <p class="eyebrow mb-2">Problem Statement and Rationale</p>
+                    <h2>Why this project matters</h2>
+                    <p class="mb-0">
+                        Cybercrime has evolved into fraud ecosystems that exploit social engineering. Traditional cybersecurity solutions are often ineffective because they operate reactively and rely on a single signal, such as static blocklists that cannot keep up with new attacks. Without integrated context, these systems cannot correlate the psychological urgency of a message, structural anomalies in a link, and the sender's origin at the same time. As a result, people remain exposed to highly persuasive scams.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="info-card">
+                    <p class="eyebrow mb-2">General Objective</p>
+                    <h2>Project Objective</h2>
+                    <p class="mb-0">
+                        Develop an intelligent machine learning web system to detect phishing risks through the analysis of web links.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="info-card">
+                    <p class="eyebrow mb-2">Specific Objectives</p>
+                    <h2>CRISP-DM Project Phases</h2>
+                    <ul class="objective-list mb-0">
+                        <li>Business Understanding</li>
+                        <li>Data Understanding</li>
+                        <li>Data Preparation</li>
+                        <li>Modeling</li>
+                        <li>Evaluation</li>
+                        <li>Deployment</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="info-card">
+                    <p class="eyebrow mb-2">Methodology and Development Roadmap</p>
+                    <h2>Cross-Industry Standard Process for Data Mining (CRISP-DM)</h2>
+                    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3 mt-2">
+                        {% set phases = [
+                            "Business Understanding",
+                            "Data Understanding",
+                            "Data Preparation",
+                            "Modeling",
+                            "Evaluation",
+                            "Deployment"
+                        ] %}
+                        {% for phase in phases %}
+                        <div class="col">
+                            <div class="phase-card">
+                                <span class="phase-number">{{ loop.index }}</span>
+                                <h3>{{ phase }}</h3>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <p class="eyebrow mb-2">Background Reference (Optional)</p>
+                    <h2>Indicators of Compromise</h2>
+                    <a class="reference-link" href="https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data" target="_blank" rel="noopener noreferrer">
+                        Indicators of Compromise (IoC) — datos.gov.co
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="info-card">
+                    <p class="eyebrow mb-2">References</p>
+                    <h2 class="mb-0">Bibliographic References <span class="text-white-50 fs-6">(Optional)</span></h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
