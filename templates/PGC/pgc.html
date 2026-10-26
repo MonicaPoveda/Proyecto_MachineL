@@ -22,18 +22,47 @@
             </div>
             <div class="col-12">
                 <div class="info-card">
-                    <p class="eyebrow mb-2">Problem Statement and Rationale</p>
-                    <h2>Why this project matters</h2>
+                    <p class="eyebrow mb-2">Problem Statement</p>
+                    <h2>Context and Rationale</h2>
+                    <h3 class="h5 mt-4">1.1. Problem Context</h3>
+                    <p>
+                        Phishing is a cybersecurity threat that uses social engineering
+                        to deceive people and obtain confidential information through
+                        links that impersonate legitimate websites. Traditional
+                        solutions, which rely mainly on blacklists, have limitations
+                        when identifying new links or those that have not yet been
+                        reported.
+                    </p>
+                    <p>
+                        In addition, many security tools do not clearly explain the
+                        risks associated with suspicious links or provide
+                        understandable recommendations to users. This situation
+                        highlights the need for solutions that can analyze links,
+                        identify risk patterns, and support the prevention of
+                        potential digital fraud through machine learning techniques.
+                    </p>
+                    <h3 class="h5 mt-4">1.2. Rationale</h3>
+                    <p>
+                        This project proposes developing a web-based machine learning
+                        system to detect potential phishing threats by analyzing URL
+                        features and Indicators of Compromise (IoC) data.
+                    </p>
+                    <p>
+                        The solution aims to complement traditional mechanisms by
+                        classifying risk, presenting potential consequences, and
+                        generating security recommendations. It will also incorporate
+                        a preview through an external, controlled environment to help
+                        users understand threats.
+                    </p>
                     <p class="mb-0">
-                        Cybercrime has evolved into fraud ecosystems that exploit social engineering. 
-                        Traditional cybersecurity solutions are often ineffective because they operate reactively and rely on a single signal, 
-                        such as static blocklists that cannot keep up with new attacks. Without integrated context, these systems cannot 
-                        correlate the psychological urgency of a message, structural anomalies in a link, and the sender's origin at the same time. 
-                        As a result, people remain exposed to highly persuasive scams.
+                        In this way, the project seeks to contribute to phishing
+                        prevention, strengthen users' digital security, and
+                        demonstrate the usefulness of machine learning in detecting
+                        potentially malicious links.
                     </p>
                 </div>
             </div>
-            <div class="col-lg-5">
+            <div class="col-12">
                 <div class="info-card">
                     <p class="eyebrow mb-2">General Objective</p>
                     <h2>Project Objective</h2>
@@ -43,7 +72,7 @@
                     </p>
                 </div>
             </div>
-            <div class="col-lg-7">
+            <div class="col-12">
                 <div class="info-card">
                     <p class="eyebrow mb-2">Specific Objectives</p>
                     <h2>CRISP-DM Project Phases</h2>
@@ -104,131 +133,131 @@
                     </ul>
                 </div>
             </div> 
-            <!-- Theoretical Framework and Project Justification -->
             <div class="col-12">
                 <div class="info-card research-card">
-
-                    <p class="eyebrow mb-2">Theoretical Framework</p>
-                    <h2 class="mb-3">From Reactive to Predictive Cybersecurity</h2>
-
+                    <p class="eyebrow mb-2">Project Foundations</p>
+                    <h2 class="mb-3">Theoretical Framework: From Reactive to Predictive Security</h2>
                     <p class="research-intro">
-                        This project addresses the limitations of traditional cybersecurity
-                        solutions by proposing a machine learning-based system that
-                        identifies phishing risks, explains potential consequences, and
-                        provides actionable security recommendations.
+                        Designing a machine learning-based system to counter phishing
+                        requires moving from reactive responses toward predictive and
+                        adaptive mechanisms. Traditional blacklists rely on previously
+                        reported threats and may therefore lag behind short-lived fraud
+                        campaigns driven by social engineering.
                     </p>
 
                     <div class="row g-4 mt-2">
-
                         <div class="col-lg-6">
                             <div class="research-block">
-                                <h3>01.Transition to Predictive Approaches</h3>
+                                <span class="research-number">01</span>
+                                <h3>Predictive Approaches</h3>
                                 <p>
-                                    Traditional security solutions often rely on static
-                                    blacklists, which struggle to detect newly created
-                                    domains and short-lived fraud campaigns. Machine
-                                    learning offers a predictive approach by identifying
-                                    patterns in URLs and adapting detection to emerging
-                                    threats.
+                                    Data mining can analyze lexical and syntactic URL
+                                    patterns to estimate risk without relying solely on a
+                                    domain already appearing on a list of malicious
+                                    sites. This approach aims to support the early
+                                    identification of new or short-lived threats.
                                 </p>
                             </div>
                         </div>
-
                         <div class="col-lg-6">
                             <div class="research-block">
-                                <h3>02. Technical and Methodological Foundations</h3>
+                                <span class="research-number">02</span>
+                                <h3>Technical and Methodological Foundations</h3>
                                 <p>
-                                    Research on phishing detection has explored algorithms
-                                    such as Random Forest and Support Vector Machines to
-                                    analyze lexical and syntactic URL features. Other
-                                    approaches examine hyperlinks without relying on page
-                                    content, while CRISP-DM provides a structured process
-                                    for data preparation, modeling, and evaluation.
+                                    Sahingoz et al. (2019) studied algorithms such as
+                                    Random Forest and Support Vector Machines using
+                                    lexical and syntactic URL features, reporting
+                                    accuracy above 97% in their experiments, including
+                                    for zero-day attacks. Jain and Gupta (2019) explored
+                                    automated hyperlink feature extraction without
+                                    relying on page content, avoiding the need to execute
+                                    page scripts during analysis.
                                 </p>
-                                <p class="research-note">
-                                    Relevant studies: Sahingoz et al. (2019), Jain and
-                                    Gupta (2020), and Silva et al. (2022).
+                                <p>
+                                    Silva et al. (2022) applied CRISP-DM and reported
+                                    the performance of decision trees in controlled
+                                    settings. These studies inform the model comparison
+                                    and data workflow for this project.
                                 </p>
                             </div>
                         </div>
-
                         <div class="col-lg-6">
                             <div class="research-block">
-                                <h3>03.Colombian Context and Open Government Data</h3>
+                                <span class="research-number">03</span>
+                                <h3>Colombian Context and Open Data</h3>
                                 <p>
-                                    Open government data can help adapt cybersecurity
-                                    models to the local threat landscape. Indicators of
-                                    Compromise (IoCs) published through datos.gov.co
-                                    provide a potential source of information for
-                                    identifying malicious links and studying patterns
-                                    associated with cyber threats in Colombia.
+                                    Indicators of Compromise (IoCs) published on
+                                    datos.gov.co provide an official source for studying
+                                    threats associated with the Colombian landscape.
+                                    Analyzing them may help contextualize the project
+                                    data and identify local patterns; their availability
+                                    and update frequency should be verified during
+                                    dataset preparation.
                                 </p>
                             </div>
                         </div>
-
                         <div class="col-lg-6">
                             <div class="research-block">
-                                <h3>04. Limitations of Current Security Solutions</h3>
+                                <span class="research-number">04</span>
+                                <h3>Limitations of Current Solutions</h3>
                                 <p>
-                                    Static blacklists may miss new malicious domains,
-                                    while multi-engine scanners can return technical
-                                    results that are difficult for non-technical users
-                                    to interpret. Browser extensions may also provide
-                                    limited explanations or control over how a suspicious
-                                    page is inspected.
+                                    Static blacklists may not include newly created
+                                    domains. Multi-engine scanners can present technical
+                                    results that are difficult to interpret, while some
+                                    browser extensions provide limited explanations or
+                                    control over the inspection of a suspicious link.
+                                    These limitations particularly affect users without
+                                    technical expertise.
                                 </p>
                             </div>
                         </div>
-
                         <div class="col-12">
                             <div class="research-highlight">
-                                <h3>05. Our Proposed Approach</h3>
+                                <span class="research-number">05</span>
+                                <h3>Integrated System Proposal</h3>
                                 <p>
-                                    The proposed system combines three complementary
-                                    features to improve phishing prevention:
+                                    The proposal combines three components to make
+                                    diagnosis preventive, understandable, and
+                                    user-focused:
                                 </p>
-
                                 <div class="row g-3 mt-1">
-
                                     <div class="col-md-4">
                                         <div class="research-feature">
-                                            <h4>Predictive Detection</h4>
+                                            <h4>Contextual Detection</h4>
                                             <p>
-                                                Analyze URL characteristics and IoC data
-                                                to estimate phishing risks.
+                                                Analyze URL features and IoC data to
+                                                classify risk and help adapt the model
+                                                to the local context.
                                             </p>
                                         </div>
                                     </div>
-
                                     <div class="col-md-4">
                                         <div class="research-feature">
                                             <h4>Actionable Guidance</h4>
                                             <p>
-                                                Explain potential consequences and provide
-                                                understandable security recommendations.
+                                                Explain the potential consequences of a
+                                                link and provide clear mitigation
+                                                recommendations.
                                             </p>
                                         </div>
                                     </div>
-
                                     <div class="col-md-4">
                                         <div class="research-feature">
                                             <h4>Safer Link Preview</h4>
                                             <p>
-                                                Provide an isolated preview of suspicious
-                                                pages to help users recognize deceptive
-                                                designs without directly visiting them.
+                                                Display suspicious pages in an external,
+                                                isolated environment so users can
+                                                recognize deceptive tactics without
+                                                opening them directly on their device.
                                             </p>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-            <!-- End of Theoretical Framework -->
 
             <div class="col-12">
                 <div class="info-card">
@@ -254,19 +283,10 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-12">
                 <div class="info-card">
-                    <p class="eyebrow mb-2">Background Reference (Optional)</p>
-                    <h2>Indicators of Compromise</h2>
-                    <a class="reference-link" href="https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data" target="_blank" rel="noopener noreferrer">
-                        Indicators of Compromise (IoC) — datos.gov.co
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="info-card">
-                    <p class="eyebrow mb-2">References</p>
-                    <h2 class="mb-0">Bibliographic References <span class="text-white-50 fs-6">(Optional)</span></h2>
+                    <p class="eyebrow mb-2">Further Reading</p>
+                    <h2>Bibliographic References</h2>
                 </div>
             </div>
         </div>
