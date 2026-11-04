@@ -69,6 +69,62 @@
             content: "";
         }
 
+        .methodology-menu {
+            position: relative;
+        }
+
+        .methodology-menu summary {
+            display: block;
+            cursor: pointer;
+            list-style: none;
+        }
+
+        .methodology-menu summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .methodology-menu summary::after {
+            display: inline-block;
+            margin-left: 0.4rem;
+            border-top: 0.3em solid currentColor;
+            border-right: 0.3em solid transparent;
+            border-left: 0.3em solid transparent;
+            content: "";
+            vertical-align: 0.2em;
+        }
+
+        .methodology-menu[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .methodology-dropdown {
+            position: absolute;
+            z-index: 10;
+            top: calc(100% + 0.5rem);
+            right: 0;
+            min-width: 15rem;
+            padding: 0.5rem;
+            border: 1px solid rgba(20, 120, 255, 0.35);
+            border-radius: 0.85rem;
+            background: #07111f;
+            box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.35);
+        }
+
+        .methodology-dropdown a {
+            display: block;
+            padding: 0.65rem 0.8rem;
+            border-radius: 0.55rem;
+            color: rgba(255, 255, 255, 0.82);
+            text-decoration: none;
+        }
+
+        .methodology-dropdown a:hover,
+        .methodology-dropdown a:focus-visible,
+        .methodology-dropdown a[aria-current="page"] {
+            background: rgba(13, 110, 253, 0.18);
+            color: #fff;
+        }
+
         .brand-mark {
             display: inline-grid;
             width: 2.25rem;
@@ -343,6 +399,32 @@
                 <a class="site-nav-link{% if request.endpoint == 'pgc' %} active{% endif %}"
                    href="{{ url_for('pgc') }}"
                    {% if request.endpoint == 'pgc' %}aria-current="page"{% endif %}>PGC</a>
+                <details class="methodology-menu">
+                    <summary class="site-nav-link{% if request.endpoint == 'methodology_phase' %} active{% endif %}"
+                             aria-haspopup="true">CRISP-DM</summary>
+                    <div class="methodology-dropdown">
+                        {% for phase in methodology_phases %}
+                        <a href="{{ url_for('methodology_phase', phase_slug=phase.slug) }}"
+                           {% if request.endpoint == 'methodology_phase' and request.view_args.phase_slug == phase.slug %}aria-current="page"{% endif %}>
+                            {{ loop.index }}. {{ phase.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </details>
+                <details class="methodology-menu">
+                    <summary class="site-nav-link{% if request.endpoint in ['application_context', 'application_platform'] %} active{% endif %}"
+                             aria-haspopup="true">Application</summary>
+                    <div class="methodology-dropdown">
+                        <a href="{{ url_for('application_context') }}"
+                           {% if request.endpoint == 'application_context' %}aria-current="page"{% endif %}>
+                            Context
+                        </a>
+                        <a href="{{ url_for('application_platform') }}"
+                           {% if request.endpoint == 'application_platform' %}aria-current="page"{% endif %}>
+                            Platform
+                        </a>
+                    </div>
+                </details>
             </nav>
         </div>
     </header>
