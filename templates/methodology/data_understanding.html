@@ -7,11 +7,149 @@
     <div class="container">
         <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 02 of 06</p>
         <h1 class="mb-3">Data Understanding</h1>
+        <p class="research-intro mb-0">
+            Documentation of the data source, the file collected, and the initial profile
+            of the Indicators of Compromise (IoC) dataset used to classify submitted URLs
+            and links only.
+        </p>
     </div>
 </section>
+
 <section class="content-section pt-3">
     <div class="container">
-        <div class="info-card" aria-label="Data Understanding phase content template"></div>
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Data collection</p>
+            <h2>Data source</h2>
+            <p>
+                The data was obtained from the Colombian open data portal datos.gov.co,
+                from the dataset <strong>“Indicators of Compromise – IoC”</strong>,
+                associated with APT actors. The dataset is published by Colombia's
+                Ministry of Information and Communications Technologies (MinTIC),
+                Bogotá D.C., through its ColCERT unit.
+                The file downloaded and analyzed is
+                <code>indicators_of_compromise_ioc_20261106.csv</code>.
+                Spanish source tags have been translated to English in this working copy;
+                their category meanings and counts are unchanged.
+            </p>
+            <p>
+                According to the publisher, the dataset is a structured repository of IoCs
+                identified in malicious activity attributed to Advanced Persistent Threat
+                (APT) groups. The indicators were compiled from technical analysis,
+                correlation of security events, and cyber threat intelligence (CTI)
+                sources. Its stated purpose is to support early detection, prevention, and
+                response to cybersecurity incidents by public and private entities,
+                academia, and the technical community.
+            </p>
+            <div class="table-responsive mb-4">
+                <table class="table table-dark table-striped align-middle mb-0">
+                    <tbody>
+                        <tr><th scope="row">Dataset</th><td>Indicators of Compromise – IoC</td></tr>
+                        <tr><th scope="row">Portal</th><td>datos.gov.co (Colombian open data portal)</td></tr>
+                        <tr><th scope="row">Publisher</th><td>Ministry of Information and Communications Technologies – MinTIC, Bogotá D.C.</td></tr>
+                        <tr><th scope="row">Area / dependency</th><td>ColCERT</td></tr>
+                        <tr><th scope="row">Sector and level</th><td>Information and Communications Technologies · National</td></tr>
+                        <tr><th scope="row">Location</th><td>Bogotá D.C. (DIVIPOLA 11001)</td></tr>
+                        <tr><th scope="row">Geographic coverage</th><td>National</td></tr>
+                        <tr><th scope="row">Created on the portal</th><td>April 14, 2026</td></tr>
+                        <tr><th scope="row">Last data and metadata update</th><td>October 30, 2026</td></tr>
+                        <tr><th scope="row">Portal usage at time of consultation</th><td>2,803 views · 458 downloads</td></tr>
+                        <tr><th scope="row">File used</th><td><code>indicators_of_compromise_ioc_20261106.csv</code> (date in file name: November 6, 2026)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info mb-0" role="note">
+                <strong>Application scope:</strong> the application analyzes submitted URLs
+                and links only. Email addresses, email messages, and message content are
+                not inputs or prediction targets. Of the indicator types published by
+                the source (IP addresses, domains, URLs, file hashes, malware artifacts,
+                behavior signatures, infrastructure patterns), only URL records and FQDN
+                domain indicators are relevant to this project.
+            </div>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Dataset description</p>
+            <h2>Supplied file at a glance</h2>
+            <div class="table-responsive mb-4">
+                <table class="table table-dark table-striped align-middle mb-0">
+                    <tbody>
+                        <tr><th scope="row">File size</th><td>20,903,620 bytes (about 19.9 MiB)</td></tr>
+                        <tr><th scope="row">Records and fields</th><td>106,881 rows × 8 columns</td></tr>
+                        <tr><th scope="row">Fields</th><td><code>value</code>, <code>type</code>, <code>created_at</code>, <code>touched_at</code>, <code>expires_at</code>, <code>tags</code>, <code>sources</code>, <code>adversaries</code></td></tr>
+                        <tr><th scope="row">URL relevance</th><td>5,385 records are typed URL and 52,111 are typed FQDN. Other indicator types are outside the URL-analysis scope.</td></tr>
+                        <tr><th scope="row">Candidate URL labels</th><td>The <code>tags</code> field contains candidate threat categories for URL indicators. The file has no benign URL class and no confidence-level column, although the publisher's description mentions confidence level as optional metadata.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <h3 class="h4">Records by IoC type</h3>
+            <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle mb-0">
+                    <thead><tr><th scope="col">IoC type</th><th scope="col">Rows</th><th scope="col">Relevance to URL-only analysis</th></tr></thead>
+                    <tbody>
+                        <tr><th scope="row">FQDN</th><td>52,111</td><td>Domain-level indicators usable for the host of a submitted URL.</td></tr>
+                        <tr><th scope="row">URL</th><td>5,385</td><td>Link indicators; the <code>tags</code> field holds candidate threat categories.</td></tr>
+                        <tr><th scope="row">Other non-URL indicator types</th><td>49,384</td><td>Outside the application's input and prediction scope.</td></tr>
+                        <tr><th scope="row">Missing type</th><td>1</td><td>Single record with no <code>type</code>; not assigned to any class.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Exploratory analysis</p>
+            <h2>Patterns and initial observations</h2>
+            <ul>
+                <li>The file is a mixed IoC feed, not a URL-only table. URL records are the link indicators; FQDN records describe hosts; all other indicator formats are excluded from the URL-analysis workflow.</li>
+                <li>All 5,385 URL records have a non-empty <code>tags</code> value: 5,199 are tagged <code>Malicious Behavior</code>, 77 are tagged <code>malware</code>, and 109 use other tag values. There are 38 distinct URL tag strings; 71 rows contain multiple pipe-separated tags.</li>
+                <li>The tags are the publisher's threat categories, not independently verified labels. One tag dominates and many other categories are rare.</li>
+                <li>No benign URL examples are present in this feed, so it cannot by itself train or evaluate a malicious-versus-legitimate detector.</li>
+                <li>The <code>created_at</code>, <code>touched_at</code>, and <code>expires_at</code> fields parsed as dates in every row, with no expiry-before-created rows detected, so they support freshness and temporal analysis.</li>
+                <li><code>tags</code>, <code>sources</code>, and <code>adversaries</code> are metadata fields that can hold multiple values and inconsistent naming.</li>
+                <li>There are 37,381 distinct values across the file, so many indicators appear in more than one row.</li>
+            </ul>
+            <p class="mb-0">
+                This is a structural and quality profile, not a confirmed threat attribution
+                or a measurement of the eventual model's predictive performance.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Data quality diagnosis</p>
+            <h2>Missing values, duplicates, and errors</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle mb-0">
+                    <thead><tr><th scope="col">Check</th><th scope="col">Observed result</th><th scope="col">Assessment</th></tr></thead>
+                    <tbody>
+                        <tr><th scope="row">Missing values</th><td>One missing value in <code>type</code>; no missing <code>value</code> or timestamps.</td><td>Isolated case; the type was not inferred.</td></tr>
+                        <tr><th scope="row">Exact duplicate rows</th><td>55,288 (about 51.7% of all rows).</td><td>More than half of the file consists of repeated rows.</td></tr>
+                        <tr><th scope="row">Repeated indicator values</th><td>69,500 rows repeat a prior <code>value</code>; 37,381 distinct values total.</td><td>The same indicator appears with different tags, sources, or timestamps.</td></tr>
+                        <tr><th scope="row">Date parsing/order</th><td>No parse failures in the three timestamp fields; no <code>expires_at</code> earlier than <code>created_at</code>.</td><td>Dates are consistent.</td></tr>
+                        <tr><th scope="row">Whitespace</th><td>No leading/trailing whitespace detected in <code>value</code>.</td><td>No cleaning needed for this issue.</td></tr>
+                        <tr><th scope="row">URL labels and balance</th><td>5,385 URL records have non-empty tags, 5,199 of them <code>Malicious Behavior</code>; no benign URL class.</td><td>Strong class imbalance and rare labels; no legitimate class available in this source.</td></tr>
+                        <tr><th scope="row">Type consistency</th><td>Multiple IoC formats are mixed; one type is missing.</td><td>Only URL and FQDN records are relevant to the project.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="info-card">
+            <p class="eyebrow mb-2">Conclusion</p>
+            <h2>Findings from the data understanding phase</h2>
+            <div class="alert alert-warning" role="note">
+                <strong>The IoC file contains only threat-related indicators.</strong>
+                Of 5,385 URL records, 5,199 carry the tag <code>Malicious Behavior</code>
+                and the rest carry other threat tags; none is a benign example. The feed
+                therefore provides malicious and threat-category URL examples, plus FQDN
+                host indicators, but no legitimate class.
+            </div>
+            <ul class="mb-0">
+                <li>Source identified and documented: MinTIC / ColCERT, published on datos.gov.co, last updated October 30, 2026.</li>
+                <li>Usable subset: 5,385 URL records and 52,111 FQDN records out of 106,881 rows; the remaining rows are outside the application's scope.</li>
+                <li>Main quality issues found: 55,288 exact duplicate rows, 69,500 repeated indicator values, one record without <code>type</code>, and a heavily dominant tag.</li>
+                <li>A legitimate-URL class is not present in this source and is a requirement for malicious-versus-legitimate classification.</li>
+                <li>A URL matching an indicator in this feed can be reported as a known indicator; a URL that does not match is unknown, not legitimate.</li>
+            </ul>
+        </article>
     </div>
 </section>
 {% endblock %}
