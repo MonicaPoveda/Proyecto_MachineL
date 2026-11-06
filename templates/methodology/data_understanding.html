@@ -22,12 +22,14 @@
             <h2>Data source</h2>
             <p>
                 The data was obtained from the Colombian open data portal datos.gov.co,
-                from the dataset <strong>“Indicadores de Compromiso – IoC”</strong>
-                (Indicators of Compromise associated with APT actors). The dataset is
-                published by the Ministerio de Tecnologías de la Información y las
-                Comunicaciones (MinTIC), Bogotá D.C., through its ColCERT unit.
+                from the dataset <strong>“Indicators of Compromise – IoC”</strong>,
+                associated with APT actors. The dataset is published by Colombia's
+                Ministry of Information and Communications Technologies (MinTIC),
+                Bogotá D.C., through its ColCERT unit.
                 The file downloaded and analyzed is
-                <code>Indicadores_de_Compromiso_-_IoC_20261106.csv</code>.
+                <code>indicators_of_compromise_ioc_20261106.csv</code>.
+                Spanish source tags have been translated to English in this working copy;
+                their category meanings and counts are unchanged.
             </p>
             <p>
                 According to the publisher, the dataset is a structured repository of IoCs
@@ -41,17 +43,17 @@
             <div class="table-responsive mb-4">
                 <table class="table table-dark table-striped align-middle mb-0">
                     <tbody>
-                        <tr><th scope="row">Dataset</th><td>Indicadores de Compromiso – IoC</td></tr>
+                        <tr><th scope="row">Dataset</th><td>Indicators of Compromise – IoC</td></tr>
                         <tr><th scope="row">Portal</th><td>datos.gov.co (Colombian open data portal)</td></tr>
-                        <tr><th scope="row">Publisher</th><td>Ministerio de Tecnologías de la Información y las Comunicaciones – MinTIC, Bogotá D.C.</td></tr>
+                        <tr><th scope="row">Publisher</th><td>Ministry of Information and Communications Technologies – MinTIC, Bogotá D.C.</td></tr>
                         <tr><th scope="row">Area / dependency</th><td>ColCERT</td></tr>
-                        <tr><th scope="row">Sector and order</th><td>Tecnologías de la Información y Comunicaciones · Nacional</td></tr>
+                        <tr><th scope="row">Sector and level</th><td>Information and Communications Technologies · National</td></tr>
                         <tr><th scope="row">Location</th><td>Bogotá D.C. (DIVIPOLA 11001)</td></tr>
-                        <tr><th scope="row">Geographic coverage</th><td>Nacional</td></tr>
+                        <tr><th scope="row">Geographic coverage</th><td>National</td></tr>
                         <tr><th scope="row">Created on the portal</th><td>April 14, 2026</td></tr>
                         <tr><th scope="row">Last data and metadata update</th><td>October 30, 2026</td></tr>
                         <tr><th scope="row">Portal usage at time of consultation</th><td>2,803 views · 458 downloads</td></tr>
-                        <tr><th scope="row">File used</th><td><code>Indicadores_de_Compromiso_-_IoC_20261106.csv</code> (date in file name: November 6, 2026)</td></tr>
+                        <tr><th scope="row">File used</th><td><code>indicators_of_compromise_ioc_20261106.csv</code> (date in file name: November 6, 2026)</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -98,7 +100,7 @@
             <h2>Patterns and initial observations</h2>
             <ul>
                 <li>The file is a mixed IoC feed, not a URL-only table. URL records are the link indicators; FQDN records describe hosts; all other indicator formats are excluded from the URL-analysis workflow.</li>
-                <li>All 5,385 URL records have a non-empty <code>tags</code> value: 5,199 are tagged <code>Comportamiento Malicioso</code>, 77 are tagged <code>malware</code>, and 109 use other tag values. There are 38 distinct URL tag strings; 71 rows contain multiple pipe-separated tags.</li>
+                <li>All 5,385 URL records have a non-empty <code>tags</code> value: 5,199 are tagged <code>Malicious Behavior</code>, 77 are tagged <code>malware</code>, and 109 use other tag values. There are 38 distinct URL tag strings; 71 rows contain multiple pipe-separated tags.</li>
                 <li>The tags are the publisher's threat categories, not independently verified labels. One tag dominates and many other categories are rare.</li>
                 <li>No benign URL examples are present in this feed, so it cannot by itself train or evaluate a malicious-versus-legitimate detector.</li>
                 <li>The <code>created_at</code>, <code>touched_at</code>, and <code>expires_at</code> fields parsed as dates in every row, with no expiry-before-created rows detected, so they support freshness and temporal analysis.</li>
@@ -123,7 +125,7 @@
                         <tr><th scope="row">Repeated indicator values</th><td>69,500 rows repeat a prior <code>value</code>; 37,381 distinct values total.</td><td>The same indicator appears with different tags, sources, or timestamps.</td></tr>
                         <tr><th scope="row">Date parsing/order</th><td>No parse failures in the three timestamp fields; no <code>expires_at</code> earlier than <code>created_at</code>.</td><td>Dates are consistent.</td></tr>
                         <tr><th scope="row">Whitespace</th><td>No leading/trailing whitespace detected in <code>value</code>.</td><td>No cleaning needed for this issue.</td></tr>
-                        <tr><th scope="row">URL labels and balance</th><td>5,385 URL records have non-empty tags, 5,199 of them <code>Comportamiento Malicioso</code>; no benign URL class.</td><td>Strong class imbalance and rare labels; no legitimate class available in this source.</td></tr>
+                        <tr><th scope="row">URL labels and balance</th><td>5,385 URL records have non-empty tags, 5,199 of them <code>Malicious Behavior</code>; no benign URL class.</td><td>Strong class imbalance and rare labels; no legitimate class available in this source.</td></tr>
                         <tr><th scope="row">Type consistency</th><td>Multiple IoC formats are mixed; one type is missing.</td><td>Only URL and FQDN records are relevant to the project.</td></tr>
                     </tbody>
                 </table>
@@ -135,7 +137,7 @@
             <h2>Findings from the data understanding phase</h2>
             <div class="alert alert-warning" role="note">
                 <strong>The IoC file contains only threat-related indicators.</strong>
-                Of 5,385 URL records, 5,199 carry the tag <code>Comportamiento Malicioso</code>
+                Of 5,385 URL records, 5,199 carry the tag <code>Malicious Behavior</code>
                 and the rest carry other threat tags; none is a benign example. The feed
                 therefore provides malicious and threat-category URL examples, plus FQDN
                 host indicators, but no legitimate class.
