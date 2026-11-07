@@ -19,7 +19,7 @@ Esta fase trabaja exclusivamente con `phase3_output/train.csv`. El archivo `phas
 - Utiliza validacion cruzada estratificada de 3 particiones.
 - Busca hiperparametros con `GridSearchCV` para cada algoritmo.
 - Selecciona la configuracion de cada algoritmo usando el F1 promedio de validacion cruzada.
-- Registra tambien precision, recall y ROC-AUC como metricas complementarias.
+- Registra precision, recall, ROC-AUC, exactitud (accuracy) y tasa de error como metricas complementarias. La tasa de error se calcula como 1 - accuracy.
 - Guarda los modelos entrenados y los resultados para su revision.
 
 La comparacion obtenida en esta fase es preliminar. La evaluacion definitiva sobre el conjunto de prueba y la decision final del modelo se documentan en la fase 5.
@@ -57,7 +57,7 @@ En Windows tambien puedes ejecutar el comando en PowerShell.
 
 La ejecucion crea la carpeta `phase4_output/` en la raiz del proyecto:
 
-- `model_comparison.csv`: resumen comparativo de los tres algoritmos.
+- `model_comparison.csv`: resumen comparativo de los tres algoritmos, incluyendo `cv_accuracy_mean` y `cv_error_rate_mean`.
 - `logistic_regression_search_results.csv`, `random_forest_search_results.csv` y `gradient_boosting_search_results.csv`: resultados de cada combinacion de hiperparametros.
 - `modeling_metadata.json`: configuracion y datos generales del proceso.
 - `models/`: modelos entrenados en formato Joblib.
@@ -69,3 +69,25 @@ Los archivos generados son resultados locales y no se agregan al repositorio.
 El F1 promedio de validacion cruzada se utiliza como metrica principal para ordenar los modelos, porque combina precision y recall. Tambien se reportan precision, recall y ROC-AUC para facilitar el analisis posterior.
 
 No se declara aqui un modelo ganador definitivo: esa decision debe considerar la evaluacion sobre `test.csv` y los criterios del proyecto en la fase 5.
+
+
+## Uso del modelo desde la plataforma
+
+La ruta `/application/platform/` carga una sola vez el modelo con el mejor F1 promedio
+de validacion cruzada y reutiliza ese modelo para las consultas siguientes. No vuelve
+a entrenar al recibir una URL.
+
+Para habilitar la prediccion, ejecuta la fase 4 y conserva localmente estos archivos:
+
+- `phase4_output/model_comparison.csv`
+- `phase4_output/modeling_metadata.json`
+- `phase4_output/models/*.joblib`
+
+Instala tambien las dependencias de `requirements.txt`, incluida `tldextract`,
+necesaria para extraer las caracteristicas de las URLs.
+
+La plataforma muestra la probabilidad estimada de la clase phishing cuando el modelo
+la soporta y la tasa de error promedio de validacion cruzada. Esta tasa resume el
+comportamiento del modelo durante la validacion; no representa el error de una URL
+individual. La seleccion de fase 4 es preliminar y debe confirmarse con la evaluacion
+del conjunto reservado `test.csv` en la fase 5.
