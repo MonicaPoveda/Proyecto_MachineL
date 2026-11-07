@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from features import FEATURE_COLUMNS, extract_features, normalize_url
 
-
+# python templates/methodology/phase4/phase4_modeling.py --train templates/methodology/phase3/phase3_output/train.csv
 def main():
     print("[*] CRISP-DM Phase 3: Data Preparation")
 
