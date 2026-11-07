@@ -16,7 +16,7 @@ METHODOLOGY_PHASES = (
     {
         "slug": "data-preparation",
         "name": "Data Preparation",
-        "template": "methodology/data_preparation.html",
+        "template": "methodology/phase3/data_preparation.html",
     },
     {
         "slug": "modeling",

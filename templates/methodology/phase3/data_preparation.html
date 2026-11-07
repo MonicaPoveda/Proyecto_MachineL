@@ -1,59 +1,191 @@
 {% extends "base.html" %}
-{% block title %}Data Preparation | CRISP-DM{% endblock %}
+
+{% block title %}
+Phase 3: Data Preparation | Faculty of Engineering
+{% endblock %}
+
 {% block content %}
-<section class="hero pb-4">
-    <div class="container">
-        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 03 of 06</p>
-        <h1 class="mb-3">Data Preparation</h1>
-    </div>
-</section>
 
-<section class="content-section pt-3">
-    <div class="container">
-        <div class="info-card" aria-label="Data Preparation phase content">
-            <h2>CRISP-DM Phase 3: Data Preparation</h2>
-            <p>
-                This phase processes malicious and legitimate URL indicators to create
-                a balanced dataset ready for machine learning.
-            </p>
+<!-- Main page container -->
+<div class="container py-5">
 
-            <h3>Model approach: binary classification</h3>
-            <p>
-                Malicious indicators are labeled <code>1</code>, while legitimate
-                domains are labeled <code>0</code>. URLs are normalized and converted
-                into numerical features before the data is split into training and test
-                sets.
-            </p>
-
-            <h3>Executed steps</h3>
-            <ol>
-                <li>
-                    <strong>Selection and cleaning:</strong> keep FQDN and URL
-                    indicators and remove duplicate values.
-                </li>
-                <li>
-                    <strong>Balancing:</strong> randomly select the same number of
-                    legitimate records as malicious records.
-                </li>
-                <li>
-                    <strong>Feature engineering:</strong> extract 31 numerical
-                    characteristics, including URL length, entropy, suspicious words,
-                    ports, subdomains, and executable extensions.
-                </li>
-                <li>
-                    <strong>Data splitting:</strong> export 80% of the records to
-                    <code>train.csv</code> and 20% to <code>test.csv</code>.
-                </li>
-            </ol>
-
-            <h3>Phase 3 deliverables</h3>
-            <p>
-                The preparation script creates
-                <code>balanced_dataset_complete.csv</code>, <code>train.csv</code>,
-                and <code>test.csv</code> inside the <code>phase3_output</code>
-                directory.
+    <!-- Page header -->
+    <div class="text-center mb-5">
+        <div class="d-inline-flex align-items-center text-primary text-uppercase fw-semibold mb-3">
+            <span class="border-top border-primary opacity-75 me-3" style="width: 50px;"></span>
+            CRISP-DM Methodology
+            <span class="border-top border-primary opacity-75 ms-3" style="width: 50px;"></span>
+        </div>
+        <h1 class="display-4 fw-bold text-white mb-3">
+            Phase 03: <span class="text-accent">Data Preparation</span>
+        </h1>
+        <div class="col-12 col-lg-9 mx-auto">
+            <p class="text-light lead mb-0" style="max-width: 760px;">
+                Documentation of data cleaning, class balancing, feature engineering, and data splitting processes to prepare the mathematical matrix for the Machine Learning model.
             </p>
         </div>
     </div>
-</section>
+
+    <!-- PHASE OVERVIEW -->
+    <section id="phase-overview" class="mb-5">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 text-center d-flex flex-column align-items-center">
+            <p class="text-primary text-uppercase fw-bold small mb-2">Phase Objective</p>
+            <h2 class="h3 text-white mb-0 fw-bold">Transforming Raw Indicators into a Trainable Dataset</h2>
+        </div>
+    </section>
+
+    <!-- EXECUTION STEPS -->
+    <section id="execution-steps" class="mb-5">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-4">
+                <!-- Icono de Ejecución -->
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;">
+                    <i class="bi bi-gear-wide-connected fs-4"></i>
+                </div>
+                <div>
+                    <p class="text-primary text-uppercase fw-bold small mb-1">Pipeline Execution</p>
+                    <h2 class="h3 text-white mb-0 fw-bold">Data Processing Workflow</h2>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Step 1 -->
+                <div class="col-12 col-lg-6">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="text-primary fs-1 fw-bold me-3 lh-1 opacity-75">1</span>
+                            <h3 class="h5 text-white fw-bold mb-0">Selection and Cleaning</h3>
+                        </div>
+                        <p class="text-light fs-6 mb-3">
+                            The raw <code>indicators_of_compromise_ioc_20261106.csv</code> dataset was ingested. Out of all indicator types (IPs, Hashes, Emails), the pipeline strictly filtered records tagged as <strong>URL</strong> and <strong>FQDN</strong>, as they are the only ones relevant to our web application's scope.
+                        </p>
+                        <p class="text-light fs-6 mb-0">
+                            Empty type values were resolved heuristically based on string length, and absolute duplicates were removed, leaving a clean subset of unique malicious indicators.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="col-12 col-lg-6">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="text-primary fs-1 fw-bold me-3 lh-1 opacity-75">2</span>
+                            <h3 class="h5 text-white fw-bold mb-0">Class Balancing (50/50)</h3>
+                        </div>
+                        <p class="text-light fs-6 mb-3">
+                            Because the IoC dataset contains only malicious links, training a model directly on it would cause severe single-class bias. To solve this, the <code>top-1m.csv</code> dataset was introduced to represent legitimate traffic.
+                        </p>
+                        <p class="text-light fs-6 mb-0">
+                            The pipeline randomly sampled an exact equal number of legitimate URLs to match the malicious count, creating a perfectly balanced dataset (50% Phishing / 50% Legitimate). Both subsets were then concatenated and randomly shuffled.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="col-12 col-lg-6">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="text-primary fs-1 fw-bold me-3 lh-1 opacity-75">3</span>
+                            <h3 class="h5 text-white fw-bold mb-0">Feature Engineering</h3>
+                        </div>
+                        <p class="text-light fs-6 mb-3">
+                            Machine Learning algorithms cannot process raw text. Using the <code>features.py</code> module, the system iterated over every URL to extract <strong>31 mathematical and lexical features</strong>.
+                        </p>
+                        <p class="text-light fs-6 mb-0">
+                            This process was performed exclusively on the text string (without making HTTP requests), extracting data such as character entropy, suspicious keyword counts, symbol ratios (-, @, _), and risky TLD identification.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="col-12 col-lg-6">
+                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100" style="background-color: #00152a;">
+                        <div class="d-flex align-items-center mb-3">
+                            <span class="text-primary fs-1 fw-bold me-3 lh-1 opacity-75">4</span>
+                            <h3 class="h5 text-white fw-bold mb-0">Data Splitting (Train/Test)</h3>
+                        </div>
+                        <p class="text-light fs-6 mb-3">
+                            The final numerical matrix was divided to prepare for the Modeling Phase. Using <code>scikit-learn</code>, a stratified split was applied to ensure the 50/50 class balance remained intact across both partitions.
+                        </p>
+                        <p class="text-light fs-6 mb-0">
+                            <strong>80%</strong> of the data was exported to <code>train.csv</code> (for model training), and <strong>20%</strong> was securely isolated in <code>test.csv</code> (to validate accuracy on unseen data).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURE HIGHLIGHTS -->
+    <section id="features-highlight" class="mb-5">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="text-center mb-5">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <i class="bi bi-braces fs-1 text-info me-3"></i>
+                    <h3 class="h4 text-white fw-bold mb-0">Extracted Features (Mathematical Matrix)</h3>
+                </div>
+                <p class="text-light fs-6 mx-auto mb-0" style="max-width: 800px;">
+                    Below are the key categories of the 31 numerical features engineered from the raw URL strings to feed the classification algorithms.
+                </p>
+            </div>
+
+            <div class="row g-4 text-center">
+                <div class="col-12 col-md-4">
+                    <div class="p-4 rounded-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 h-100">
+                        <i class="bi bi-rulers fs-2 text-primary d-block mb-3"></i>
+                        <h4 class="h6 text-white fw-bold mb-2">Structural Constraints</h4>
+                        <p class="text-light small mb-0">
+                            <code>url_length</code>, <code>n_dots_url</code>, <code>path_depth</code>. Measures excessive subdomains and lengths used to hide true domains.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-4 rounded-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 h-100">
+                        <i class="bi bi-incognito fs-2 text-primary d-block mb-3"></i>
+                        <h4 class="h6 text-white fw-bold mb-2">Social Engineering Indicators</h4>
+                        <p class="text-light small mb-0">
+                            <code>host_n_hyphens</code>, <code>n_suspicious_words</code>. Detects brand spoofing attempts (e.g., "login-secure") and urgency keywords.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-4 rounded-3 bg-primary bg-opacity-10 border border-primary border-opacity-25 h-100">
+                        <i class="bi bi-shield-slash fs-2 text-primary d-block mb-3"></i>
+                        <h4 class="h6 text-white fw-bold mb-2">Evasion & Entropy</h4>
+                        <p class="text-light small mb-0">
+                            <code>url_entropy</code>, <code>has_ip_host</code>. Identifies randomly generated DGA domains, raw IP usage, and risky TLDs (e.g., .xyz).
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DELIVERABLES -->
+    <section id="deliverables" class="mb-5">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <div class="d-flex align-items-center mb-3">
+                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;">
+                    <i class="bi bi-check2-all fs-4"></i>
+                </div>
+                <div>
+                    <p class="text-success text-uppercase fw-bold small mb-1">Phase 3 Output</p>
+                    <h2 class="h3 text-white mb-0 fw-bold">Final Deliverables</h2>
+                </div>
+            </div>
+            <div class="p-4 rounded-3 border-start border-success border-4 shadow-sm mt-3" style="background-color: #00152a;">
+                <p class="text-light fs-5 mb-3">
+                    The execution of the pipeline successfully outputted a clean, mathematically structured, and balanced dataset ready for Phase 4 (Modeling).
+                </p>
+                <ul class="list-unstyled text-light mb-0" style="font-family: monospace;">
+                    <li class="mb-2"><i class="bi bi-file-earmark-text text-primary me-2"></i> <strong>dataset_balanceado_completo.csv</strong> (Full matrix)</li>
+                    <li class="mb-2"><i class="bi bi-file-earmark-bar-graph text-primary me-2"></i> <strong>train.csv</strong> (80% Training Data)</li>
+                    <li><i class="bi bi-file-earmark-check text-primary me-2"></i> <strong>test.csv</strong> (20% Validation Data)</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+</div>
+
 {% endblock %}
