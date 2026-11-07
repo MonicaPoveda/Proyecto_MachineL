@@ -15,7 +15,7 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import make_scorer, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, make_scorer, precision_score, recall_score, f1_score
 from sklearn.model_selection import GridSearchCV, StratifiedKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
@@ -26,6 +26,8 @@ RANDOM_STATE = 42
 
 SCORING = {
     "f1": make_scorer(f1_score, zero_division=0),
+    "accuracy": make_scorer(accuracy_score),
+    "error_rate": make_scorer(lambda y_true, y_pred: 1.0 - accuracy_score(y_true, y_pred)),
     "precision": make_scorer(precision_score, zero_division=0),
     "recall": make_scorer(recall_score, zero_division=0),
     "roc_auc": "roc_auc",
@@ -198,6 +200,8 @@ def run_modeling(
             "model": name,
             "cv_f1_mean": float(cv_results["mean_test_f1"][best_index]),
             "cv_f1_std": float(cv_results["std_test_f1"][best_index]),
+            "cv_accuracy_mean": float(cv_results["mean_test_accuracy"][best_index]),
+            "cv_error_rate_mean": float(cv_results["mean_test_error_rate"][best_index]),
             "cv_precision_mean": float(
                 cv_results["mean_test_precision"][best_index]
             ),
