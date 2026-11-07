@@ -39,12 +39,40 @@ def project_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
+def resolve_training_path(root: Path) -> Path:
+    """Localiza train.csv en las ubicaciones usadas por las salidas de fase 3."""
+    candidates = [
+        root / "phase3" / "phase3_output" / "train.csv",
+        root / "templates" / "methodology" / "phase3" / "phase3_output" / "train.csv",
+        root / "phase3_output" / "train.csv",
+    ]
+    existing = [path for path in candidates if path.is_file()]
+
+    if len(existing) == 1:
+        return existing[0]
+
+    if len(existing) > 1:
+        locations = "\\n".join(f" - {path}" for path in existing)
+        raise FileNotFoundError(
+            "Se encontraron varios archivos train.csv. Para evitar entrenar "
+            "con un conjunto equivocado, indica uno explícitamente con --train:\\n"
+            f"{locations}"
+        )
+
+    locations = "\\n".join(f" - {path}" for path in candidates)
+    raise FileNotFoundError(
+        "No se encontró train.csv en las ubicaciones habituales. "
+        "Verifica la salida de la fase 3 o indica la ruta con --train. "
+        "Rutas revisadas:\\n" + locations
+    )
+
+
 def load_training_data(train_path: Path) -> tuple[pd.DataFrame, pd.Series]:
     """Carga y valida el conjunto de entrenamiento de la fase 3."""
     if not train_path.is_file():
         raise FileNotFoundError(
             f"No se encontro {train_path}. Ejecuta primero la fase 3 "
-            "y verifica que se haya generado phase3_output/train.csv."
+            "o indica la ubicacion correcta mediante --train."
         )
 
     data = pd.read_csv(train_path)
@@ -268,8 +296,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--train",
         type=Path,
-        default=root / "phase3_output" / "train.csv",
-        help="Ruta al train.csv generado en la fase 3.",
+        default=None,
+        help=(
+            "Ruta al train.csv generado en la fase 3. "
+            "Si se omite, se detecta automáticamente."
+        ),
     )
     parser.add_argument(
         "--output",
@@ -294,8 +325,9 @@ def parse_args() -> argparse.Namespace:
 
 if __name__ == "__main__":
     arguments = parse_args()
+    train_path = arguments.train or resolve_training_path(project_root())
     run_modeling(
-        train_path=arguments.train,
+        train_path=train_path,
         output_dir=arguments.output,
         cv_folds=arguments.cv_folds,
         n_jobs=arguments.n_jobs,
