@@ -4,7 +4,7 @@
 
 Entrenar y comparar diferentes algoritmos para clasificar URLs como legitimas (0) o maliciosas/phishing (1), utilizando las caracteristicas generadas en la fase 3.
 
-Esta fase trabaja exclusivamente con `phase3_output/train.csv`. El archivo `phase3_output/test.csv` se reserva para la fase 5 (Evaluacion), para evitar utilizar los datos de prueba durante la seleccion y el ajuste de modelos.
+Esta fase trabaja exclusivamente con `train.csv`, generado por la fase 3. El archivo `test.csv` se reserva para la fase 5 (Evaluacion), para evitar utilizar los datos de prueba durante la seleccion y el ajuste de modelos. El script detecta automaticamente `train.csv` en `phase3/phase3_output/`, `templates/methodology/phase3/phase3_output/` o `phase3_output/` desde la raiz del repositorio. Si existen varias copias, exige indicar la ruta con `--train`.
 
 ## Modelos incluidos
 
@@ -37,7 +37,7 @@ El proyecto ya incluye `pandas`, `numpy` y `scikit-learn` en `requirements.txt`.
 ## Como ejecutar desde VS Code
 
 1. Abre la carpeta raiz del repositorio.
-2. Verifica que hayas ejecutado la fase 3 y que exista `phase3_output/train.csv`.
+2. Verifica que hayas ejecutado la fase 3 y que exista `train.csv` en una de las ubicaciones detectadas automaticamente.
 3. Abre una terminal en VS Code.
 4. Ejecuta:
 
@@ -48,7 +48,7 @@ python templates/methodology/phase4/phase4_modeling.py
 Opcionalmente, puedes indicar otras rutas o cambiar las particiones de validacion:
 
 ```bash
-python templates/methodology/phase4/phase4_modeling.py --train phase3_output/train.csv --output phase4_output --cv-folds 3 --n-jobs -1
+python templates/methodology/phase4/phase4_modeling.py --train phase3/phase3_output/train.csv --output phase4_output --cv-folds 3 --n-jobs -1
 ```
 
 En Windows tambien puedes ejecutar el comando en PowerShell.
