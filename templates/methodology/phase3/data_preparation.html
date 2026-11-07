@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Data Preparation | CRISP-DM{% endblock %}
+
+{% block content %}
+<section class="hero pb-4">
+    <div class="container">
+        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 03 of 06</p>
+        <h1 class="mb-3">Data Preparation</h1>
+    </div>
+</section>
+
+<section class="content-section pt-3">
+    <div class="container">
+        <div class="info-card" aria-label="Data Preparation phase content">
+            <h2>CRISP-DM Phase 3: Data Preparation</h2>
+            <p>
+                This phase processes malicious and legitimate URL indicators to create
+                a balanced dataset ready for machine learning.
+            </p>
+
+            <h3>Model approach: binary classification</h3>
+            <p>
+                Malicious indicators are labeled <code>1</code>, while legitimate
+                domains are labeled <code>0</code>. URLs are normalized and converted
+                into numerical features before the data is split into training and test
+                sets.
+            </p>
+
+            <h3>Executed steps</h3>
+            <ol>
+                <li>
+                    <strong>Selection and cleaning:</strong> keep FQDN and URL
+                    indicators and remove duplicate values.
+                </li>
+                <li>
+                    <strong>Balancing:</strong> randomly select the same number of
+                    legitimate records as malicious records.
+                </li>
+                <li>
+                    <strong>Feature engineering:</strong> extract 31 numerical
+                    characteristics, including URL length, entropy, suspicious words,
+                    ports, subdomains, and executable extensions.
+                </li>
+                <li>
+                    <strong>Data splitting:</strong> export 80% of the records to
+                    <code>train.csv</code> and 20% to <code>test.csv</code>.
+                </li>
+            </ol>
+
+            <h3>Phase 3 deliverables</h3>
+            <p>
+                The preparation script creates
+                <code>balanced_dataset_complete.csv</code>, <code>train.csv</code>,
+                and <code>test.csv</code> inside the <code>phase3_output</code>
+                directory.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
