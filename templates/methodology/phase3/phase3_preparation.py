@@ -1,83 +1,97 @@
-import os
+from pathlib import Path
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
+
 from features import FEATURE_COLUMNS, extract_features, normalize_url
 
-# python templates/methodology/phase4/phase4_modeling.py --train templates/methodology/phase3/phase3_output/train.csv
+
+RANDOM_STATE = 42
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+DATASETS_DIR = PROJECT_ROOT / "static" / "datasets"
+IOC_PATH = DATASETS_DIR / "indicators_of_compromise_ioc_20261106.csv"
+LEGITIMATE_URLS_PATH = DATASETS_DIR / "urls_leg.csv"
+OUTPUT_DIR = Path(__file__).resolve().parent / "phase3_output"
+
+
 def main():
     print("[*] CRISP-DM Phase 3: Data Preparation")
 
-    # 1. LOAD AND CLEAN THE MALICIOUS CLASS (IoC)
-    print("\n[*] Loading malicious dataset (IoC)...")
-    df_ioc = pd.read_csv(
-        r"T:\Machine_Learning_6\Proyecto_MachineL\static\datasets\indicators_of_compromise_ioc_20261106.csv"
+    print(f"\n[*] Loading malicious IoC records from {IOC_PATH.name}...")
+    df_ioc = pd.read_csv(IOC_PATH, usecols=["value", "type"])
+    df_ioc = df_ioc[df_ioc["type"].isin(["FQDN", "URL"])].dropna(
+        subset=["value"]
     )
-
-    # Keep only domains and URLs, then remove duplicates.
-    df_ioc = df_ioc[df_ioc["type"].isin(["FQDN", "URL"])].copy()
     df_ioc = df_ioc.drop_duplicates(subset=["value"])
     df_ioc = df_ioc[["value"]].rename(columns={"value": "raw_url"})
-
-    # Assign the label: 1 = phishing/malicious.
     df_ioc["is_phishing"] = 1
-    num_malicious = len(df_ioc)
-    print(f" -> {num_malicious} unique malicious records ready.")
 
-    # 2. LOAD AND CLEAN THE LEGITIMATE CLASS (top-1m.csv)
-    print("\n[*] Loading legitimate dataset (top-1m.csv)...")
-    # This file has no headers: column 0 is rank and column 1 is the domain.
-    df_legit = pd.read_csv(
-        r"T:\Machine_Learning_6\Proyecto_MachineL\static\datasets\top-1m.csv",
-        header=None,
-        names=["rank", "raw_url"],
-    )
-    df_legit = df_legit[["raw_url"]].copy()
-
-    # CRITICAL BALANCING: randomly select as many benign records as malicious records.
-    if len(df_legit) > num_malicious:
-        df_legit = df_legit.sample(n=num_malicious, random_state=42)
-
-    # Assign the label: 0 = legitimate/safe.
+    print(f"\n[*] Loading legitimate URLs from {LEGITIMATE_URLS_PATH.name}...")
+    df_legit = pd.read_csv(LEGITIMATE_URLS_PATH, usecols=["url", "etiqueta"])
+    df_legit = df_legit.dropna(subset=["url", "etiqueta"]).copy()
+    labels = df_legit["etiqueta"].astype(str).str.strip().str.casefold()
+    if not labels.eq("legitima").all():
+        raise ValueError(
+            "urls_leg.csv debe contener únicamente etiquetas 'legitima'."
+        )
+    df_legit = df_legit[["url"]].rename(columns={"url": "raw_url"})
     df_legit["is_phishing"] = 0
-    print(f" -> {len(df_legit)} legitimate records selected (50/50 balance).")
 
-    # 3. MERGE DATASETS (integration to prevent bias)
-    print("\n[*] Merging and shuffling datasets...")
     df_final = pd.concat([df_ioc, df_legit], ignore_index=True)
-    df_final = df_final.sample(frac=1, random_state=42).reset_index(drop=True)
+    print("[*] Normalizing and deduplicating URLs...")
+    df_final["normalized_url"] = df_final["raw_url"].map(normalize_url)
+    df_final = df_final[df_final["normalized_url"] != ""].copy()
+    # Keep the malicious label if a URL appears in both source datasets.
+    df_final = (
+        df_final.sort_values("is_phishing", kind="stable")
+        .drop_duplicates(subset=["normalized_url"], keep="last")
+        .reset_index(drop=True)
+    )
 
-    # 4. NORMALIZATION AND FEATURE ENGINEERING
-    print("[*] Normalizing URLs and extracting features... (may take a few minutes)")
-    df_final["normalized_url"] = df_final["raw_url"].apply(normalize_url)
-    df_final = df_final[df_final["normalized_url"] != ""]
-    features = df_final["normalized_url"].apply(
-        lambda value: pd.Series(extract_features(value))
+    class_counts = df_final["is_phishing"].value_counts()
+    if set(class_counts.index) != {0, 1}:
+        raise ValueError("Se requieren URLs legítimas y maliciosas para entrenar.")
+    balance_size = int(class_counts.min())
+    df_final = (
+        df_final.groupby("is_phishing", group_keys=False)
+        .sample(n=balance_size, random_state=RANDOM_STATE)
+        .sample(frac=1, random_state=RANDOM_STATE)
+        .reset_index(drop=True)
+    )
+    print(f" -> {balance_size} URLs por clase después del balanceo 50/50.")
+
+    print("[*] Extracting features from normalized URLs...")
+    features = pd.DataFrame.from_records(
+        df_final["normalized_url"].map(extract_features),
+        index=df_final.index,
     )
     model_data = pd.concat(
-        [df_final[["raw_url", "normalized_url", "is_phishing"]], features], axis=1
+        [df_final[["raw_url", "normalized_url", "is_phishing"]], features],
+        axis=1,
     )
 
-    # 5. SPLIT INTO TRAINING AND TEST SETS
     print("\n[*] Splitting the dataset (80% training / 20% test)...")
     X = model_data[FEATURE_COLUMNS]
     y = model_data["is_phishing"]
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, stratify=y
+        X,
+        y,
+        test_size=0.2,
+        random_state=RANDOM_STATE,
+        stratify=y,
     )
     df_train = pd.concat([X_train, y_train], axis=1)
     df_test = pd.concat([X_test, y_test], axis=1)
 
-    # 6. EXPORT OUTPUT FILES
-    print("[*] Saving generated files...")
-    output_folder = "phase3_output"
-    os.makedirs(output_folder, exist_ok=True)
-    model_data.to_csv(f"{output_folder}/balanced_dataset_complete.csv", index=False)
-    df_train.to_csv(f"{output_folder}/train.csv", index=False)
-    df_test.to_csv(f"{output_folder}/test.csv", index=False)
+    print(f"\n[*] Saving generated files to {OUTPUT_DIR}...")
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    model_data.to_csv(OUTPUT_DIR / "balanced_dataset_complete.csv", index=False)
+    df_train.to_csv(OUTPUT_DIR / "train.csv", index=False)
+    df_test.to_csv(OUTPUT_DIR / "test.csv", index=False)
 
     print("\nPhase 3 completed successfully!")
     print(f" -> Training output (train.csv): {len(df_train)} rows")
-    print(f" -> Test output (test.csv):  {len(df_test)} rows")
+    print(f" -> Test output (test.csv): {len(df_test)} rows")
 
 
 if __name__ == "__main__":

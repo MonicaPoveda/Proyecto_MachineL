@@ -1,15 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}URL Analysis | Application{% endblock %}
+{% block title %}Análisis de URL | Aplicación{% endblock %}
 
 {% block content %}
 <section class="hero pb-4">
     <div class="container">
-        <p class="eyebrow mb-3">Application / Threat analysis</p>
-        <h1 class="mb-3">Check a <span class="text-accent">URL</span></h1>
+        <p class="eyebrow mb-3">Aplicación / Análisis de amenazas</p>
+        <h1 class="mb-3">Analizar una <span class="text-accent">URL</span></h1>
         <p class="research-intro mb-0">
-            Analyze a link with a machine-learning model trained to identify
-            structural patterns commonly found in phishing URLs.
+            Revisa las características de un enlace para identificar patrones que
+            pueden aparecer en URLs de phishing.
         </p>
     </div>
 </section>
@@ -19,26 +19,25 @@
         <div class="row justify-content-center g-4">
             <div class="col-12 col-xl-8">
                 <section class="info-card" aria-labelledby="url-check-heading">
-                    <p class="eyebrow mb-2"><i class="bi bi-shield-check me-2"></i>Machine learning analysis</p>
-                    <h2 id="url-check-heading">Analyze a link</h2>
+                    <p class="eyebrow mb-2"><i class="bi bi-shield-check me-2"></i>Análisis de URL</p>
+                    <h2 id="url-check-heading">Revisar un enlace</h2>
                     <p class="research-intro">
-                        Paste the URL you want to check. The application extracts
-                        31 characteristics and sends them to the previously trained model.
-                        It does not open or visit the submitted website.
+                        Pega la URL que quieres revisar. Se analizan 31 características
+                        del texto sin abrir ni visitar el sitio web.
                     </p>
                     <form method="post" action="{{ url_for('application_platform') }}">
-                        <label class="form-label fw-semibold" for="url">URL to analyze</label>
+                        <label class="form-label fw-semibold" for="url">URL que quieres analizar</label>
                         <div class="input-group input-group-lg mb-2">
                             <input class="form-control" id="url" name="url" type="text"
                                    inputmode="url" maxlength="2048"
-                                   placeholder="https://example.com"
+                                   placeholder="https://ejemplo.com"
                                    value="{{ submitted_url }}" required>
                             <button class="btn btn-primary px-4" type="submit">
-                                <i class="bi bi-search me-1"></i> Analyze
+                                <i class="bi bi-search me-1"></i> Analizar
                             </button>
                         </div>
                         <div class="form-text text-light">
-                            Enter a complete URL, with or without https://.
+                            Ingresa la URL completa, con o sin https://.
                         </div>
                     </form>
 
@@ -59,60 +58,72 @@
                                 {% endif %}
                             </span>
                             <div>
-                                <p class="eyebrow mb-1">Analysis result</p>
+                                <p class="eyebrow mb-1">Resultado del análisis</p>
                                 <h3 class="mb-0 text-{{ result.level }}">{{ result.label }}</h3>
                             </div>
                         </div>
-                        <p class="text-break mb-3"><strong>Analyzed URL:</strong> {{ result.normalized_url }}</p>
+                        <p class="text-break mb-3"><strong>URL analizada:</strong> {{ result.normalized_url }}</p>
                         <p>{{ result.message }}</p>
 
                         {% if result.phishing_probability is not none %}
                         <div class="research-feature mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h4 class="mb-0">Estimated phishing probability</h4>
+                                <h4 class="mb-0">Probabilidad estimada de phishing</h4>
                                 <strong class="fs-5">{{ "%.1f"|format(result.phishing_probability) }}%</strong>
                             </div>
                             <div class="progress" role="progressbar"
-                                 aria-label="Estimated phishing probability"
+                                 aria-label="Probabilidad estimada de phishing"
                                  aria-valuenow="{{ result.phishing_probability|round|int }}"
                                  aria-valuemin="0" aria-valuemax="100" style="height: 0.8rem;">
                                 <div class="progress-bar {% if result.is_phishing == 1 %}bg-danger{% else %}bg-success{% endif %}"
                                      style="width: {{ result.phishing_probability }}%"></div>
                             </div>
                             <p class="small mt-2 mb-0">
-                                This is the model's estimated probability for the phishing class,
-                                not a guarantee that the URL is malicious or safe.
+                                Es una estimación para la clase phishing; no garantiza que la
+                                URL sea maliciosa o segura.
                             </p>
                         </div>
                         {% endif %}
 
-                        <div class="row g-3">
-                            <div class="col-12 col-md-6">
-                                <div class="research-feature">
-                                    <h4>Model used</h4>
-                                    <p class="mb-0">{{ result.model_name }}</p>
+                        <div class="research-feature">
+                            {% if result.classification_criteria %}
+                            <h4>Criterios de la clasificación</h4>
+                            <p class="small mb-3">
+                                El conteo indica cuántas rutas apoyaron cada clase.
+                                Cada condición muestra el valor de esta URL y una regla
+                                que siguieron esas rutas. La decisión combina varias
+                                condiciones; ninguna regla aislada es un requisito absoluto.
+                            </p>
+                            <div class="row g-3 mb-4">
+                                {% for class_result in result.classification_criteria.classes %}
+                                <div class="col-12 col-md-6">
+                                    <div class="p-3 rounded border border-secondary border-opacity-25 h-100">
+                                        <h5>
+                                            Rutas a favor de «{{ class_result.label }}»
+                                            <span class="small">({{ class_result.tree_votes }}/{{ result.classification_criteria.total_trees }})</span>
+                                        </h5>
+                                        {% if class_result.rules %}
+                                        <ul class="mb-0 ps-3">
+                                            {% for rule in class_result.rules %}
+                                            <li class="mb-2">
+                                                <strong>{{ rule.name }}</strong> —
+                                                valor: {{ rule.value }}; condición:
+                                                {{ rule.condition }}
+                                                <span class="small">
+                                                    (seguida en {{ rule.tree_count }} rutas)
+                                                </span>
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                        {% else %}
+                                        <p class="small mb-0">No se registraron reglas para esta clase.</p>
+                                        {% endif %}
+                                    </div>
                                 </div>
+                                {% endfor %}
                             </div>
-                            <div class="col-12 col-md-6">
-                                <div class="research-feature">
-                                    <h4>Cross-validation F1</h4>
-                                    <p class="mb-0">{{ "%.1f"|format(result.cv_f1) }}%</p>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="research-feature">
-                                    <h4>Estimated validation error</h4>
-                                    {% if result.cv_error_rate is not none %}
-                                    <p class="mb-1 fs-5">{{ "%.1f"|format(result.cv_error_rate) }}%</p>
-                                    <p class="small mb-0">
-                                        Approximate proportion of incorrect classifications during
-                                        cross-validation. It is not the error rate for this individual URL.
-                                    </p>
-                                    {% else %}
-                                    <p class="mb-0">Not available in the model comparison report.</p>
-                                    {% endif %}
-                                </div>
-                            </div>
+                            {% endif %}
+
                         </div>
                     </section>
                     {% endif %}
@@ -121,16 +132,15 @@
 
             <div class="col-12 col-xl-8">
                 <aside class="alert alert-warning mb-0" role="note">
-                    <strong><i class="bi bi-info-circle me-2"></i>Important limitations.</strong>
-                    The selected model is chosen using phase 4 cross-validation results.
-                    Its performance is preliminary until phase 5 evaluates it on the reserved
-                    test dataset. A low estimated error does not guarantee that every prediction
-                    is correct. Do not enter passwords or personal information on suspicious sites.
+                    <strong><i class="bi bi-info-circle me-2"></i>Limitaciones importantes.</strong>
+                    El resultado es una estimación basada en las características de la URL,
+                    no una garantía de que el enlace sea seguro o malicioso. No ingreses
+                    contraseñas ni información personal en sitios sospechosos.
                     {% if not model_available %}
                     <span class="d-block mt-2">
-                        The trained model files are not present. Run phase 4 first and confirm
-                        that <code>phase4_output/</code> contains the comparison, metadata and
-                        saved models.
+                        Los archivos necesarios para el análisis no están disponibles.
+                        Ejecuta primero la fase 4 y verifica la carpeta
+                        <code>phase4_output/</code>.
                     </span>
                     {% endif %}
                 </aside>
