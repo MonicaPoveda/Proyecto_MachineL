@@ -27,6 +27,8 @@
                     </p>
                     <form method="post" action="{{ url_for('application_platform') }}">
                         <label class="form-label fw-semibold" for="url">URL que quieres analizar</label>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                        <label class="form-label fw-semibold" for="url">URL to analyze</label>
                         <div class="input-group input-group-lg mb-2">
                             <input class="form-control" id="url" name="url" type="text"
                                    inputmode="url" maxlength="2048"

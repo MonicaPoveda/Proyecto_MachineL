@@ -2,6 +2,7 @@
 
 from functools import lru_cache
 import json
+import os
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -10,6 +11,8 @@ from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 from flask import Flask, abort, render_template, request
 
+from auth import auth_bp, login_required, validate_csrf
+from db import close_db, init_db
 from templates.methodology.phase3.features import (
     FEATURE_COLUMNS,
     extract_features,
@@ -17,6 +20,20 @@ from templates.methodology.phase3.features import (
 )
 
 app = Flask(__name__)
+
+# Secret used to sign session cookies and password-reset tokens.
+# In production (Render) it is injected through render.yaml; the fallback is for local development only.
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", "dev-insecure-secret-change-me")
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    # Enable SESSION_COOKIE_SECURE=True behind HTTPS (e.g. Render) in production.
+)
+
+app.register_blueprint(auth_bp)
+app.teardown_appcontext(close_db)
+init_db()
+
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_OUTPUT_DIR = BASE_DIR / "phase4_output"
 MODELS_DIR = MODEL_OUTPUT_DIR / "models"
@@ -95,12 +112,15 @@ def application_context():
 
 
 @app.route("/application/platform/", methods=["GET", "POST"])
+@login_required
 def application_platform():
     result = None
     error = None
     submitted_url = ""
 
     if request.method == "POST":
+        if not validate_csrf():
+            abort(400)
         submitted_url = request.form.get("url", "").strip()
         if not submitted_url:
             error = "Escribe una URL para analizar."
