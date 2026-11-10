@@ -1,3 +1,9 @@
 .venv/
 __pycache__/
 *.pyc
+
+# Local SQLite database (generated at runtime)
+*.db
+
+# Temporary folder left by a blocked pip attempt (safe to delete manually)
+.tmp-pip/

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Sign up | Application{% endblock %}
+
+{% block content %}
+<section class="hero pb-4">
+    <div class="container">
+        <p class="eyebrow mb-3">Application / Platform</p>
+        <h1 class="mb-3">Create account</h1>
+    </div>
+</section>
+
+<section class="content-section pt-3">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-7 col-lg-5">
+                <section class="info-card" aria-labelledby="register-heading">
+                    <h2 id="register-heading" class="mb-3">Sign up</h2>
+                    <form method="post" action="{{ url_for('auth.register') }}">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="email">Email</label>
+                            <input class="form-control" id="email" name="email" type="email"
+                                   autocomplete="email" placeholder="youremail@example.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="password">Password</label>
+                            <input class="form-control" id="password" name="password" type="password"
+                                   autocomplete="new-password" minlength="8" required>
+                            <div class="form-text text-light">At least 8 characters.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold" for="confirm_password">Confirm password</label>
+                            <input class="form-control" id="confirm_password" name="confirm_password" type="password"
+                                   autocomplete="new-password" minlength="8" required>
+                        </div>
+                        <button class="btn btn-primary w-100" type="submit">Sign up</button>
+                    </form>
+                    <p class="mb-0 mt-3 text-center">
+                        Already have an account? <a href="{{ url_for('auth.login') }}">Sign in</a>
+                    </p>
+                </section>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
