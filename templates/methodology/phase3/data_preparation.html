@@ -57,10 +57,10 @@ Phase 3: Data Preparation | Faculty of Engineering
                             <h3 class="h5 text-white fw-bold mb-0">Selection and Cleaning</h3>
                         </div>
                         <p class="text-light fs-6 mb-3">
-                            The raw <code>indicators_of_compromise_ioc_20261106.csv</code> dataset was ingested. Out of all indicator types (IPs, Hashes, Emails), the pipeline strictly filtered records tagged as <strong>URL</strong> and <strong>FQDN</strong>, as they are the only ones relevant to our web application's scope.
+                            The pipeline loads <code>indicators_of_compromise_ioc_20261106.csv</code> and <code>urls_leg.csv</code>. From IoC it keeps only <strong>URL</strong> and <strong>FQDN</strong> records; <code>urls_leg.csv</code> contributes URLs labeled <code>legitima</code>.
                         </p>
                         <p class="text-light fs-6 mb-0">
-                            Empty type values were resolved heuristically based on string length, and absolute duplicates were removed, leaving a clean subset of unique malicious indicators.
+                            Both sources are normalized with the same <code>features.py</code> logic. Invalid URLs are removed and duplicate normalized URLs are collapsed; IoC labels take priority if a URL appears in both files.
                         </p>
                     </div>
                 </div>
@@ -73,10 +73,10 @@ Phase 3: Data Preparation | Faculty of Engineering
                             <h3 class="h5 text-white fw-bold mb-0">Class Balancing (50/50)</h3>
                         </div>
                         <p class="text-light fs-6 mb-3">
-                            Because the IoC dataset contains only malicious links, training a model directly on it would cause severe single-class bias. To solve this, the <code>top-1m.csv</code> dataset was introduced to represent legitimate traffic.
+                            IoC URLs and domains are labeled phishing (<code>1</code>), while URLs in <code>urls_leg.csv</code> are labeled legitimate (<code>0</code>). The pipeline balances the combined data by randomly sampling the larger class.
                         </p>
                         <p class="text-light fs-6 mb-0">
-                            The pipeline randomly sampled an exact equal number of legitimate URLs to match the malicious count, creating a perfectly balanced dataset (50% Phishing / 50% Legitimate). Both subsets were then concatenated and randomly shuffled.
+                            The resulting unified dataset contains an equal number of phishing and legitimate examples and is shuffled before feature extraction.
                         </p>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 {
     "phase": "CRISP-DM Phase 4 - Modeling",
-    "training_file": "D:\\Codigos_De_Programacion\\HTML\\Proyecto_MachineL\\templates\\methodology\\phase3\\phase3_output\\train.csv",
-    "records": 33939,
+    "training_file": "C:\\Users\\moren\\OneDrive\\Desktop\\Maching_learning\\Proyecto_MachineL\\templates\\methodology\\phase3\\phase3_output\\train.csv",
+    "records": 33936,
     "features": [
         "url_length",
         "host_length",

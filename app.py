@@ -7,6 +7,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 import joblib
+from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
 from flask import Flask, abort, render_template, request
 
@@ -39,6 +40,40 @@ MODELS_DIR = MODEL_OUTPUT_DIR / "models"
 COMPARISON_PATH = MODEL_OUTPUT_DIR / "model_comparison.csv"
 METADATA_PATH = MODEL_OUTPUT_DIR / "modeling_metadata.json"
 MAX_URL_LENGTH = 2048
+
+FEATURE_REPORT = {
+    "url_length": ("Longitud total de la URL", "measure"),
+    "host_length": ("Longitud del dominio", "measure"),
+    "path_length": ("Longitud de la ruta", "measure"),
+    "query_length": ("Longitud de los parámetros", "measure"),
+    "n_dots_url": ("Puntos en la URL", "measure"),
+    "n_hyphens_url": ("Guiones en la URL", "measure"),
+    "n_underscores_url": ("Guiones bajos en la URL", "measure"),
+    "n_slashes_url": ("Barras en la URL", "measure"),
+    "n_digits_url": ("Dígitos en la URL", "measure"),
+    "digit_ratio_url": ("Proporción de dígitos en la URL", "measure"),
+    "n_special_chars_url": ("Caracteres especiales en la URL", "measure"),
+    "n_subdomains": ("Subdominios", "measure"),
+    "host_n_hyphens": ("Guiones en el dominio", "measure"),
+    "host_n_digits": ("Dígitos en el dominio", "measure"),
+    "host_digit_ratio": ("Proporción de dígitos en el dominio", "measure"),
+    "has_ip_host": ("El dominio es una dirección IP", "alert"),
+    "has_port": ("Puerto explícito", "measure"),
+    "port_is_nonstandard": ("Puerto no estándar", "alert"),
+    "path_depth": ("Niveles de profundidad de la ruta", "measure"),
+    "n_query_params": ("Parámetros de consulta", "measure"),
+    "has_at_symbol": ("Símbolo @ en el dominio", "alert"),
+    "has_double_slash_in_path": ("Barras dobles en la ruta", "alert"),
+    "has_punycode": ("Codificación Punycode en el dominio", "alert"),
+    "is_shortener": ("Dominio de acortador conocido", "alert"),
+    "n_suspicious_words": ("Palabras de alerta detectadas", "alert_count"),
+    "has_executable_ext": ("Extensión de archivo ejecutable", "alert"),
+    "risky_tld": ("Dominio con terminación de riesgo", "alert"),
+    "host_entropy": ("Entropía del dominio", "measure"),
+    "url_entropy": ("Entropía de la URL", "measure"),
+    "longest_host_token": ("Longitud del fragmento más largo del dominio", "measure"),
+    "tld_length": ("Longitud de la terminación del dominio", "measure"),
+}
 
 METHODOLOGY_PHASES = (
     {"slug": "business-understanding", "name": "Business Understanding",
@@ -154,9 +189,73 @@ def load_selected_model():
     return model, model_name, best.to_dict(), feature_columns
 
 
+def explain_random_forest_paths(model, sample, feature_columns, feature_values):
+    """Summarize split conditions followed by trees for each predicted class."""
+    classifier = getattr(model, "named_steps", {}).get("model")
+    if not isinstance(classifier, RandomForestClassifier):
+        return None
+
+    sample_values = sample.to_numpy(dtype=float)
+    class_labels = {0: "Legítima", 1: "Phishing"}
+    vote_counts = {label: 0 for label in class_labels}
+    rule_counts = {label: {} for label in class_labels}
+
+    for tree in classifier.estimators_:
+        leaf = int(tree.apply(sample_values)[0])
+        leaf_values = tree.tree_.value[leaf, 0]
+        predicted_class = int(tree.classes_[leaf_values.argmax()])
+        vote_counts[predicted_class] += 1
+
+        visited_nodes = tree.decision_path(sample_values).indices
+        path_rules = set()
+        for node in visited_nodes:
+            feature_index = tree.tree_.feature[node]
+            if feature_index < 0:
+                continue
+            threshold = float(tree.tree_.threshold[node])
+            value = float(sample_values[0, feature_index])
+            operator = "<=" if value <= threshold else ">"
+            path_rules.add((feature_index, operator, threshold))
+
+        for feature_index, operator, threshold in path_rules:
+            key = (feature_index, operator, threshold)
+            rule_counts[predicted_class][key] = (
+                rule_counts[predicted_class].get(key, 0) + 1
+            )
+
+    class_summaries = []
+    for label, class_name in class_labels.items():
+        rules = sorted(
+            rule_counts[label].items(),
+            key=lambda item: (-item[1], item[0][0]),
+        )[:5]
+        class_summaries.append(
+            {
+                "label": class_name,
+                "tree_votes": vote_counts[label],
+                "rules": [
+                    {
+                        "name": FEATURE_REPORT[feature_columns[index]][0],
+                        "condition": (
+                            f"{operator} {threshold:.3f}".rstrip("0").rstrip(".")
+                        ),
+                        "value": feature_values[feature_columns[index]],
+                        "tree_count": count,
+                    }
+                    for (index, operator, threshold), count in rules
+                ],
+            }
+        )
+
+    return {
+        "total_trees": len(classifier.estimators_),
+        "classes": class_summaries,
+    }
+
+
 def predict_url(normalized_url):
     """Extract URL features and classify it without retraining the model."""
-    model, model_name, metrics, feature_columns = load_selected_model()
+    model, _, _, feature_columns = load_selected_model()
     features = extract_features(normalized_url)
     missing = [column for column in feature_columns if column not in features]
     if missing:
@@ -178,25 +277,40 @@ def predict_url(normalized_url):
         if 1 in classes:
             phishing_probability = float(probabilities[classes.index(1)]) * 100
 
-    error_rate = metrics.get("cv_error_rate_mean")
-    if error_rate is not None and pd.notna(error_rate):
-        error_rate = max(0.0, min(100.0, float(error_rate) * 100))
-    else:
-        error_rate = None
+    feature_display_values = {}
+    for column in feature_columns:
+        _, kind = FEATURE_REPORT[column]
+        value = features[column]
+        if kind == "measure":
+            if column.endswith("_ratio_url") or column.endswith("_ratio"):
+                display_value = f"{value:.3f} ({value:.1%})"
+            elif isinstance(value, float) and not value.is_integer():
+                display_value = f"{value:.3f}"
+            else:
+                display_value = str(int(value))
+        elif kind == "alert_count":
+            display_value = str(int(value))
+        else:
+            display_value = "Sí" if value else "No"
+        feature_display_values[column] = display_value
+    classification_criteria = explain_random_forest_paths(
+        model,
+        sample,
+        feature_columns,
+        feature_display_values,
+    )
 
     return {
         "normalized_url": normalized_url,
         "is_phishing": prediction,
         "label": "Posible phishing" if prediction == 1 else "Probablemente legítima",
         "level": "danger" if prediction == 1 else "success",
-        "model_name": model_name.replace("_", " ").title(),
         "phishing_probability": phishing_probability,
-        "cv_error_rate": error_rate,
-        "cv_f1": float(metrics["cv_f1_mean"]) * 100,
+        "classification_criteria": classification_criteria,
         "message": (
-            "El modelo identificó patrones asociados con URLs de phishing."
+            "Se encontraron patrones asociados con URLs de phishing."
             if prediction == 1
-            else "El modelo no identificó suficientes patrones para clasificar esta URL como phishing."
+            else "No se encontraron suficientes patrones para clasificar esta URL como phishing."
         ),
     }
 
