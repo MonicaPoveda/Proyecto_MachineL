@@ -7,3 +7,6 @@ __pycache__/
 
 # Temporary folder left by a blocked pip attempt (safe to delete manually)
 .tmp-pip/
+
+# Trained model artifacts (generated locally, not committed)
+modeling_output/

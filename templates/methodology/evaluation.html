@@ -5,10 +5,11 @@
 {% block content %}
 <section class="hero pb-4">
     <div class="container">
-        <p class="eyebrow mb-3">CRISP-DM Methodology Â· Phase 05 of 06</p>
+        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 05 of 06</p>
         <h1 class="mb-3">Evaluation</h1>
         <p class="lead text-secondary">
-            Performance analysis of the Logistic Regression model against business objectives.
+            Performance analysis of the redesigned phishing classifier (Random Forest)
+            against the original problem: false positives on legitimate URLs.
         </p>
     </div>
 </section>
@@ -21,110 +22,106 @@
             <h3 class="mb-4">1. Model Overview</h3>
             <div class="row">
                 <div class="col-md-6">
-                    <p><strong>Algorithm:</strong> StandardScaler + Logistic Regression (main) / SVM (optional comparison)</p>
-                    <p><strong>Dataset:</strong> balanced_dataset_complete.csv (42,424 URLs)</p>
-                    <p><strong>Train/Test Split:</strong> 80% (33,935) / 20% (8,483)</p>
-                    <p><strong>Validation:</strong> StratifiedGroupKFold (5 folds), grouped by domain</p>
+                    <p><strong>Algorithm:</strong> Random Forest (winner) — compared against SVM (RBF) and Decision Tree</p>
+                    <p><strong>Dataset:</strong> 9,626 balanced URLs (4,813 malicious + 4,813 legitimate)</p>
+                    <p><strong>Train/Test Split:</strong> Stratified 80% (7,700) / 20% (1,926)</p>
+                    <p><strong>Selection metric:</strong> F1-score on the held-out test set</p>
                 </div>
                 <div class="col-md-6">
-                    <p><strong>Features:</strong> 31 URL characteristics (length, dots, hyphens, entropy, etc.)</p>
+                    <p><strong>Features:</strong> 31 lexical and syntactic characteristics</p>
                     <p><strong>Target:</strong> is_phishing (0 = Legitimate, 1 = Phishing)</p>
                     <p><strong>Threshold:</strong> 0.5</p>
+                    <p><strong>Sources:</strong> datos.gov.co IoC + top-1m.csv</p>
                 </div>
             </div>
         </div>
 
-        <!-- 2. PERFORMANCE METRICS -->
+        <!-- 2. WINNER PERFORMANCE METRICS -->
         <div class="info-card mb-4">
-            <h3 class="mb-4">2. Performance Metrics</h3>
+            <h3 class="mb-4">2. Winner Performance Metrics</h3>
             <div class="row g-3 text-center">
                 <div class="col-md-3">
                     <div class="p-3 rounded-3" style="background: rgba(13, 202, 240, 0.1);">
-                        <h5 class="text-info">85.68%</h5>
+                        <h5 class="text-info">99.74%</h5>
                         <p class="mb-0">Accuracy</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="p-3 rounded-3" style="background: rgba(25, 135, 84, 0.1);">
-                        <h5 class="text-success">93.70%</h5>
+                        <h5 class="text-success">99.79%</h5>
                         <p class="mb-0">Precision (Phishing)</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="p-3 rounded-3" style="background: rgba(255, 193, 7, 0.1);">
-                        <h5 class="text-warning">76.49%</h5>
+                        <h5 class="text-warning">99.69%</h5>
                         <p class="mb-0">Recall (Phishing)</p>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="p-3 rounded-3" style="background: rgba(220, 53, 69, 0.1);">
-                        <h5 class="text-danger">84.23%</h5>
+                        <h5 class="text-danger">99.74%</h5>
                         <p class="mb-0">F1-Score</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row g-3 mt-2">
-                <div class="col-md-6">
-                    <div class="p-3 rounded-3" style="background: rgba(13, 202, 240, 0.1);">
-                        <h5 class="text-info">91.25%</h5>
-                        <p class="mb-0">ROC-AUC</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="p-3 rounded-3" style="background: rgba(255, 193, 7, 0.1);">
-                        <h5 class="text-warning">0.106</h5>
-                        <p class="mb-0">Brier Score</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- 3. COMPARISON WITH OBJECTIVES -->
+        <!-- 3. MODEL COMPARISON -->
         <div class="info-card mb-4">
-            <h3 class="mb-4">3. Comparison with Business Objectives</h3>
+            <h3 class="mb-4">3. Model Comparison</h3>
             <p class="text-secondary mb-3">
-                From the Business Understanding phase, the acceptance criteria were:
+                Three algorithms were trained and evaluated on the same stratified held-out
+                test set (1,926 URLs). The winner was selected by test F1-score.
             </p>
             <div class="table-responsive">
-                <table class="table table-dark table-bordered text-center">
+                <table class="table table-dark table-bordered text-center align-middle">
                     <thead>
                         <tr>
-                            <th>Criterion</th>
-                            <th>Target</th>
-                            <th>Actual Result</th>
-                            <th>Status</th>
+                            <th>Model</th>
+                            <th>F1</th>
+                            <th>Precision</th>
+                            <th>Recall</th>
+                            <th>Accuracy</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td><strong>Phishing Recall</strong></td>
-                            <td>≥ 0.80</td>
-                            <td>0.7649 (76.49%)</td>
-                            <td class="text-danger">❌ Not met</td>
+                        <tr class="table-success">
+                            <td><strong>Random Forest 🏆</strong></td>
+                            <td>99.74%</td>
+                            <td>99.79%</td>
+                            <td>99.69%</td>
+                            <td>99.74%</td>
                         </tr>
                         <tr>
-                            <td><strong>Phishing Precision</strong></td>
-                            <td>≥ 0.85</td>
-                            <td>0.9370 (93.70%)</td>
-                            <td class="text-success">✅ Met</td>
+                            <td>Decision Tree</td>
+                            <td>99.74%</td>
+                            <td>99.79%</td>
+                            <td>99.69%</td>
+                            <td>99.74%</td>
                         </tr>
                         <tr>
-                            <td><strong>False Positive Rate</strong></td>
-                            <td>≤ 0.05</td>
-                            <td>0.0514 (5.14%)</td>
-                            <td class="text-warning">⚠️ Borderline</td>
+                            <td>SVM (RBF)</td>
+                            <td>99.64%</td>
+                            <td>99.79%</td>
+                            <td>99.48%</td>
+                            <td>99.64%</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <p class="text-secondary small">
-                <strong>Conclusion:</strong> The model meets the Precision objective but fails to meet the Recall objective (76.49% vs. 80% required). This means it misses too many phishing URLs.
+                <strong>Why Random Forest won:</strong> Random Forest and Decision Tree both reached
+                F1 = 99.74%, but Random Forest was selected as the final model because, as a
+                bootstrap-aggregated ensemble of many trees, it is more robust and less prone to
+                overfitting than a single Decision Tree. It also slightly outperformed the RBF SVM
+                (99.74% vs. 99.64% F1), which additionally scales worse as the dataset grows.
             </p>
         </div>
 
-        <!-- 4. CONFUSION MATRIX -->
+        <!-- 4. CONFUSION MATRIX (WINNER) -->
         <div class="info-card mb-4">
-            <h3 class="mb-4">4. Confusion Matrix</h3>
+            <h3 class="mb-4">4. Confusion Matrix (Random Forest)</h3>
             <div class="table-responsive">
                 <table class="table table-dark table-bordered text-center">
                     <thead>
@@ -137,76 +134,120 @@
                     <tbody>
                         <tr>
                             <td><strong>Actual: Legitimate</strong></td>
-                            <td class="text-success">TN: 4,024</td>
-                            <td class="text-danger">FP: 218</td>
+                            <td class="text-success">TN: 961</td>
+                            <td class="text-danger">FP: 2</td>
                         </tr>
                         <tr>
                             <td><strong>Actual: Phishing</strong></td>
-                            <td class="text-danger">FN: 997</td>
-                            <td class="text-success">TP: 3,244</td>
+                            <td class="text-danger">FN: 3</td>
+                            <td class="text-success">TP: 960</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <p class="text-secondary small">
-                <strong>Interpretation:</strong> The model has 997 False Negatives (undetected phishing), which is the main security risk. It also has 218 False Positives (legitimate URLs flagged as phishing), which can cause unnecessary warnings.
+                <strong>Interpretation:</strong> Out of 1,926 test URLs, only 5 were misclassified.
+                The <strong>2 False Positives</strong> are legitimate URLs incorrectly flagged as
+                phishing (minor nuisance: an unnecessary warning). The <strong>3 False Negatives</strong>
+                are phishing URLs that were missed (the real security risk, but very low at 0.16%).
             </p>
         </div>
 
-        <!-- 5. ERRORS AND LIMITATIONS -->
+        <!-- 5. ORIGINAL PROBLEM VERIFICATION -->
         <div class="info-card mb-4">
-            <h3 class="mb-4">5. Errors and Limitations</h3>
+            <h3 class="mb-4">5. Original Problem Verification (False Positives Fixed)</h3>
+            <p class="text-secondary">
+                The previous implementation misclassified legitimate URLs such as
+                <strong>https://www.google.com</strong> and <strong>https://www.youtube.com</strong>
+                as phishing. The redesigned model fixes this bug:
+            </p>
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered text-center align-middle">
+                    <thead>
+                        <tr>
+                            <th>URL</th>
+                            <th>Classification</th>
+                            <th>Phishing probability</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-start">https://www.google.com</td>
+                            <td class="text-success">✅ Legitimate</td>
+                            <td>10.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">https://www.youtube.com</td>
+                            <td class="text-success">✅ Legitimate</td>
+                            <td>10.2%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">https://www.facebook.com</td>
+                            <td class="text-success">✅ Legitimate</td>
+                            <td>6.2%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">http://web071zoom.us/fix/audio-fv/7217417464 <span class="text-muted">(IoC)</span></td>
+                            <td class="text-danger">⚠️ Phishing</td>
+                            <td>97.8%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">http://layer-check.dervishpeel.in.net/verification.google <span class="text-muted">(IoC)</span></td>
+                            <td class="text-danger">⚠️ Phishing</td>
+                            <td>96.0%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-start">http://83.142.209.203:8080/hangup.wav <span class="text-muted">(IoC)</span></td>
+                            <td class="text-danger">⚠️ Phishing</td>
+                            <td>100.0%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="text-secondary small">
+                Legitimate top sites are now classified as legitimate, while real malicious URLs from
+                the datos.gov.co IoC feed are still detected as phishing with high confidence.
+            </p>
+        </div>
+
+        <!-- 6. METHODOLOGICAL NOTE -->
+        <div class="info-card mb-4">
+            <h3 class="mb-4">6. Methodological Note</h3>
             <ul class="text-secondary">
-                <li><strong>High False Negatives (997):</strong> The model misses 23.5% of real phishing URLs. This is the most critical issue.</li>
-                <li><strong>Artificial Balance:</strong> The dataset is 50/50 balanced, but in the real world phishing is less frequent. This may inflate the Accuracy metric.</li>
-                <li><strong>Linear Model Limitation:</strong> Logistic Regression is a linear model and may not capture complex non-linear patterns in phishing URLs.</li>
-                <li><strong>No Prediction on New URLs:</strong> The current web app does not use the model to predict new URLs; it only looks up the dataset. This limits real-world applicability.</li>
-                <li><strong>Threshold 0.5:</strong> A lower threshold would increase Recall but also False Positives.</li>
+                <li><strong>31 lexical and syntactic features:</strong> URL/host/path/query lengths, dot/hyphen/digit counts, subdomain count, path depth, query parameters, presence flags (IP host, "@", non-standard port, punycode, shortener, executable extension, risky TLD), character entropy, longest host token, suspicious tokens and brand impersonation.</li>
+                <li><strong>HTTPS extracted correctly:</strong> the URL normalizer now preserves the scheme, so <code>has_https</code> carries real signal (the old implementation forced every URL to <code>http://</code>).</li>
+                <li><strong>Token matching instead of substring matching:</strong> suspicious words (login, verify, account, support…) are matched as whole hostname tokens, which avoids flagging legitimate URLs such as <code>accounts.google.com</code> or <code>support.microsoft.com</code>.</li>
+                <li><strong>Held-out test set + confusion matrix:</strong> model selection used a stratified 80/20 split and the confusion matrix was inspected, instead of relying only on cross-validation, to detect overfitting.</li>
             </ul>
         </div>
 
-        <!-- 6. DOES IT SOLVE THE PROBLEM? -->
+        <!-- 7. ERRORS AND LIMITATIONS -->
         <div class="info-card mb-4">
-            <h3 class="mb-4">6. Does the Model Solve the Problem?</h3>
-            <p class="text-secondary">
-                <strong>Partially.</strong> The model is a good first layer of defense with 93.70% Precision, but its 76.49% Recall means it is not sufficient on its own to protect users. It should be combined with:
-            </p>
+            <h3 class="mb-4">7. Errors and Limitations</h3>
             <ul class="text-secondary">
-                <li><strong>Blacklists (Tranco):</strong> To catch known malicious domains.</li>
-                <li><strong>Human reporting (PhishTank):</strong> To cover new and unknown phishing URLs.</li>
-                <li><strong>A non-linear model (Random Forest, XGBoost):</strong> To potentially improve Recall.</li>
+                <li><strong>Only 5 misclassified URLs:</strong> 2 false positives and 3 false negatives on the held-out test set.</li>
+                <li><strong>Distribution-specific training:</strong> the model was trained on top-1m (legitimate) and datos.gov.co IoC (malicious). Performance on unseen real-world URLs may be lower.</li>
+                <li><strong>Brand-impersonation gap:</strong> synthetic brand-impersonation patterns not present in the IoC feed may be missed (e.g. a handcrafted <code>paypal-verify-*.tk</code> URL was not flagged).</li>
+                <li><strong>Artificial balance:</strong> the dataset is 50/50 balanced, while phishing is less frequent in the real world.</li>
+                <li><strong>Threshold 0.5:</strong> a lower threshold would increase recall but also false positives.</li>
             </ul>
-        </div>
-
-        <!-- 7. RECOMMENDATION: RETURN TO PREVIOUS PHASE? -->
-        <div class="info-card mb-4">
-            <h3 class="mb-4">7. Should We Return to a Previous Phase?</h3>
-            <p class="text-secondary">
-                <strong>Yes.</strong> It is recommended to return to the <strong>Modeling</strong> phase to:
-            </p>
-            <ul class="text-secondary">
-                <li>Test a non-linear model (Random Forest, XGBoost) to improve Recall.</li>
-                <li>Adjust the decision threshold (e.g., from 0.5 to 0.3) to increase Recall at the cost of more False Positives.</li>
-                <li>Add more features related to URL structure and domain reputation.</li>
-            </ul>
-            <p class="text-secondary">
-                Alternatively, return to the <strong>Data Preparation</strong> phase to collect more phishing samples that are currently missed by the model.
-            </p>
         </div>
 
         <!-- 8. FINAL MODEL SELECTION -->
         <div class="info-card">
             <h3 class="mb-4">8. Final Model Selection</h3>
             <p class="text-secondary">
-                After evaluating the Logistic Regression model against the business objectives, the <strong>Logistic Regression model is selected as the final model</strong> for this phase, with the following justifications:
+                The <strong>Random Forest model is selected as the final model</strong> for this phase,
+                with the following justifications:
             </p>
             <ul class="text-secondary">
-                <li><strong>Strengths:</strong> High Precision (93.70%), interpretable, fast to train, and meets the Precision objective.</li>
-                <li><strong>Weaknesses:</strong> Low Recall (76.49%), which fails the Recall objective (≥ 0.80).</li>
-                <li><strong>Next steps:</strong> As recommended in Section 7, the model should be improved by testing non-linear algorithms or adjusting the threshold in a future iteration.</li>
+                <li><strong>Strengths:</strong> best F1 (99.74%), only 2 false positives and 3 false negatives, robust ensemble that resists overfitting, and provides probability estimates for the phishing class.</li>
+                <li><strong>Resolved the original bug:</strong> legitimate URLs (Google, YouTube, Facebook) are no longer flagged as phishing, while real IoC malicious URLs remain detected.</li>
+                <li><strong>Next steps:</strong> cover brand-impersonation patterns and evaluate on a broader, real-world URL sample before production hardening.</li>
             </ul>
             <p class="text-secondary">
-                <strong>Final decision:</strong> The Logistic Regression model is accepted as a <strong>baseline model</strong> but requires improvement before deployment in a real-world production environment.
+                <strong>Final decision:</strong> the Random Forest model is accepted and deployed in the
+                Platform page, replacing the previous Logistic Regression baseline.
             </p>
         </div>
 

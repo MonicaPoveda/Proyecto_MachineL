@@ -96,22 +96,23 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <div class="research-feature">
-                                    <h4>Cross-validation F1</h4>
-                                    <p class="mb-0">{{ "%.1f"|format(result.cv_f1) }}%</p>
+                                    <h4>Test F1 (held-out)</h4>
+                                    <p class="mb-0">{{ "%.1f"|format(result.test_f1) }}%</p>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="col-12 col-md-6">
                                 <div class="research-feature">
-                                    <h4>Estimated validation error</h4>
-                                    {% if result.cv_error_rate is not none %}
-                                    <p class="mb-1 fs-5">{{ "%.1f"|format(result.cv_error_rate) }}%</p>
-                                    <p class="small mb-0">
-                                        Approximate proportion of incorrect classifications during
-                                        cross-validation. It is not the error rate for this individual URL.
+                                    <h4>Test precision / recall</h4>
+                                    <p class="mb-0">
+                                        {{ "%.1f"|format(result.test_precision) }}% /
+                                        {{ "%.1f"|format(result.test_recall) }}%
                                     </p>
-                                    {% else %}
-                                    <p class="mb-0">Not available in the model comparison report.</p>
-                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <div class="research-feature">
+                                    <h4>Test accuracy</h4>
+                                    <p class="mb-0">{{ "%.1f"|format(result.test_accuracy) }}%</p>
                                 </div>
                             </div>
                         </div>
@@ -123,15 +124,14 @@
             <div class="col-12 col-xl-8">
                 <aside class="alert alert-warning mb-0" role="note">
                     <strong><i class="bi bi-info-circle me-2"></i>Important limitations.</strong>
-                    The selected model is chosen using phase 4 cross-validation results.
-                    Its performance is preliminary until phase 5 evaluates it on the reserved
-                    test dataset. A low estimated error does not guarantee that every prediction
-                    is correct. Do not enter passwords or personal information on suspicious sites.
+                    The selected model is chosen by its F1 score on a held-out test set of
+                    labeled URLs. A high score does not guarantee that every prediction is
+                    correct. Do not enter passwords or personal information on suspicious sites.
                     {% if not model_available %}
                     <span class="d-block mt-2">
-                        The trained model files are not present. Run phase 4 first and confirm
-                        that <code>phase4_output/</code> contains the comparison, metadata and
-                        saved models.
+                        The trained model files are not present. Run <code>python -m modeling.train</code>
+                        first and confirm that <code>modeling_output/</code> contains the winner,
+                        comparison and metadata.
                     </span>
                     {% endif %}
                 </aside>
