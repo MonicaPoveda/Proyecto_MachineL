@@ -7,11 +7,105 @@
     <div class="container">
         <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 06 of 06</p>
         <h1 class="mb-3">Deployment</h1>
+        <p class="research-intro mb-0">
+            Deployment of the URL classifier in the web platform, with a plan to monitor
+            its results, preserve its artifacts, and update it in a controlled manner.
+        </p>
     </div>
 </section>
+
 <section class="content-section pt-3">
     <div class="container">
-        <div class="info-card" aria-label="Deployment phase content template"></div>
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Model implementation</p>
+            <h2 class="h3">Trained model and prediction loading</h2>
+            <p>
+                Models are trained outside the prediction request flow using the Phase 4
+                process. This process saves serialized models in
+                <code>phase4_output/models/</code>, together with
+                <code>model_comparison.csv</code> and <code>modeling_metadata.json</code>.
+                The platform selects the model with the highest mean cross-validation F1;
+                based on the current results, it selects Random Forest.
+            </p>
+            <p class="mb-0">
+                When the first request is received, the application loads the selected
+                model and reuses it for subsequent requests. It does not retrain the model
+                for each URL. The Phase 4 selection is preliminary: its cross-validation
+                metrics do not replace the final evaluation using the reserved Phase 5
+                test set.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Application integration</p>
+            <h2 class="h3">URL analysis workflow</h2>
+            <ol class="mb-0">
+                <li>An authenticated user submits a URL through the platform page.</li>
+                <li>The application validates and normalizes the input, then extracts the features expected by the model.</li>
+                <li>The model classifies the URL as possible phishing or probably legitimate and, when available, calculates an estimated phishing probability.</li>
+                <li>The page displays the result and explanatory features. The classification is an estimate, not a guarantee that a website is safe.</li>
+            </ol>
+            <p class="mt-3 mb-0">
+                If model artifacts are missing or the expected features do not match, the
+                application reports that prediction is unavailable instead of generating
+                a fallback result.
+            </p>
+        </article>
+
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-6">
+                <article class="info-card h-100">
+                    <p class="eyebrow mb-2">Using the results</p>
+                    <h2 class="h3">Decision support</h2>
+                    <p>
+                        The result helps users decide whether to treat a URL with caution.
+                        A possible phishing alert should prompt them not to open the link
+                        or enter information; a probably legitimate result should not be
+                        interpreted as a safety certification.
+                    </p>
+                    <p class="mb-0">
+                        The tool analyzes URL features and does not replace antivirus
+                        software, reputation lists, or a specialist investigation.
+                    </p>
+                </article>
+            </div>
+            <div class="col-12 col-lg-6">
+                <article class="info-card h-100">
+                    <p class="eyebrow mb-2">Monitoring</p>
+                    <h2 class="h3">Proposed monitoring</h2>
+                    <ul class="mb-0">
+                        <li>Review application logs and prediction errors in Render.</li>
+                        <li>Monitor availability, response times, and failed requests.</li>
+                        <li>When ground-truth labels become available, periodically measure precision, recall, F1, and false negatives on new data.</li>
+                        <li>Avoid logging or retaining submitted URLs unless there is a justified need and appropriate privacy controls.</li>
+                    </ul>
+                    <p class="mt-3 mb-0">
+                        Prediction exceptions are currently recorded in the application
+                        log; no system is configured to automatically measure production
+                        metrics or collect ground-truth labels.
+                    </p>
+                </article>
+            </div>
+        </div>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Maintenance and updates</p>
+            <h2 class="h3">Controlled update process</h2>
+            <ol>
+                <li>Collect recent examples with reliable labels and review their quality and representativeness.</li>
+                <li>Retrain and compare the models using the documented Phase 4 process.</li>
+                <li>Evaluate the candidate with the reserved test set and compare its metrics with the current version.</li>
+                <li>Update the model and its metadata together; verify feature compatibility and test predictions before deployment.</li>
+                <li>Keep a copy of the previous version so the update can be rolled back if errors or performance degradation are detected.</li>
+            </ol>
+            <p class="mb-0">
+                The service is configured for deployment on Render with Gunicorn. Render's
+                default filesystem is ephemeral, so model artifacts must be included in
+                the deployment or retrieved from persistent storage. The SQLite user
+                database may also be lost on restart or redeployment; preserving user
+                accounts requires a persistent database.
+            </p>
+        </article>
     </div>
 </section>
 {% endblock %}
