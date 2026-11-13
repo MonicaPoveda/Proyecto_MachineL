@@ -22,8 +22,9 @@
             <p>
                 Models are trained outside the prediction request flow using the Phase 4
                 process. This process saves serialized models in
-                <code>phase4_output/models/</code>, together with
-                <code>model_comparison.csv</code> and <code>modeling_metadata.json</code>.
+                <code>outputs/phase4_output/models/</code>, together with
+                <code>outputs/phase4_output/model_comparison.csv</code> and
+                <code>outputs/phase4_output/modeling_metadata.json</code>.
                 The platform selects the model with the highest mean cross-validation F1;
                 based on the current results, it selects Random Forest.
             </p>

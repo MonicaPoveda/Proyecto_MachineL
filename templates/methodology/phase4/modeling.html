@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+
+{% block title %}Modeling | CRISP-DM{% endblock %}
+
+{% block content %}
+<section class="hero pb-4">
+    <div class="container">
+        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 04 of 06</p>
+        <h1 class="mb-3">Modeling</h1>
+        <p class="research-intro mb-0">
+            Train and compare phishing classifiers using the prepared URL features.
+            Model selection uses training data only; the held-out test set is reserved
+            for Phase 5.
+        </p>
+    </div>
+</section>
+
+<section class="content-section pt-3">
+    <div class="container">
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Phase objective</p>
+            <h2 class="h3">Select, train, tune, and compare candidate models</h2>
+            <p>
+                The input is <code>outputs/phase3_output/train.csv</code>, containing
+                33,936 training rows, 31 numeric URL features, and the target
+                <code>is_phishing</code> (0 = legitimate, 1 = phishing). The separate
+                <code>test.csv</code> file is not loaded during this phase.
+            </p>
+            <p class="mb-0">
+                Before fitting, the training script validates that features are numeric
+                and have no missing or infinite values, and that both target classes are
+                present.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">1. Algorithms and parameter tuning</p>
+            <h2 class="h3">Three classifiers are compared</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Algorithm</th>
+                            <th scope="col">Modeling technique</th>
+                            <th scope="col">Parameters searched</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Logistic Regression</th>
+                            <td><code>StandardScaler</code> followed by a class-weighted classifier.</td>
+                            <td><code>C</code>: 0.1, 1, 10; maximum iterations: 2,000.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Random Forest</th>
+                            <td>Class-weighted ensemble of decision trees.</td>
+                            <td>200 trees; <code>max_depth</code>: unrestricted or 20; <code>min_samples_leaf</code>: 1 or 2.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Gradient Boosting</th>
+                            <td>Sequentially adds trees to correct previous errors.</td>
+                            <td><code>n_estimators</code>: 100 or 200; <code>learning_rate</code>: 0.05 or 0.1; <code>max_depth</code>: 2 or 3.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="small mb-0">
+                Parameter combinations are searched with <code>GridSearchCV</code> and
+                stratified 3-fold cross-validation. The Random Forest search fixes the
+                tree count at 200; it does not compare different tree counts.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">2. Training and model selection</p>
+            <h2 class="h3">Cross-validation results</h2>
+            <p>
+                The mean F1 score is the selection metric because it balances phishing
+                precision and recall. Accuracy, error rate, precision, recall, and
+                ROC-AUC are recorded as complementary metrics. For each algorithm,
+                GridSearchCV refits the best parameter combination on all training rows.
+            </p>
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered align-middle text-center">
+                    <thead>
+                        <tr>
+                            <th scope="col">Model</th>
+                            <th scope="col">Mean CV F1</th>
+                            <th scope="col">Mean CV accuracy</th>
+                            <th scope="col">Mean CV precision</th>
+                            <th scope="col">Mean CV recall</th>
+                            <th scope="col">Mean CV ROC-AUC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-success">
+                            <th scope="row">Random Forest — selected</th>
+                            <td>95.74%</td>
+                            <td>95.79%</td>
+                            <td>96.92%</td>
+                            <td>94.59%</td>
+                            <td>98.47%</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Gradient Boosting</th>
+                            <td>93.91%</td>
+                            <td>94.11%</td>
+                            <td>97.13%</td>
+                            <td>90.90%</td>
+                            <td>98.02%</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Logistic Regression</th>
+                            <td>91.90%</td>
+                            <td>92.13%</td>
+                            <td>94.69%</td>
+                            <td>89.26%</td>
+                            <td>94.97%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mb-0">
+                The selected Random Forest uses 200 trees, unrestricted maximum depth,
+                and a minimum of one sample per leaf. These are cross-validation
+                selection results, not the final Phase 5 test metrics.
+            </p>
+        </article>
+
+        <article class="info-card">
+            <p class="eyebrow mb-2">3. Deliverables</p>
+            <h2 class="h3">Trained models and reproducible results</h2>
+            <p>Run the preparation and modeling scripts from the repository root:</p>
+            <pre class="p-3 rounded border border-secondary"><code>python templates/methodology/phase3/phase3_preparation.py
+python templates/methodology/phase4/phase4_modeling.py</code></pre>
+            <ul class="mb-0">
+                <li><code>outputs/phase4_output/models/</code>: one serialized model per algorithm.</li>
+                <li><code>model_comparison.csv</code>: cross-validation metrics and best parameters.</li>
+                <li><code>*_search_results.csv</code>: detailed results for each searched parameter combination.</li>
+                <li><code>modeling_metadata.json</code>: training file, feature list, and selection configuration.</li>
+            </ul>
+            <p class="small mt-3 mb-0">
+                Phase 4 selects Random Forest by mean cross-validation F1. Phase 5 evaluates
+                that saved model once on the reserved test set before deciding whether it
+                meets the project objectives.
+            </p>
+        </article>
+    </div>
+</section>
+{% endblock %}
