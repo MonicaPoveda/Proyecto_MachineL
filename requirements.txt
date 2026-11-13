@@ -6,3 +6,4 @@ gunicorn
 matplotlib
 seaborn
 tldextract
+psycopg2-binary
