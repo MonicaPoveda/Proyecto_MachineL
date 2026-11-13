@@ -11,7 +11,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DATASETS_DIR = PROJECT_ROOT / "static" / "datasets"
 IOC_PATH = DATASETS_DIR / "indicators_of_compromise_ioc_20261106.csv"
 LEGITIMATE_URLS_PATH = DATASETS_DIR / "urls_leg.csv"
-OUTPUT_DIR = Path(__file__).resolve().parent / "phase3_output"
+OUTPUT_DIR = PROJECT_ROOT / "outputs" / "phase3_output"
 
 
 def main():

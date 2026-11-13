@@ -1,0 +1,183 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluation | CRISP-DM{% endblock %}
+
+{% block content %}
+<section class="hero pb-4">
+    <div class="container">
+        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 05 of 06</p>
+        <h1 class="mb-3">Evaluation</h1>
+        <p class="research-intro mb-0">
+            Evaluate the Random Forest selected in Phase 4 on the reserved test set,
+            compare it with the project objectives, and document its errors and limits.
+        </p>
+    </div>
+</section>
+
+<section class="content-section pt-3">
+    <div class="container">
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">1. Evaluation procedure</p>
+            <h2 class="h3">One final evaluation on data not used for model selection</h2>
+            <ul class="mb-0">
+                <li>Phase 3 created a stratified 80/20 split. Phase 4 trained and selected models using only <code>train.csv</code>.</li>
+                <li>Phase 4 used shuffled, stratified 3-fold cross-validation within the training set to tune and compare the candidate models.</li>
+                <li>The selected Random Forest is evaluated on <code>outputs/phase3_output/test.csv</code>, which was not used for Phase 4 selection.</li>
+                <li>The test set contains 8,484 rows: 4,242 legitimate and 4,242 phishing examples, with the same 31 features.</li>
+                <li>Metrics appropriate for binary classification include phishing precision and recall, F1, ROC-AUC, accuracy, false-positive rate, and the confusion matrix.</li>
+            </ul>
+            <p class="small mt-3 mb-0">
+                The results shown here were calculated from the current saved model and
+                test file. The repository does not yet include a standalone Phase 5
+                evaluation script to regenerate this report automatically.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">2. Held-out test results</p>
+            <h2 class="h3">Random Forest performance</h2>
+            <p>
+                These results come from the saved model in
+                <code>outputs/phase4_output/models/random_forest.joblib</code>, evaluated
+                on the test file. They are distinct from the cross-validation metrics
+                reported in Phase 4.
+            </p>
+            <div class="row g-3 text-center">
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-info bg-opacity-10"><h3 class="text-info">95.95%</h3><p class="mb-0">Accuracy</p></div></div>
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-success bg-opacity-10"><h3 class="text-success">97.35%</h3><p class="mb-0">Phishing precision</p></div></div>
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-warning bg-opacity-10"><h3 class="text-warning">94.46%</h3><p class="mb-0">Phishing recall</p></div></div>
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-danger bg-opacity-10"><h3 class="text-danger">95.88%</h3><p class="mb-0">F1 score</p></div></div>
+            </div>
+            <div class="row g-3 text-center mt-1">
+                <div class="col-6"><div class="p-3 rounded-3 bg-info bg-opacity-10"><h3 class="text-info">98.49%</h3><p class="mb-0">ROC-AUC</p></div></div>
+                <div class="col-6"><div class="p-3 rounded-3 bg-warning bg-opacity-10"><h3 class="text-warning">2.57%</h3><p class="mb-0">False-positive rate</p></div></div>
+            </div>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">3. Cross-validation and generalization</p>
+            <h2 class="h3">Stable across these folds, with a measurable train-validation gap</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered align-middle">
+                    <thead><tr><th scope="col">Measure</th><th scope="col">Random Forest result</th><th scope="col">Interpretation</th></tr></thead>
+                    <tbody>
+                        <tr><th scope="row">Cross-validation</th><td>3 stratified folds; shuffled with random state 42</td><td>Each fold preserves the class balance while evaluating on a different subset of the training data.</td></tr>
+                        <tr><th scope="row">Mean validation F1</th><td>95.74% ± 0.10 percentage points</td><td>Low variation across these folds.</td></tr>
+                        <tr><th scope="row">Mean training-fold F1</th><td>98.64%</td><td>Training score is higher than validation score.</td></tr>
+                        <tr><th scope="row">Train-validation gap</th><td>2.90 percentage points</td><td>Indicates some overfitting to the training folds; it should be monitored.</td></tr>
+                        <tr><th scope="row">Held-out test F1</th><td>95.88%</td><td>Close to cross-validation F1 on this randomly held-out sample, but not a test of new domains or future campaigns.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="small mb-0">
+                Cross-validation estimates performance across subsets of the available
+                training data. Because folds are not grouped by domain or time, it does
+                not independently establish generalization to unseen domains or later
+                phishing campaigns.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">4. Comparison with project objectives</p>
+            <h2 class="h3">The measured test results meet the stated thresholds</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered align-middle">
+                    <thead>
+                        <tr><th scope="col">Criterion</th><th scope="col">Objective</th><th scope="col">Test result</th><th scope="col">Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><th scope="row">Phishing recall</th><td>&ge; 80%</td><td>94.46%</td><td class="text-success">Met</td></tr>
+                        <tr><th scope="row">Phishing precision</th><td>&ge; 85%</td><td>97.35%</td><td class="text-success">Met</td></tr>
+                        <tr><th scope="row">False-positive rate</th><td>&le; 5%</td><td>2.57%</td><td class="text-success">Met</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mb-0">
+                The model meets these proposed objectives on this test set. That is
+                evidence of performance on the sampled data, not a guarantee of safety
+                or a claim that every URL will be classified correctly.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">5. Confusion matrix</p>
+            <h2 class="h3">Correct predictions and errors</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-bordered text-center align-middle">
+                    <thead><tr><th scope="col">Actual class</th><th scope="col">Predicted legitimate</th><th scope="col">Predicted phishing</th></tr></thead>
+                    <tbody>
+                        <tr><th scope="row">Legitimate</th><td class="text-success">4,133 true negatives</td><td class="text-danger">109 false positives</td></tr>
+                        <tr><th scope="row">Phishing</th><td class="text-danger">235 false negatives</td><td class="text-success">4,007 true positives</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="small mb-0">
+                The 235 false negatives are phishing examples classified as legitimate;
+                the 109 false positives are legitimate examples flagged as phishing.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">6. Risk analysis</p>
+            <h2 class="h3">Overfitting, underfitting, sampling bias, and scope</h2>
+            <div class="table-responsive">
+                <table class="table table-dark table-striped align-middle">
+                    <thead><tr><th scope="col">Risk</th><th scope="col">Evidence and impact</th></tr></thead>
+                    <tbody>
+                        <tr><th scope="row">Overfitting</th><td>The 2.90-point mean train-validation F1 gap indicates some overfitting. The similar held-out F1 is encouraging for this split, but random splitting may leave related domains or patterns in both partitions.</td></tr>
+                        <tr><th scope="row">Underfitting</th><td>The measured scores do not indicate obvious underfitting on this dataset. Performance on new domains, URL formats, and future samples has not been established.</td></tr>
+                        <tr><th scope="row">Class prevalence and sampling</th><td>The test data is balanced 50/50, unlike typical production traffic. Precision and accuracy can change when phishing is much less common.</td></tr>
+                        <tr><th scope="row">Label and data bias</th><td>IoC and legitimate labels may be incomplete, stale, or noisy. Results may reflect the sources and collection period rather than all phishing URLs.</td></tr>
+                        <tr><th scope="row">Feature and scope limits</th><td>The model uses 31 lexical and structural URL features only. It does not inspect page content, redirects, live reputation, or site behavior.</td></tr>
+                        <tr><th scope="row">Operational risk</th><td>The 235 false negatives show that some phishing URLs are missed; the 109 false positives can create unnecessary warnings. A prediction is not a safety guarantee.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">7. Expert review</p>
+            <h2 class="h3">Domain-specialist validation is still pending</h2>
+            <p>
+                No specialist review is recorded in the current project artifacts.
+                Before production use, security or threat-intelligence experts should
+                review label quality, representative false positives and false
+                negatives, URL-type coverage, and whether the decision threshold is
+                appropriate for the intended users.
+            </p>
+            <p class="small mb-0">
+                The project treats this review as a release check, not as a completed
+                approval. This reflects the emphasis on rigorous real-world evaluation
+                in the KDnuggets (2025) reference supplied for this evaluation.
+            </p>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">8. Does the model address the problem?</p>
+            <h2 class="h3">A useful first-stage risk estimate, not a security guarantee</h2>
+            <p class="mb-0">
+                The Random Forest meets the stated recall, precision, and false-positive
+                objectives on the available test set, so it is a suitable project
+                candidate for URL triage. The result should still be treated as an
+                estimate and combined with user caution and other security checks.
+            </p>
+        </article>
+
+        <article class="info-card">
+            <p class="eyebrow mb-2">9. Final selection and next step</p>
+            <h2 class="h3">Random Forest selected for the project</h2>
+            <p>
+                Random Forest is selected because it achieved the highest mean
+                cross-validation F1 among the three Phase 4 candidates and met the
+                project thresholds on the reserved test set. The application loads this
+                saved model from <code>outputs/phase4_output/models/</code>.
+            </p>
+            <p class="mb-0">
+                Before production use, evaluate on a newer independent sample split by
+                domain and time. If that evaluation fails the objectives, return to data
+                preparation or modeling and repeat the documented selection process.
+            </p>
+        </article>
+    </div>
+</section>
+{% endblock %}

@@ -42,6 +42,7 @@ def project_root() -> Path:
 def resolve_training_path(root: Path) -> Path:
     """Localiza train.csv en las ubicaciones usadas por las salidas de fase 3."""
     candidates = [
+        root / "outputs" / "phase3_output" / "train.csv",
         root / "phase3" / "phase3_output" / "train.csv",
         root / "templates" / "methodology" / "phase3" / "phase3_output" / "train.csv",
         root / "phase3_output" / "train.csv",
@@ -305,7 +306,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--output",
         type=Path,
-        default=root / "phase4_output",
+        default=root / "outputs" / "phase4_output",
         help="Carpeta donde se guardaran modelos y resultados.",
     )
     parser.add_argument(

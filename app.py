@@ -35,59 +35,59 @@ app.teardown_appcontext(close_db)
 init_db()
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_OUTPUT_DIR = BASE_DIR / "phase4_output"
+MODEL_OUTPUT_DIR = BASE_DIR / "outputs" / "phase4_output"
 MODELS_DIR = MODEL_OUTPUT_DIR / "models"
 COMPARISON_PATH = MODEL_OUTPUT_DIR / "model_comparison.csv"
 METADATA_PATH = MODEL_OUTPUT_DIR / "modeling_metadata.json"
 MAX_URL_LENGTH = 2048
 
 FEATURE_REPORT = {
-    "url_length": ("Longitud total de la URL", "measure"),
-    "host_length": ("Longitud del dominio", "measure"),
-    "path_length": ("Longitud de la ruta", "measure"),
-    "query_length": ("Longitud de los parámetros", "measure"),
-    "n_dots_url": ("Puntos en la URL", "measure"),
-    "n_hyphens_url": ("Guiones en la URL", "measure"),
-    "n_underscores_url": ("Guiones bajos en la URL", "measure"),
-    "n_slashes_url": ("Barras en la URL", "measure"),
-    "n_digits_url": ("Dígitos en la URL", "measure"),
-    "digit_ratio_url": ("Proporción de dígitos en la URL", "measure"),
-    "n_special_chars_url": ("Caracteres especiales en la URL", "measure"),
-    "n_subdomains": ("Subdominios", "measure"),
-    "host_n_hyphens": ("Guiones en el dominio", "measure"),
-    "host_n_digits": ("Dígitos en el dominio", "measure"),
-    "host_digit_ratio": ("Proporción de dígitos en el dominio", "measure"),
-    "has_ip_host": ("El dominio es una dirección IP", "alert"),
-    "has_port": ("Puerto explícito", "measure"),
-    "port_is_nonstandard": ("Puerto no estándar", "alert"),
-    "path_depth": ("Niveles de profundidad de la ruta", "measure"),
-    "n_query_params": ("Parámetros de consulta", "measure"),
-    "has_at_symbol": ("Símbolo @ en el dominio", "alert"),
-    "has_double_slash_in_path": ("Barras dobles en la ruta", "alert"),
-    "has_punycode": ("Codificación Punycode en el dominio", "alert"),
-    "is_shortener": ("Dominio de acortador conocido", "alert"),
-    "n_suspicious_words": ("Palabras de alerta detectadas", "alert_count"),
-    "has_executable_ext": ("Extensión de archivo ejecutable", "alert"),
-    "risky_tld": ("Dominio con terminación de riesgo", "alert"),
-    "host_entropy": ("Entropía del dominio", "measure"),
-    "url_entropy": ("Entropía de la URL", "measure"),
-    "longest_host_token": ("Longitud del fragmento más largo del dominio", "measure"),
-    "tld_length": ("Longitud de la terminación del dominio", "measure"),
+    "url_length": ("Total URL length", "measure"),
+    "host_length": ("Hostname length", "measure"),
+    "path_length": ("Path length", "measure"),
+    "query_length": ("Query length", "measure"),
+    "n_dots_url": ("Dots in URL", "measure"),
+    "n_hyphens_url": ("Hyphens in URL", "measure"),
+    "n_underscores_url": ("Underscores in URL", "measure"),
+    "n_slashes_url": ("Slashes in URL", "measure"),
+    "n_digits_url": ("Digits in URL", "measure"),
+    "digit_ratio_url": ("Digit ratio in URL", "measure"),
+    "n_special_chars_url": ("Special characters in URL", "measure"),
+    "n_subdomains": ("Subdomain count", "measure"),
+    "host_n_hyphens": ("Hyphens in hostname", "measure"),
+    "host_n_digits": ("Digits in hostname", "measure"),
+    "host_digit_ratio": ("Digit ratio in hostname", "measure"),
+    "has_ip_host": ("Hostname is an IP address", "alert"),
+    "has_port": ("Explicit port", "measure"),
+    "port_is_nonstandard": ("Non-standard port", "alert"),
+    "path_depth": ("Path depth", "measure"),
+    "n_query_params": ("Query parameter count", "measure"),
+    "has_at_symbol": ("At sign in hostname", "alert"),
+    "has_double_slash_in_path": ("Double slash in path", "alert"),
+    "has_punycode": ("Punycode hostname", "alert"),
+    "is_shortener": ("Known URL shortener", "alert"),
+    "n_suspicious_words": ("Suspicious words detected", "alert_count"),
+    "has_executable_ext": ("Executable file extension", "alert"),
+    "risky_tld": ("Risk-associated top-level domain", "alert"),
+    "host_entropy": ("Hostname entropy", "measure"),
+    "url_entropy": ("URL entropy", "measure"),
+    "longest_host_token": ("Longest hostname token", "measure"),
+    "tld_length": ("Top-level domain length", "measure"),
 }
 
 METHODOLOGY_PHASES = (
     {"slug": "business-understanding", "name": "Business Understanding",
-     "template": "methodology/business_understanding.html"},
+     "template": "methodology/phase 1/business_understanding.html"},
     {"slug": "data-understanding", "name": "Data Understanding",
-     "template": "methodology/data_understanding.html"},
+     "template": "methodology/phase 2/data_understanding.html"},
     {"slug": "data-preparation", "name": "Data Preparation",
      "template": "methodology/phase3/data_preparation.html"},
     {"slug": "modeling", "name": "Modeling",
-     "template": "methodology/modeling.html"},
+     "template": "methodology/phase4/modeling.html"},
     {"slug": "evaluation", "name": "Evaluation",
-     "template": "methodology/evaluation.html"},
+     "template": "methodology/phase 5/evaluation.html"},
     {"slug": "deployment", "name": "Deployment",
-     "template": "methodology/deployment.html"},
+     "template": "methodology/phase 6/deployment.html"},
 )
 
 
@@ -123,23 +123,23 @@ def application_platform():
             abort(400)
         submitted_url = request.form.get("url", "").strip()
         if not submitted_url:
-            error = "Escribe una URL para analizar."
+            error = "Enter a URL to analyze."
         elif len(submitted_url) > MAX_URL_LENGTH:
-            error = f"La URL no puede superar los {MAX_URL_LENGTH} caracteres."
+            error = f"The URL cannot exceed {MAX_URL_LENGTH} characters."
         else:
             try:
                 normalized_url = normalize_url(submitted_url)
                 parsed = urlsplit(normalized_url)
                 if not normalized_url or not parsed.hostname:
-                    raise ValueError("URL sin dominio válido.")
+                    raise ValueError("The URL does not contain a valid hostname.")
                 result = predict_url(normalized_url)
             except ValueError as exc:
-                error = str(exc) or "La URL no es válida. Revísala e inténtalo de nuevo."
+                error = str(exc) or "The URL is invalid. Please check it and try again."
             except (FileNotFoundError, RuntimeError, KeyError, OSError) as exc:
-                app.logger.exception("No fue posible ejecutar la predicción: %s", exc)
+                app.logger.exception("Prediction failed: %s", exc)
                 error = (
-                    "El modelo todavía no está disponible. Ejecuta primero la fase 4 "
-                    "y verifica que exista la carpeta phase4_output."
+                    "The model is not available yet. Run the Phase 4 training script "
+                    "and verify that outputs/phase4_output contains its artifacts."
                 )
 
     return render_template(
@@ -164,17 +164,17 @@ def model_artifacts_available():
 def load_selected_model():
     """Load once the model with the best preliminary cross-validation F1."""
     if not model_artifacts_available():
-        raise FileNotFoundError("No se encontraron los artefactos de la fase 4.")
+        raise FileNotFoundError("Phase 4 model artifacts were not found.")
 
     comparison = pd.read_csv(COMPARISON_PATH)
     if comparison.empty or "cv_f1_mean" not in comparison.columns:
-        raise RuntimeError("El archivo de comparación de modelos está vacío o incompleto.")
+        raise RuntimeError("The model comparison file is empty or incomplete.")
 
     best = comparison.sort_values("cv_f1_mean", ascending=False).iloc[0]
     model_name = str(best["model"])
     model_path = MODELS_DIR / f"{model_name}.joblib"
     if not model_path.is_file():
-        raise FileNotFoundError(f"No se encontró el modelo {model_path.name}.")
+        raise FileNotFoundError(f"Model file {model_path.name} was not found.")
 
     with METADATA_PATH.open("r", encoding="utf-8") as metadata_file:
         metadata = json.load(metadata_file)
@@ -182,7 +182,7 @@ def load_selected_model():
     feature_columns = metadata.get("features", [])
     if not feature_columns or feature_columns != FEATURE_COLUMNS:
         raise RuntimeError(
-            "Las características del modelo no coinciden con el extractor de URLs."
+            "The model features do not match the URL feature extractor."
         )
 
     model = joblib.load(model_path)
@@ -196,7 +196,7 @@ def explain_random_forest_paths(model, sample, feature_columns, feature_values):
         return None
 
     sample_values = sample.to_numpy(dtype=float)
-    class_labels = {0: "Legítima", 1: "Phishing"}
+    class_labels = {0: "Legitimate", 1: "Phishing"}
     vote_counts = {label: 0 for label in class_labels}
     rule_counts = {label: {} for label in class_labels}
 
@@ -260,7 +260,7 @@ def predict_url(normalized_url):
     missing = [column for column in feature_columns if column not in features]
     if missing:
         raise RuntimeError(
-            "El extractor no generó todas las características requeridas: "
+            "The URL feature extractor did not generate all required features: "
             + ", ".join(missing)
         )
 
@@ -291,7 +291,7 @@ def predict_url(normalized_url):
         elif kind == "alert_count":
             display_value = str(int(value))
         else:
-            display_value = "Sí" if value else "No"
+            display_value = "Yes" if value else "No"
         feature_display_values[column] = display_value
     classification_criteria = explain_random_forest_paths(
         model,
@@ -303,14 +303,14 @@ def predict_url(normalized_url):
     return {
         "normalized_url": normalized_url,
         "is_phishing": prediction,
-        "label": "Posible phishing" if prediction == 1 else "Probablemente legítima",
+        "label": "Possible phishing" if prediction == 1 else "Likely legitimate",
         "level": "danger" if prediction == 1 else "success",
         "phishing_probability": phishing_probability,
         "classification_criteria": classification_criteria,
         "message": (
-            "Se encontraron patrones asociados con URLs de phishing."
+            "The URL has patterns commonly associated with phishing."
             if prediction == 1
-            else "No se encontraron suficientes patrones para clasificar esta URL como phishing."
+            else "The URL does not have enough patterns to classify it as phishing."
         ),
     }
 
