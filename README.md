@@ -113,7 +113,7 @@ Run the following commands from the repository root. On Windows, using
 PowerShell:
 
 ```powershell
-git clone <REPOSITORY_URL>
+git clone <https://github.com/MonicaPoveda/Proyecto_MachineL>
 Set-Location Proyecto_MachineL
 
 py -3.10 -m venv .venv
@@ -138,7 +138,7 @@ interpreter directly:
 On macOS or Linux:
 
 ```bash
-git clone <REPOSITORY_URL>
+git clone <https://github.com/MonicaPoveda/Proyecto_MachineL>
 cd Proyecto_MachineL
 
 python3.10 -m venv .venv
