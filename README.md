@@ -1,67 +1,67 @@
 # Phishing Risk Detection
 
-Aplicación web en Flask que estima si una URL presenta características asociadas
-con phishing. El clasificador usa características léxicas y estructurales de la
-URL; no visita el sitio para producir la predicción ni garantiza que un enlace
-sea seguro.
+A Flask web application that estimates whether a URL has characteristics
+associated with phishing. The classifier uses lexical and structural URL
+features. It does not visit the website to make a prediction and cannot
+guarantee that a link is safe.
 
-## Contenido
+## Contents
 
-- [Descripción](#descripción)
-- [Metodología y resultados](#metodología-y-resultados)
-- [Estructura del proyecto](#estructura-del-proyecto)
-- [Requisitos](#requisitos)
-- [Reproducción local](#reproducción-local)
-- [Uso de la aplicación](#uso-de-la-aplicación)
-- [Despliegue en Render](#despliegue-en-render)
-- [Datos y limitaciones](#datos-y-limitaciones)
-- [Tecnologías](#tecnologías)
+- [Overview](#overview)
+- [Methodology and results](#methodology-and-results)
+- [Project structure](#project-structure)
+- [Requirements](#requirements)
+- [Reproduce locally](#reproduce-locally)
+- [Use the application](#use-the-application)
+- [Render deployment](#render-deployment)
+- [Data and limitations](#data-and-limitations)
+- [Technologies](#technologies)
+- [References](#references)
 
-## Descripción
+## Overview
 
-El proyecto implementa una aplicación de apoyo para analizar URLs. La
-aplicación normaliza la entrada, extrae 31 características numéricas o
-binarias y la clasifica como `Possible phishing` o `Likely legitimate`.
-Cuando está disponible, también muestra una probabilidad estimada para la
-clase phishing y una explicación basada en condiciones observadas en los
-árboles del Random Forest.
+The project provides a web application for URL analysis. It normalizes the
+input, extracts 31 numeric or binary features, and classifies the URL as
+`Possible phishing` or `Likely legitimate`. When available, it also displays
+an estimated probability for the phishing class and an explanation based on
+conditions observed along Random Forest tree paths.
 
-La plataforma incluye registro e inicio de sesión. También ofrece una vista
-previa de URLs HTTPS públicas directamente en el navegador, mediante un
-`iframe` con sandbox. La vista previa no es parte de la predicción ni verifica
-la seguridad del sitio.
+The platform includes user registration and login. It also provides a
+sandboxed preview of public HTTPS URLs directly in the user's browser. The
+preview is separate from the model prediction and does not determine whether a
+website is safe.
 
-## Metodología y resultados
+## Methodology and results
 
-El repositorio organiza sus páginas de metodología con las fases de CRISP-DM.
-El informe del proyecto las presenta reorganizadas como seis fases de
-CRISP-ML(Q): comprensión del negocio y los datos, ingeniería de datos,
-ingeniería del modelo, evaluación, despliegue, y monitoreo y mantenimiento.
+The repository's methodology pages follow the CRISP-DM phases. The project
+report reorganizes the work into the six CRISP-ML(Q) phases: business and data
+understanding, data engineering, model engineering, model evaluation, model
+deployment, and monitoring and maintenance.
 
-La preparación de datos combina indicadores IoC de tipo URL y FQDN como clase
-positiva con ejemplos etiquetados como legítimos en `urls_leg.csv`. Después de
-normalizar y deduplicar, el pipeline balancea las clases y genera una división
-estratificada 80/20 con `random_state=42`.
+The data-preparation pipeline combines URL and FQDN Indicators of Compromise
+(IoCs) as the positive class with examples labeled as legitimate in
+`urls_leg.csv`. After normalization and deduplication, the pipeline balances
+the classes and creates a stratified 80/20 split using `random_state=42`.
 
-Se comparan Regresión Logística, Random Forest y Gradient Boosting mediante
-`GridSearchCV` y validación cruzada estratificada de tres pliegues. La selección
-se realiza por F1 promedio. En el conjunto de prueba reservado, la evaluación
-documentada para Random Forest reporta:
+The project compares Logistic Regression, Random Forest, and Gradient Boosting
+using `GridSearchCV` and three-fold stratified cross-validation. Models are
+selected by mean F1 score. The documented evaluation of the selected Random
+Forest on the held-out test set reports:
 
-| Métrica | Resultado |
+| Metric | Result |
 |---|---:|
-| Exactitud | 95,95 % |
-| Precisión de phishing | 97,35 % |
-| Exhaustividad (recall) de phishing | 94,46 % |
-| F1 | 95,88 % |
-| ROC-AUC | 98,49 % |
-| Tasa de falsos positivos | 2,57 % |
+| Accuracy | 95.95% |
+| Phishing precision | 97.35% |
+| Phishing recall | 94.46% |
+| F1 score | 95.88% |
+| ROC-AUC | 98.49% |
+| False-positive rate | 2.57% |
 
-Estos resultados corresponden al conjunto de prueba balanceado del proyecto.
-No demuestran por sí solos el desempeño en dominios nuevos, campañas futuras o
-tráfico con una prevalencia distinta.
+These results are for the project's balanced test set. They do not, by
+themselves, establish performance on unseen domains, future campaigns, or
+traffic with a different phishing prevalence.
 
-## Estructura del proyecto
+## Project structure
 
 ```text
 .
@@ -94,27 +94,26 @@ tráfico con una prevalencia distinta.
         └── models/
 ```
 
-Los archivos de salida se regeneran durante la preparación y el entrenamiento.
-El ranking `top-1m.csv` está en el repositorio, pero no se usa en el pipeline
-actual de entrenamiento o inferencia.
+Output files are generated by the data-preparation and model-training
+scripts. The `top-1m.csv` ranking is included in the repository but is not
+used by the current training or inference pipeline.
 
-## Requisitos
+## Requirements
 
-- Python 3.10 (Render está configurado con Python 3.10.12).
+- Python 3.10 (Render is configured to use Python 3.10.12).
 - `pip`.
-- Git para clonar el repositorio.
+- Git to clone the repository.
 
-Las dependencias están declaradas en `requirements.txt`. No todas tienen
-versiones fijadas, por lo que las versiones instaladas pueden variar entre
-entornos.
+Dependencies are listed in `requirements.txt`. Not all dependencies are
+pinned to exact versions, so installed versions may vary between environments.
 
-## Reproducción local
+## Reproduce locally
 
-Los siguientes comandos se ejecutan desde la raíz del repositorio. En Windows,
+Run the following commands from the repository root. On Windows, using
 PowerShell:
 
 ```powershell
-git clone <URL_DEL_REPOSITORIO>
+git clone <REPOSITORY_URL>
 Set-Location Proyecto_MachineL
 
 py -3.10 -m venv .venv
@@ -126,8 +125,8 @@ python templates\methodology\phase4\phase4_modeling.py
 python app.py
 ```
 
-Si PowerShell impide activar el entorno virtual, se puede usar el intérprete
-del entorno directamente:
+If PowerShell prevents virtual-environment activation, use its Python
+interpreter directly:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
@@ -136,10 +135,10 @@ del entorno directamente:
 .\.venv\Scripts\python.exe app.py
 ```
 
-En macOS o Linux, la preparación del entorno se realiza con:
+On macOS or Linux:
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone <REPOSITORY_URL>
 cd Proyecto_MachineL
 
 python3.10 -m venv .venv
@@ -151,109 +150,102 @@ python templates/methodology/phase4/phase4_modeling.py
 python app.py
 ```
 
-La primera ejecución de la preparación de datos requiere que los archivos
-IoC y `urls_leg.csv` estén en `static/datasets/`. El script de fase 3 crea
-`outputs/phase3_output/`, incluidos `train.csv` y `test.csv`. El script de
-fase 4 utiliza `train.csv` y guarda los modelos, la comparación y los
-metadatos en `outputs/phase4_output/`.
+The data-preparation script requires the IoC file and `urls_leg.csv` in
+`static/datasets/`. It creates `outputs/phase3_output/`, including `train.csv`
+and `test.csv`. The modeling script uses `train.csv` and writes the trained
+models, comparison results, and metadata to `outputs/phase4_output/`.
 
-Para iniciar Flask en modo de desarrollo, se puede usar también:
+Flask can also be started in development mode with:
 
 ```bash
 flask --app app run
 ```
 
-La aplicación local se inicia en `http://127.0.0.1:5000`. El modo de desarrollo
-no debe usarse como servidor de producción.
+The local application is available at `http://127.0.0.1:5000`. Flask's
+development server is not intended for production.
 
-### Base de datos local
+### Local database
 
-Si `DATABASE_URL` no está definida, `db.py` utiliza SQLite y crea `users.db`
-en la raíz del proyecto. El archivo de base de datos local está excluido del
-control de versiones mediante `.gitignore`.
+If `DATABASE_URL` is not set, `db.py` uses SQLite and creates `users.db` in
+the repository root. The local database file is excluded from version control
+by `.gitignore`.
 
-## Uso de la aplicación
+## Use the application
 
-1. Abrir la aplicación local en el navegador.
-2. Crear una cuenta desde la página de registro e iniciar sesión.
-3. Ir a la plataforma de análisis e ingresar una URL.
-4. Revisar la etiqueta, la probabilidad estimada y la explicación si están
-   disponibles.
-5. Si se usa la vista previa, recordar que se carga en el navegador del usuario
-   y no determina si el sitio es seguro.
+1. Open the local application in a browser.
+2. Register an account and sign in.
+3. Open the analysis platform and enter a URL.
+4. Review the classification label, estimated probability, and explanation
+   when available.
+5. If using the preview, remember that it loads in the user's browser and
+   does not verify the website's safety.
 
-Un resultado `Likely legitimate` no es una certificación de seguridad. No se
-deben ingresar contraseñas ni datos personales en sitios sospechosos o en la
-vista previa.
+`Likely legitimate` is not a safety certification. Do not enter passwords or
+personal information on suspicious websites or in the preview.
 
-## Despliegue en Render
+## Render deployment
 
-El proyecto está desplegado en Render. El archivo `render.yaml` describe el
-servicio web `machinegroup`, ejecutado con Gunicorn (`gunicorn app:app`), y la
-base de datos PostgreSQL `machinegroup-db`. Render proporciona la cadena de
-conexión mediante la variable `DATABASE_URL`; la configuración también genera
-`SECRET_KEY` para la aplicación.
+The project is deployed on Render. The `render.yaml` file describes the
+`machinegroup` web service, which runs with Gunicorn (`gunicorn app:app`), and
+the `machinegroup-db` PostgreSQL database. Render provides the database
+connection string through `DATABASE_URL`; the configuration also generates a
+`SECRET_KEY` for the application.
 
-**Aplicación desplegada:** [https://cypherlink-1rnq.onrender.com](https://cypherlink-1rnq.onrender.com)
+**Deployed application:** [https://cypherlink-1rnq.onrender.com](https://cypherlink-1rnq.onrender.com)
 
-Para crear o actualizar un despliegue desde este repositorio:
+To create or update a deployment from this repository:
 
-1. Subir el repositorio a GitHub.
-2. Crear o actualizar un servicio en Render conectado al repositorio y usar
-   `render.yaml` como configuración.
-3. Confirmar que el servicio web y la base de datos PostgreSQL se hayan creado
-   y que las variables `DATABASE_URL` y `SECRET_KEY` estén disponibles para el
-   servicio.
-4. Verificar que los artefactos de `outputs/phase4_output/` estén incluidos en
-   el despliegue. Si se vuelven a entrenar los modelos, conservar juntos el
-   modelo, `model_comparison.csv` y `modeling_metadata.json`.
-5. Probar registro, inicio de sesión y análisis de una URL después del
-   despliegue.
+1. Push the repository to GitHub.
+2. Create or update a Render service connected to the repository and use
+   `render.yaml` as its configuration.
+3. Confirm that the web service and PostgreSQL database have been created and
+   that `DATABASE_URL` and `SECRET_KEY` are available to the service.
+4. Ensure that the artifacts in `outputs/phase4_output/` are included in the
+   deployment. When retraining, keep the model, `model_comparison.csv`, and
+   `modeling_metadata.json` together.
+5. Test registration, login, and URL analysis after deployment.
 
-No se deben guardar contraseñas, cadenas de conexión ni claves secretas en el
-repositorio. El sistema de archivos predeterminado de Render puede ser
-efímero; por ello, los artefactos del modelo deben estar incluidos en el
-despliegue o guardados en almacenamiento persistente. La base PostgreSQL es
-para las cuentas de usuario; no implementa por sí misma el monitoreo de
-métricas del modelo.
+Do not commit passwords, database connection strings, or secret keys. Render's
+default filesystem may be ephemeral; model artifacts must therefore be
+included in the deployment or stored in persistent storage. The PostgreSQL
+database is used for user accounts; it does not automatically monitor model
+metrics.
 
-## Datos y limitaciones
+## Data and limitations
 
-- El conjunto IoC se publica en el portal de datos abiertos de Colombia por
-  MinTIC/ColCERT. La ficha del conjunto está disponible en
-  [datos.gov.co](https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data).
-- `urls_leg.csv` aporta los ejemplos etiquetados como legítimos. La
-  interpretación de sus etiquetas depende de la procedencia y criterios usados
-  para construir ese archivo.
-- La clase positiva se construye con indicadores IoC de tipo URL y FQDN. Estos
-  indicadores son etiquetas de amenaza de la fuente y no necesariamente casos
-  de phishing confirmados de manera independiente.
-- El modelo utiliza características léxicas y estructurales de la URL; no
-  inspecciona el contenido de la página, redirecciones ni reputación en vivo.
-- La partición de datos es aleatoria y estratificada, no separada por dominio
-  o tiempo. Por ello, los resultados no garantizan generalización a dominios
-  nuevos o campañas futuras.
-- La clase «indeterminado» aparece como objetivo metodológico, pero la
-  aplicación actual presenta una clasificación binaria.
-- No se ha implementado monitoreo automático de *data drift* ni de métricas de
-  producción.
-- La vista previa acepta URLs HTTPS públicas y se carga en el navegador del
-  usuario. Algunos sitios bloquean su inserción; una vista en blanco no indica
-  que el sitio sea seguro o malicioso.
+- The IoC dataset is published by MinTIC/ColCERT on Colombia's open data
+  portal. See the [dataset record on datos.gov.co](https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data).
+- `urls_leg.csv` provides examples labeled as legitimate. The interpretation
+  of these labels depends on the source and criteria used to create the file.
+- The positive class is constructed from URL and FQDN IoCs. These source
+  labels indicate threats and are not necessarily independently confirmed
+  phishing cases.
+- The model uses lexical and structural URL features. It does not inspect
+  webpage content, redirects, or live reputation.
+- The data split is random and stratified; it is not grouped by domain or
+  time. Therefore, the reported results do not guarantee generalization to
+  unseen domains or future campaigns.
+- An "undetermined" outcome is described as a methodological objective, but
+  the current application performs binary classification.
+- Automated production monitoring for data drift and model metrics has not
+  been implemented.
+- The preview accepts public HTTPS URLs and loads in the user's browser.
+  Some websites block embedding; a blank preview does not indicate that a
+  site is safe or malicious.
 
-## Tecnologías
+## Technologies
 
-- Python, Flask y Gunicorn.
-- pandas, NumPy y scikit-learn.
-- Joblib para serializar los modelos.
-- tldextract para analizar dominios.
-- SQLite para desarrollo local y PostgreSQL en la configuración de Render.
+- Python, Flask, and Gunicorn.
+- pandas, NumPy, and scikit-learn.
+- Joblib for model serialization.
+- tldextract for domain parsing.
+- SQLite for local development and PostgreSQL in the Render configuration.
 
-## Referencias
+## References
 
-Ministerio de Tecnologías de la Información y las Comunicaciones [MinTIC].
-(2023). *Indicadores de Compromiso (IoC)* [Conjunto de datos]. Datos Abiertos
-Colombia. [Ficha del conjunto de datos](https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data).
+Ministry of Information Technologies and Communications [MinTIC]. (2023).
+*Indicators of Compromise (IoC)* [Dataset]. Colombia Open Data.
+[Dataset record](https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data).
 
 Studer, S., Bui, T. B., Drescher, C., Hanuschkin, A., Winkler, L., Peters, S.,
 & Müller, K.-R. (2021). Towards CRISP-ML(Q): A machine learning process model
