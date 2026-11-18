@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Modeling | CRISP-DM{% endblock %}
+{% block title %}Model Engineering | CRISP-ML{% endblock %}
 
 {% block content %}
 <section class="hero pb-4">
     <div class="container">
-        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 04 of 06</p>
-        <h1 class="mb-3">Modeling</h1>
+        <p class="eyebrow mb-3">CRISP-ML(Q) Methodology · Phase 03 of 06</p>
+        <h1 class="mb-3">Model Engineering</h1>
         <p class="research-intro mb-0">
-            Train and compare phishing classifiers using the prepared URL features.
+            Train, tune, and compare classifiers using the prepared URL features.
             Model selection uses training data only; the held-out test set is reserved
-            for Phase 5.
+            for Phase 4 (Model Evaluation).
         </p>
     </div>
 </section>
@@ -37,7 +37,7 @@
             <p class="eyebrow mb-2">1. Algorithms and parameter tuning</p>
             <h2 class="h3">Three classifiers are compared</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle">
+                <table class="table align-middle">
                     <thead>
                         <tr>
                             <th scope="col">Algorithm</th>
@@ -69,6 +69,13 @@
                 stratified 3-fold cross-validation. The Random Forest search fixes the
                 tree count at 200; it does not compare different tree counts.
             </p>
+            <p class="small mt-3 mb-0">
+                These candidates were chosen for structured numerical URL features:
+                Logistic Regression is a scaled linear baseline, Random Forest can model
+                nonlinear feature interactions, and Gradient Boosting builds trees
+                sequentially. SVM, K-means, and multiclass threat categorization are not
+                part of the implemented experiment.
+            </p>
         </article>
 
         <article class="info-card mb-4">
@@ -81,7 +88,7 @@
                 GridSearchCV refits the best parameter combination on all training rows.
             </p>
             <div class="table-responsive">
-                <table class="table table-dark table-bordered align-middle text-center">
+                <table class="table table-bordered align-middle text-center">
                     <thead>
                         <tr>
                             <th scope="col">Model</th>
@@ -93,7 +100,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr class="table-success">
+                        <tr>
                             <th scope="row">Random Forest — selected</th>
                             <td>95.74%</td>
                             <td>95.79%</td>
@@ -122,8 +129,8 @@
             </div>
             <p class="mb-0">
                 The selected Random Forest uses 200 trees, unrestricted maximum depth,
-                and a minimum of one sample per leaf. These are cross-validation
-                selection results, not the final Phase 5 test metrics.
+                and a minimum of one sample per leaf.                 These are cross-validation
+                selection results, not the final Phase 4 test metrics.
             </p>
         </article>
 
@@ -140,7 +147,7 @@ python templates/methodology/phase4/phase4_modeling.py</code></pre>
                 <li><code>modeling_metadata.json</code>: training file, feature list, and selection configuration.</li>
             </ul>
             <p class="small mt-3 mb-0">
-                Phase 4 selects Random Forest by mean cross-validation F1. Phase 5 evaluates
+                Phase 3 selects Random Forest by mean cross-validation F1. Phase 4 evaluates
                 that saved model once on the reserved test set before deciding whether it
                 meets the project objectives.
             </p>

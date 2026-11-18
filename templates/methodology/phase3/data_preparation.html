@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}
-Phase 3: Data Preparation | Faculty of Engineering
+Phase 2: Data Engineering | Faculty of Engineering
 {% endblock %}
 
 {% block content %}
@@ -13,15 +13,15 @@ Phase 3: Data Preparation | Faculty of Engineering
     <div class="text-center mb-5">
         <div class="d-inline-flex align-items-center text-primary text-uppercase fw-semibold mb-3">
             <span class="border-top border-primary opacity-75 me-3" style="width: 50px;"></span>
-            CRISP-DM Methodology
+            CRISP-ML(Q) Methodology
             <span class="border-top border-primary opacity-75 ms-3" style="width: 50px;"></span>
         </div>
         <h1 class="display-4 fw-bold text-white mb-3">
-            Phase 03: <span class="text-accent">Data Preparation</span>
+            Phase 02: <span class="text-accent">Data Engineering</span>
         </h1>
         <div class="col-12 col-lg-9 mx-auto">
             <p class="text-light lead mb-0" style="max-width: 760px;">
-                Documentation of data cleaning, class balancing, feature engineering, and data splitting processes to prepare the mathematical matrix for the Machine Learning model.
+                Documentation of source selection, URL normalization, data cleaning, class balancing, feature engineering, and data partitioning for model development.
             </p>
         </div>
     </div>
@@ -30,7 +30,7 @@ Phase 3: Data Preparation | Faculty of Engineering
     <section id="phase-overview" class="mb-5">
         <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 text-center d-flex flex-column align-items-center">
             <p class="text-primary text-uppercase fw-bold small mb-2">Phase Objective</p>
-            <h2 class="h3 text-white mb-0 fw-bold">Transforming Raw Indicators into a Trainable Dataset</h2>
+            <h2 class="h3 text-white mb-0 fw-bold">Transforming URL Sources into a Reproducible Dataset</h2>
         </div>
     </section>
 
@@ -108,7 +108,7 @@ Phase 3: Data Preparation | Faculty of Engineering
                             The final numerical matrix was divided to prepare for the Modeling Phase. Using <code>scikit-learn</code>, a stratified split was applied to ensure the 50/50 class balance remained intact across both partitions.
                         </p>
                         <p class="text-light fs-6 mb-0">
-                            <strong>80%</strong> of the data was exported to <code>train.csv</code> (for model training), and <strong>20%</strong> was securely isolated in <code>test.csv</code> (to validate accuracy on unseen data).
+                            <strong>80%</strong> of the data was exported to <code>train.csv</code> (for model training), and <strong>20%</strong> was held out in <code>test.csv</code> for final evaluation. This random record-level split does not guarantee separation of related domains or campaigns.
                         </p>
                     </div>
                 </div>
@@ -121,7 +121,7 @@ Phase 3: Data Preparation | Faculty of Engineering
         <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
             <div class="text-center mb-5">
                 <div class="d-flex align-items-center justify-content-center mb-3">
-                    <i class="bi bi-braces fs-1 text-info me-3"></i>
+                    <i class="bi bi-braces fs-1 text-primary me-3"></i>
                     <h3 class="h4 text-white fw-bold mb-0">Extracted Features (Mathematical Matrix)</h3>
                 </div>
                 <p class="text-light fs-6 mx-auto mb-0" style="max-width: 800px;">
@@ -161,26 +161,55 @@ Phase 3: Data Preparation | Faculty of Engineering
         </div>
     </section>
 
+    <section id="data-quality-traceability" class="mb-5">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <p class="text-primary text-uppercase fw-bold small mb-2">Quality and Traceability</p>
+            <h2 class="h3 text-white fw-bold mb-4">Applied treatments and dataset outputs</h2>
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead>
+                        <tr><th scope="col">Issue or stage</th><th scope="col">Treatment or observed output</th><th scope="col">Reason / limitation</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><th scope="row">IoC type</th><td>Keep only URL and FQDN records.</td><td>Other indicator types do not match the URL input scope.</td></tr>
+                        <tr><th scope="row">Missing source values</th><td>Drop records without required URL/value or label fields.</td><td>Missing inputs cannot be normalized or assigned to a class.</td></tr>
+                        <tr><th scope="row">Duplicates</th><td>Deduplicate source values and normalized URLs; IoC label takes priority in a cross-source collision.</td><td>Reduces repeated examples and conflicting labels.</td></tr>
+                        <tr><th scope="row">Class imbalance</th><td>Randomly sample the larger class with <code>random_state=42</code> to produce a 50/50 dataset.</td><td>Balancing is for model comparison; it does not represent production prevalence.</td></tr>
+                        <tr><th scope="row">Complete balanced dataset</th><td>42,420 rows: 21,210 per class.</td><td>Produced by the preparation pipeline before the 80/20 split.</td></tr>
+                        <tr><th scope="row">Training set</th><td>33,936 rows: 16,968 per class.</td><td>Used for model fitting and cross-validation.</td></tr>
+                        <tr><th scope="row">Test set</th><td>8,484 rows: 4,242 per class.</td><td>Reserved for final evaluation; random split is not grouped by domain or time.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="alert alert-info mb-0" role="note">
+                <strong>Leakage and generalization limitation:</strong> normalized URL
+                duplicates are removed before splitting, but related URLs, domains, or
+                campaigns may still occur in both partitions. A domain-held-out and
+                time-based evaluation remains future work.
+            </div>
+        </div>
+    </section>
+
     <!-- DELIVERABLES -->
     <section id="deliverables" class="mb-5">
         <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
             <div class="d-flex align-items-center mb-3">
-                <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;">
+                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center flex-shrink-0 me-3" style="width: 48px; height: 48px;">
                     <i class="bi bi-check2-all fs-4"></i>
                 </div>
                 <div>
-                    <p class="text-success text-uppercase fw-bold small mb-1">Phase 3 Output</p>
+                    <p class="text-primary text-uppercase fw-bold small mb-1">Phase 2 Output</p>
                     <h2 class="h3 text-white mb-0 fw-bold">Final Deliverables</h2>
                 </div>
             </div>
-            <div class="p-4 rounded-3 border-start border-success border-4 shadow-sm mt-3" style="background-color: #00152a;">
+            <div class="p-4 rounded-3 border-start border-primary border-4 shadow-sm mt-3" style="background-color: #00152a;">
                 <p class="text-light fs-5 mb-3">
-                    The execution of the pipeline successfully outputted a clean, mathematically structured, and balanced dataset ready for Phase 4 (Modeling).
+                The preparation pipeline produces a balanced, feature-based dataset for Phase 3 (Model Engineering). The random stratified split preserves class proportions, but does not separate records by domain or time.
                 </p>
                 <ul class="list-unstyled text-light mb-0" style="font-family: monospace;">
-                    <li class="mb-2"><i class="bi bi-file-earmark-text text-primary me-2"></i> <strong>outputs/phase3_output/balanced_dataset_complete.csv</strong> (Full matrix)</li>
-                    <li class="mb-2"><i class="bi bi-file-earmark-bar-graph text-primary me-2"></i> <strong>outputs/phase3_output/train.csv</strong> (80% training data)</li>
-                    <li><i class="bi bi-file-earmark-check text-primary me-2"></i> <strong>outputs/phase3_output/test.csv</strong> (20% held-out test data)</li>
+                        <li class="mb-2"><i class="bi bi-file-earmark-text text-primary me-2"></i> <strong>outputs/phase3_output/balanced_dataset_complete.csv</strong> (generated full feature matrix)</li>
+                        <li class="mb-2"><i class="bi bi-file-earmark-bar-graph text-primary me-2"></i> <strong>outputs/phase3_output/train.csv</strong> (80% training data)</li>
+                        <li><i class="bi bi-file-earmark-check text-primary me-2"></i> <strong>outputs/phase3_output/test.csv</strong> (20% held-out test data)</li>
                 </ul>
             </div>
         </div>

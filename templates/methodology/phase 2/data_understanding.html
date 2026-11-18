@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Data Understanding | CRISP-DM{% endblock %}
+{% block title %}Supporting Data Profile | CRISP-ML{% endblock %}
 
 {% block content %}
 <section class="hero pb-4">
     <div class="container">
-        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 02 of 06</p>
-        <h1 class="mb-3">Data Understanding</h1>
+        <p class="eyebrow mb-3">Supporting Documentation · CRISP-ML(Q)</p>
+        <h1 class="mb-3">Detailed Data Profile</h1>
         <p class="research-intro mb-0">
-            Documentation of the data source, the file collected, and the initial profile
-            of the Indicators of Compromise (IoC) dataset used to classify submitted URLs
-            and links only.
+            Supporting evidence for Phase 01: source details, dataset structure, and
+            quality observations for the Indicators of Compromise (IoC) data. This page
+            is supplementary and is not one of the six main CRISP-ML phases.
         </p>
     </div>
 </section>
@@ -39,7 +39,7 @@
                 academia, and the technical community.
             </p>
             <div class="table-responsive mb-4">
-                <table class="table table-dark table-striped align-middle mb-0">
+                <table class="table align-middle mb-0">
                     <tbody>
                         <tr><th scope="row">Dataset</th><td>Indicadores de Compromiso – IoC</td></tr>
                         <tr><th scope="row">Portal</th><td>datos.gov.co (Colombian open data portal)</td></tr>
@@ -65,16 +65,25 @@
             </div>
         </article>
 
+        <div class="alert alert-info mb-4" role="note">
+            <strong>How this profile relates to the implemented pipeline:</strong>
+            Phase 02 uses IoC URL and FQDN indicators as the phishing source and
+            supplements them with <code>urls_leg.csv</code> for the legitimate class.
+            The deployed model extracts 31 URL features and does not query IoC or Tranco
+            during prediction. Continue to
+            <a class="alert-link" href="{{ url_for('methodology_phase', phase_slug='data-engineering') }}">Phase 02: Data Engineering</a>.
+        </div>
+
         <article class="info-card mb-4">
             <p class="eyebrow mb-2">Data collection</p>
             <h2>Available reference file: Tranco ranking</h2>
             <p>
                 The repository contains <code>top-1m.csv</code>, a ranking of 1,000,000
-                domains with <code>rank</code> and <code>domain</code> fields. This file is
-                not used by the current Phase 3 training pipeline or by the deployed
+                domains with <code>rank</code> and <code>domain</code> fields.                 The downloaded source file used in the original profile was
+                not used by the current Phase 2 data-engineering pipeline or by the deployed
                 classifier. The model's legitimate examples come from
                 <code>urls_leg.csv</code>; its predictions are based on the 31 URL
-                characteristics described in Phase 3.
+                characteristics described in Phase 2.
             </p>
             <div class="alert alert-info mb-0" role="note">
                 <strong>Important:</strong> a domain popularity ranking does not establish
@@ -87,7 +96,7 @@
             <p class="eyebrow mb-2">Dataset description</p>
             <h2>Supplied file at a glance</h2>
             <div class="table-responsive mb-4">
-                <table class="table table-dark table-striped align-middle mb-0">
+                <table class="table align-middle mb-0">
                     <tbody>
                         <tr><th scope="row">File size</th><td>20,903,620 bytes (about 19.9 MiB)</td></tr>
                         <tr><th scope="row">Records and fields</th><td>106,881 rows × 8 columns</td></tr>
@@ -99,7 +108,7 @@
             </div>
             <h3 class="h4">Records by IoC type</h3>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle mb-0">
+                <table class="table align-middle mb-0">
                     <thead><tr><th scope="col">IoC type</th><th scope="col">Rows</th><th scope="col">Relevance to URL-only analysis</th></tr></thead>
                     <tbody>
                         <tr><th scope="row">FQDN</th><td>52,111</td><td>Domain-level indicators usable for the host of a submitted URL.</td></tr>
@@ -133,7 +142,7 @@
             <p class="eyebrow mb-2">Data quality diagnosis</p>
             <h2>Missing values, duplicates, and errors</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle mb-0">
+                <table class="table align-middle mb-0">
                     <thead><tr><th scope="col">Check</th><th scope="col">Observed result</th><th scope="col">Assessment</th></tr></thead>
                     <tbody>
                         <tr><th scope="row">Missing values</th><td>One missing value in <code>type</code>; no missing <code>value</code> or timestamps.</td><td>Isolated case; the type was not inferred.</td></tr>
@@ -151,7 +160,7 @@
         <article class="info-card">
             <p class="eyebrow mb-2">Conclusion</p>
             <h2>Findings from the data understanding phase</h2>
-            <div class="alert alert-warning" role="note">
+            <div class="alert alert-info" role="note">
                 <strong>The IoC file contains only threat-related indicators.</strong>
                 Of 5,385 URL records, 5,199 carry the tag <code>Comportamiento Malicioso</code>
                 and the rest carry other threat tags; none is a benign example. The feed
@@ -163,7 +172,7 @@
                 <li>Usable subset: 5,385 URL records and 52,111 FQDN records out of 106,881 rows; the remaining rows are outside the application's scope.</li>
                 <li>Main quality issues found: 55,288 exact duplicate rows, 69,500 repeated indicator values, one record without <code>type</code>, and a heavily dominant tag.</li>
                 <li>A legitimate-URL class is not present in this source and is a requirement for malicious-versus-legitimate classification.</li>
-                <li>The current Phase 3 training process supplements the IoC file with the labeled examples in <code>urls_leg.csv</code>. The Tranco ranking is present in the repository but is not used by the current classifier.</li>
+                <li>The current Phase 2 data-engineering process supplements the IoC file with the labeled examples in <code>urls_leg.csv</code>. The Tranco ranking is present in the repository but is not used by the current classifier.</li>
                 <li>At inference time, the current classifier evaluates the URL's 31 extracted features; it does not perform an IoC or Tranco reputation lookup.</li>
             </ul>
         </article>

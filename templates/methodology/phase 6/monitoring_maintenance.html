@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Monitoring and Maintenance | CRISP-ML{% endblock %}
+
+{% block content %}
+<section class="hero pb-4">
+    <div class="container">
+        <p class="eyebrow mb-3">CRISP-ML(Q) Methodology · Phase 06 of 06</p>
+        <h1 class="mb-3">Monitoring and Maintenance</h1>
+        <p class="research-intro mb-0">
+            Define how the deployed phishing-risk classifier should be reviewed,
+            maintained, and updated as data and threats change. This page documents a
+            proposed operational plan; automated production monitoring is not currently
+            implemented.
+        </p>
+    </div>
+</section>
+
+<section class="content-section pt-3">
+    <div class="container">
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Current status</p>
+            <h2 class="h3">What is and is not monitored today</h2>
+            <p>
+                The web application serves URL predictions using the selected Random
+                Forest and records application exceptions in its logs. It does not
+                automatically collect ground-truth labels, measure production precision
+                or recall, detect data or concept drift, or retrain the model. This
+                distinction matters because the reported test metrics describe a
+                balanced, randomly held-out dataset, not ongoing production performance.
+            </p>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Capability</th>
+                            <th scope="col">Current implementation</th>
+                            <th scope="col">Recommended follow-up</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><th scope="row">Application errors</th><td>Exceptions are written to application logs.</td><td>Review logs and availability during routine operations.</td></tr>
+                        <tr><th scope="row">Prediction outcomes</th><td>Predictions are returned to the authenticated user; no labeled feedback loop is implemented.</td><td>Establish a privacy-reviewed, opt-in process for collecting confirmed labels if needed.</td></tr>
+                        <tr><th scope="row">Model quality</th><td>No automatic production quality metrics.</td><td>Evaluate periodically on a recent, independently labeled dataset.</td></tr>
+                        <tr><th scope="row">Drift and retraining</th><td>No automatic drift detection or retraining.</td><td>Review input and performance changes before initiating a controlled retraining cycle.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Proposed monitoring plan</p>
+            <h2 class="h3">Signals for periodic human review</h2>
+            <p>
+                The following indicators are recommendations, not active alerts or
+                established service-level thresholds. Review frequency and thresholds
+                should be agreed by the project maintainers before operational use.
+            </p>
+            <div class="table-responsive">
+                <table class="table table-bordered align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th scope="col">Review area</th>
+                            <th scope="col">Suggested indicators</th>
+                            <th scope="col">Response when a concern is found</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><th scope="row">Availability and errors</th><td>Service availability, prediction failures, model-loading errors, and response-time trends.</td><td>Investigate deployment configuration, dependencies, and model artifact availability before restoring service.</td></tr>
+                        <tr><th scope="row">Input and feature drift</th><td>Changes in URL formats and distributions of the 31 extracted features, measured without retaining raw URLs where possible.</td><td>Check whether input changes reflect new legitimate formats, attack patterns, or a feature-extraction defect.</td></tr>
+                        <tr><th scope="row">Classification quality</th><td>Precision, recall, F1, false-positive rate, and confusion matrix on a recent labeled sample.</td><td>Inspect false positives and false negatives, verify labels, and assess impact before changing thresholds or models.</td></tr>
+                        <tr><th scope="row">Data quality and freshness</th><td>Source provenance, label definitions, duplicate rates, class balance, and the collection period.</td><td>Resolve source or labeling issues and document any changes before the data is used for retraining.</td></tr>
+                        <tr><th scope="row">Security and privacy</th><td>Authentication and access control for operational data, plus any logging or retention of submitted URLs.</td><td>Limit access and retention to what is necessary; do not capture credentials or sensitive query values.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Controlled maintenance</p>
+            <h2 class="h3">Recommended model update and rollback process</h2>
+            <ol>
+                <li>Collect or obtain a recent, representative dataset with reliable labels through an approved process; record source, time period, and known limitations.</li>
+                <li>Validate the data, remove duplicates and invalid records, and review class prevalence and possible label leakage.</li>
+                <li>Repeat the documented <a class="reference-link" href="{{ url_for('methodology_phase', phase_slug='data-engineering') }}">data-engineering</a> and <a class="reference-link" href="{{ url_for('methodology_phase', phase_slug='model-engineering') }}">model-engineering</a> steps using a training/validation strategy that separates domains and time where feasible.</li>
+                <li>Evaluate the candidate with a separate recent test sample. Compare phishing recall, precision, false-positive rate, calibration where available, and error patterns with the deployed model.</li>
+                <li>Require maintainer review and record the model, feature schema, training data provenance, metrics, and approval decision before deployment.</li>
+                <li>Deploy the candidate in a controlled release, verify model loading and predictions, and retain the prior known-good artifact and configuration for rollback.</li>
+                <li>If performance, availability, or safety concerns arise, revert to the prior version, investigate the cause, and document the incident and corrective action.</li>
+            </ol>
+            <div class="alert alert-info mb-0" role="note">
+                <strong>Not currently automated:</strong> production label collection,
+                performance dashboards, drift detection, approval workflows, model
+                version rollback, and automatic retraining are future operational work.
+            </div>
+        </article>
+
+        <article class="info-card">
+            <p class="eyebrow mb-2">Quality assurance</p>
+            <h2 class="h3">Phase completion and handoff</h2>
+            <p>
+                For the project deliverable, this phase provides a documented monitoring
+                and maintenance plan that complements the implemented, authenticated
+                application. It does not claim that monitoring controls are operating.
+                Operational data and commercial or sensitive information must remain
+                protected behind authentication and appropriate access controls.
+            </p>
+            <p class="mb-0">
+                The current model's test-set results and known limitations are documented
+                in <a class="reference-link" href="{{ url_for('methodology_phase', phase_slug='model-evaluation') }}">Phase 04: Model Evaluation</a>;
+                deployment behavior is described in
+                <a class="reference-link" href="{{ url_for('methodology_phase', phase_slug='model-deployment') }}">Phase 05: Model Deployment</a>.
+            </p>
+        </article>
+    </div>
+</section>
+{% endblock %}
