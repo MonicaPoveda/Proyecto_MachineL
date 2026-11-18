@@ -6,6 +6,45 @@ PGC Guidelines | Faculty of Engineering
 
 {% block content %}
 
+<style>
+    .pgc-blue-table {
+        --bs-table-bg: #00152a;
+        --bs-table-color: #ffffff;
+        --bs-table-border-color: rgba(110, 168, 254, 0.45);
+    }
+
+    .pgc-blue-table thead {
+        background-color: #08254a;
+        color: #ffffff;
+    }
+
+    .pgc-blue-table thead th {
+        color: #ffffff !important;
+        background-color: #08254a;
+        border-color: rgba(110, 168, 254, 0.45);
+    }
+
+    .pgc-blue-table tbody tr:nth-child(odd) {
+        background-color: #00152a;
+        color: #ffffff;
+    }
+
+    .pgc-blue-table tbody tr:nth-child(even) {
+        background-color: #08254a;
+        color: #ffffff;
+    }
+
+    .pgc-blue-table tbody th,
+    .pgc-blue-table tbody td {
+        color: #ffffff !important;
+        border-color: rgba(110, 168, 254, 0.45);
+    }
+
+    .pgc-blue-table tbody th {
+        color: #9ec5fe !important;
+    }
+</style>
+
 <!-- Main page container -->
 <div class="container py-5">
 
@@ -30,7 +69,7 @@ PGC Guidelines | Faculty of Engineering
     <section id="project-title" class="mb-5">
         <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 text-center d-flex flex-column align-items-center">
             <p class="text-primary text-uppercase fw-bold small mb-2">Project Title</p>
-            <h2 class="h2 text-white mb-0 fw-bold">Developing a Web System to Detect Phishing Risks</h2>
+            <h2 class="h2 text-white mb-0 fw-bold">Web System Based on Machine Learning for Phishing Detection</h2>
         </div>
     </section>
 
@@ -77,16 +116,25 @@ PGC Guidelines | Faculty of Engineering
                     <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100" style="background-color: #00152a;">
                         <h3 class="h5 text-white fw-bold mb-3">1.2. Rationale</h3>
                         <p class="text-light fs-6 mb-3">
-                            This project proposes developing a web-based machine learning 
-                            system to detect potential phishing threats by analyzing URL 
-                            features and Indicators of Compromise (IoC) data.
+                            This project proposes developing a web-based machine learning
+                            system to support the early detection of phishing risk by
+                            analyzing lexical and structural URL features and Indicators
+                            of Compromise (IoC) data.
                         </p>
                         <p class="text-light fs-6 mb-3">
-                            The solution aims to complement traditional mechanisms by 
-                            classifying risk, presenting potential consequences, and 
-                            generating security recommendations. It will also incorporate 
-                            a preview through an external, controlled environment to help 
-                            users understand threats.
+                            The intended population includes users who receive unfamiliar
+                            links and organizations or professionals that need an initial
+                            and understandable risk signal. Potential consequences include
+                            credential or personal-data theft, financial loss, unauthorized
+                            account access, and loss of trust in digital services.
+                        </p>
+                        <p class="text-light fs-6 mb-3">
+                            The implemented solution complements traditional mechanisms
+                            by presenting a binary estimate, an estimated phishing
+                            probability, and an interpretable explanation of selected
+                            URL patterns. It also includes an optional HTTPS browser
+                            preview. The result is decision support, not a safety
+                            certification or a substitute for security software.
                         </p>
                         <p class="text-light fs-6 mb-0">
                             In this way, the project seeks to contribute to phishing 
@@ -118,8 +166,10 @@ PGC Guidelines | Faculty of Engineering
                 </div>
                 <div class="p-4 rounded-3 border-start border-primary border-4 shadow-sm" style="background-color: #00152a;">
                     <p class="text-light fs-5 mb-0">
-                        Develop a web-based system using machine learning to detect phishing risks in links, 
-                        incorporating impact analysis, security recommendations, and a preview feature.
+                        Develop a machine-learning-based web system for URL phishing
+                        risk estimation and preview, in order to support cautious
+                        decision-making among users while clearly communicating the
+                        uncertainty and limitations of the prediction.
                     </p>
                 </div>
             </div>
@@ -140,10 +190,10 @@ PGC Guidelines | Faculty of Engineering
                                 <div>
                                     <h3 class="h5 text-white fw-bold mb-2">Business Understanding</h3>
                                     <p class="text-light fs-6 mb-0">
-                                        Define the system's functional and non-functional 
-                                        requirements, risk categories, associated consequences, 
-                                        and success criteria (metrics and thresholds), based on 
-                                        a review of background information and cybersecurity reports.
+                                        Define the system's functional and non-functional
+                                        requirements, URL scope, user guidance, validation
+                                        criteria, and success thresholds based on a review
+                                        of background information and cybersecurity reports.
                                     </p>
                                 </div>
                             </div>
@@ -179,9 +229,11 @@ PGC Guidelines | Faculty of Engineering
                                 <div>
                                     <h3 class="h5 text-white fw-bold mb-2">Data Preparation</h3>
                                     <p class="text-light fs-6 mb-0">
-                                        Clean, normalize, and transform the lexical and syntactic 
-                                        characteristics of URLs and IoC metadata, preparing an 
-                                        optimal dataset for training the machine learning model.
+                                        Clean, normalize, and transform lexical and syntactic
+                                        URL characteristics, prepare a balanced dataset,
+                                        remove duplicates and invalid records, and create an
+                                        80/20 training-test partition for the machine learning
+                                        model.
                                     </p>
                                 </div>
                             </div>
@@ -197,9 +249,10 @@ PGC Guidelines | Faculty of Engineering
                                 <div>
                                     <h3 class="h5 text-white fw-bold mb-2">Modeling</h3>
                                     <p class="text-light fs-6 mb-0">
-                                        Train, tune, and compare different machine learning 
-                                        classification algorithms to maximize accuracy in phishing 
-                                        risk detection and threat type categorization.
+                                        Train, tune, and compare Logistic Regression, Random
+                                        Forest, and Gradient Boosting with three-fold
+                                        stratified cross-validation, and select the candidate
+                                        with the highest mean F1 score.
                                     </p>
                                 </div>
                             </div>
@@ -215,10 +268,12 @@ PGC Guidelines | Faculty of Engineering
                                 <div>
                                     <h3 class="h5 text-white fw-bold mb-2">Evaluation</h3>
                                     <p class="text-light fs-6 mb-0">
-                                        Evaluate the predictive model using machine learning metrics, 
-                                        including the confusion matrix, precision, recall, and 
-                                        F1-score. Validate the web interface's effectiveness in 
-                                        generating alerts, recommendations, and secure link previews.
+                                        Evaluate the selected model on the reserved test set
+                                        using accuracy, phishing precision and recall, F1,
+                                        ROC-AUC, false-positive rate, and the confusion matrix.
+                                        Validate the authenticated web interface and browser
+                                        preview against documented functional and security
+                                        requirements.
                                     </p>
                                 </div>
                             </div>
@@ -234,10 +289,10 @@ PGC Guidelines | Faculty of Engineering
                                 <div>
                                     <h3 class="h5 text-white fw-bold mb-2">Deployment</h3>
                                     <p class="text-light fs-6 mb-0">
-                                        Implement the interactive web application by integrating 
-                                        the predictive model, risk analysis engine, recommendation 
-                                        generation, impact analysis, and external preview module 
-                                        for the analyzed link.
+                                        Implement the interactive web application by integrating
+                                        the serialized predictive model, 31 URL features,
+                                        authentication, result interpretation, and an HTTPS
+                                        preview restricted to the user's browser.
                                     </p>
                                 </div>
                             </div>
@@ -373,9 +428,9 @@ PGC Guidelines | Faculty of Engineering
                                     <i class="bi bi-shield-check fs-2 text-primary d-block mb-3"></i>
                                     <h4 class="h6 text-white fw-bold mb-2">Contextual Detection</h4>
                                     <p class="text-light small mb-0">
-                                        Analyze URL features and IoC data to 
-                                        classify risk and help adapt the model 
-                                        to the local context.
+                                        Analyze 31 lexical and structural URL features
+                                        and use IoC-derived examples during training.
+                                        IoC data is not queried live for each submitted URL.
                                     </p>
                                 </div>
                             </div>
@@ -384,9 +439,9 @@ PGC Guidelines | Faculty of Engineering
                                     <i class="bi bi-lightbulb fs-2 text-primary d-block mb-3"></i>
                                     <h4 class="h6 text-white fw-bold mb-2">Actionable Guidance</h4>
                                     <p class="text-light small mb-0">
-                                        Explain the potential consequences of a 
-                                        link and provide clear mitigation 
-                                        recommendations.
+                                        Present the binary estimate, estimated probability,
+                                        and available Random Forest path conditions while
+                                        clearly stating that the result is not a safety guarantee.
                                     </p>
                                 </div>
                             </div>
@@ -395,10 +450,9 @@ PGC Guidelines | Faculty of Engineering
                                     <i class="bi bi-eye fs-2 text-primary d-block mb-3"></i>
                                     <h4 class="h6 text-white fw-bold mb-2">Safer Link Preview</h4>
                                     <p class="text-light small mb-0">
-                                        Display suspicious pages in an external, 
-                                        isolated environment so users can 
-                                        recognize deceptive tactics without 
-                                        opening them directly on their device.
+                                        Load public HTTPS pages in a browser iframe with
+                                        sandbox restrictions. This preview does not run on
+                                        the Flask server and does not certify whether a site is safe.
                                     </p>
                                 </div>
                             </div>
@@ -409,30 +463,209 @@ PGC Guidelines | Faculty of Engineering
         </div>
     </section>
 
-    <!-- METHODOLOGY ROADMAP -->
-    <section id="methodology" class="mb-5">
+    <!-- CONCEPTUAL FRAMEWORK -->
+    <section id="conceptual-framework" class="mb-5">
         <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
-            <p class="text-primary text-uppercase fw-bold small mb-2">Methodology and Development Roadmap</p>
-            <h2 class="h3 text-white fw-bold mb-4">Cross-Industry Standard Process for Data Mining (CRISP-DM)</h2>
-            
-            <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3 mt-2 text-center">
-                {% set phases = [
-                    "Business Understanding",
-                    "Data Understanding",
-                    "Data Preparation",
-                    "Modeling",
-                    "Evaluation",
-                    "Deployment"
+            <p class="text-primary text-uppercase fw-bold small mb-2">Key Concepts</p>
+            <h2 class="h3 text-white fw-bold mb-4">Conceptual Framework</h2>
+            <div class="row g-3">
+                {% set concepts = [
+                    ("Phishing", "Impersonating a legitimate entity to obtain sensitive information or induce a harmful action."),
+                    ("Malicious URL", "A web address designed to deceive or expose the user to harmful content."),
+                    ("Indicator of Compromise", "An observable artifact, such as a URL or domain, associated with potentially malicious activity."),
+                    ("Lexical feature", "An attribute calculated from the URL text, such as length, character count, or suspicious words."),
+                    ("Supervised classification", "A task in which a model learns to assign a class from labeled examples."),
+                    ("Overfitting", "A situation in which a model learns patterns too specific to the training data."),
+                    ("False positive / false negative", "A legitimate URL marked as malicious / a malicious URL not detected."),
+                    ("Explainability", "The ability to justify a prediction in understandable terms."),
+                    ("Sandbox", "A restricted environment or iframe configuration that limits page execution and navigation."),
+                    ("Open data", "Data published by public entities for free use and reuse.")
                 ] %}
-                {% for phase in phases %}
-                <div class="col">
-                    <div class="p-4 rounded-3 border border-primary border-opacity-25 h-100 d-flex flex-column align-items-center justify-content-center transition-all hover-shadow" style="background-color: #00152a;">
-                        <span class="text-primary fs-3 fw-bold mb-2">0{{ loop.index }}</span>
-                        <h3 class="h6 text-white mb-0 fw-semibold">{{ phase }}</h3>
+                {% for term, definition in concepts %}
+                <div class="col-12 col-md-6">
+                    <div class="p-3 rounded-3 border border-primary border-opacity-25 h-100" style="background-color: #00152a;">
+                        <h3 class="h6 text-white fw-bold mb-2">{{ term }}</h3>
+                        <p class="text-light small mb-0">{{ definition }}</p>
                     </div>
                 </div>
                 {% endfor %}
             </div>
+        </div>
+    </section>
+
+    <!-- METHODOLOGY ROADMAP -->
+    <section id="methodology" class="mb-5">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <p class="text-primary text-uppercase fw-bold small mb-2">Methodology and Development Schedule</p>
+            <h2 class="h3 text-white fw-bold mb-4">Six-Phase CRISP-ML Process</h2>
+            <p class="text-light fs-6 mb-4">
+                The project was reorganized under CRISP-ML(Q) for this final
+                consolidation. The previous CRISP-DM work remains the basis for
+                business understanding, data preparation, modeling, evaluation,
+                and deployment. CRISP-ML adds explicit quality assurance and
+                monitoring and maintenance activities.
+            </p>
+
+            <div class="table-responsive mb-4">
+                <table class="table pgc-blue-table table-bordered align-middle mb-0">
+                    <thead style="background-color: #08254a; color: #ffffff;">
+                        <tr>
+                            <th scope="col">Phase</th>
+                            <th scope="col">Application in the project</th>
+                            <th scope="col">Status and evidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1. Understanding the business and data</th>
+                            <td>Defined the URL-only phishing problem, scope, users, sources, risks, and success criteria.</td>
+                            <td>Documented in the methodological pages and project files. Interviews and formal user validation are not recorded.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2. Data engineering</th>
+                            <td>Filtered IoC URL/FQDN records, combined them with legitimate URLs, normalized and deduplicated records, balanced classes, extracted 31 features, and created an 80/20 partition.</td>
+                            <td>Implemented in the Phase 3 preparation script. The split is random and stratified, but it does not separate domains or periods.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3. Model engineering</th>
+                            <td>Compared Logistic Regression, Random Forest, and Gradient Boosting with parameter search and three-fold stratified cross-validation.</td>
+                            <td>Implemented in the Phase 4 modeling script. Random Forest had the highest documented mean F1.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4. Model evaluation</th>
+                            <td>Reported metrics, the confusion matrix, threshold comparison, overfitting risk, and generalization limitations.</td>
+                            <td>Documented for the balanced test set. Independent domain/time evaluation and formal specialist review remain pending.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">5. Model deployment</th>
+                            <td>Integrated authentication, URL validation, model inference, estimated probability, an explanation, and an HTTPS browser preview.</td>
+                            <td>Implemented in Flask and configured for Gunicorn and Render. The published service must be verified before delivery.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">6. Monitoring and maintenance</th>
+                            <td>Established a proposed process for availability, errors, feature drift, metrics, model updates, and rollback.</td>
+                            <td>A future plan is documented. Automatic metric measurement, label collection, drift detection, and retraining are not implemented.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="text-primary text-uppercase fw-bold small mb-2">Schedule, Responsibilities, and Deliverables</p>
+            <div class="alert alert-info mb-4" role="note">
+                The work was planned and executed during the academic semester.
+                Exact calendar dates are not presented unless they are verified from
+                the team schedule or meeting records.
+            </div>
+            <div class="table-responsive">
+                <table class="table pgc-blue-table table-bordered align-middle mb-0">
+                    <thead style="background-color: #08254a; color: #ffffff;">
+                        <tr>
+                            <th scope="col">Phase and activity</th>
+                            <th scope="col">Responsibility</th>
+                            <th scope="col">Planned execution</th>
+                            <th scope="col">Actual execution</th>
+                            <th scope="col">Deliverables and status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">1. Understanding the business and data</th>
+                            <td>Lizeth Vanessa Moreno Moreno</td>
+                            <td>Define the phishing problem, URL scope, users, sources, risks, and acceptance criteria.</td>
+                            <td>Problem, scope, IoC origin, limitations, and criteria documented. Formal interviews and population measurement were not recorded.</td>
+                            <td>Problem statement, objectives, scope, requirements, and acceptance criteria. Documented.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2. Data engineering</th>
+                            <td>Mónica Yulihet Poveda Carrasco</td>
+                            <td>Prepare sources, normalize and deduplicate URLs, balance classes, extract features, and split data.</td>
+                            <td>IoC and legitimate sources prepared; 31 features extracted and 80/20 stratified partitions generated. top-1m.csv is not used.</td>
+                            <td>Source profile, preparation script, extractor, training set, test set, and prepared data. Documented and implemented.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3. Model engineering</th>
+                            <td>Mónica Yulihet Poveda Carrasco and Tomás Poveda Trujillo</td>
+                            <td>Train and compare candidate classifiers, tune parameters, and select a model by mean F1.</td>
+                            <td>Logistic Regression, Random Forest, and Gradient Boosting compared with three-fold cross-validation. Random Forest was selected.</td>
+                            <td>Training script, trained models, search results, metadata, and selected-model record. Implemented.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">4. Model evaluation</th>
+                            <td>Tomás Poveda Trujillo and Lizeth Vanessa Moreno Moreno</td>
+                            <td>Evaluate the reserved test set, calculate metrics and the confusion matrix, and document risks.</td>
+                            <td>Random Forest test metrics and confusion matrix documented. Domain/time evaluation and formal specialist review remain pending.</td>
+                            <td>Evaluation report, threshold comparison, errors, and limitations. Implemented partially; advanced review pending.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">5. Model deployment</th>
+                            <td>Anderson Camilo Fuel Piscal</td>
+                            <td>Integrate the classifier, authenticated analysis flow, preview, and deployment configuration.</td>
+                            <td>Flask application, login, protected analysis route, URL validation, binary result, probability, Random Forest details, preview, and Render configuration implemented.</td>
+                            <td>Deployed application integration, authentication, preview, and operation guide. Implemented; production availability requires verification.</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">6. Monitoring and maintenance</th>
+                            <td>Anderson Camilo Fuel Piscal</td>
+                            <td>Propose operational monitoring, feature checks, update criteria, retraining, and rollback.</td>
+                            <td>A future plan was documented. No automatic operational metrics, drift detection, verified labels, or retraining pipeline were implemented.</td>
+                            <td>Monitoring indicators and maintenance criteria. Plan documented; implementation pending.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <p class="text-light fs-6 mt-4 mb-0">
+                The observed test results were 95.95% accuracy, 97.35% phishing
+                precision, 94.46% phishing recall, 95.88% F1, 98.49% ROC-AUC, and
+                2.57% false-positive rate. These metrics describe the balanced test
+                set and do not guarantee performance in future traffic or on unseen
+                domains.
+            </p>
+        </div>
+    </section>
+
+    <!-- FINAL DELIVERIES -->
+    <section id="project-deliveries" class="mb-5">
+        <div class="card bg-primary bg-opacity-10 border border-primary border-opacity-50 rounded-4 shadow-lg p-4 p-md-5">
+            <p class="text-primary text-uppercase fw-bold small mb-2">Final Deliverables</p>
+            <h2 class="h3 text-white fw-bold mb-4">Technical and Public Project Resources</h2>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <a class="d-block p-4 rounded-3 border border-primary border-opacity-25 text-decoration-none h-100" style="background-color: #00152a;" href="https://github.com/MonicaPoveda/Proyecto_MachineL/blob/main/CypherLink_final.pdf" target="_blank" rel="noopener noreferrer">
+                        <span class="text-primary fw-bold d-block mb-2">Technical report</span>
+                        <span class="text-light small">Final technical report – Activity 3.</span>
+                    </a>
+                </div>
+                <div class="col-12 col-md-6">
+                    <a class="d-block p-4 rounded-3 border border-primary border-opacity-25 text-decoration-none h-100" style="background-color: #00152a;" href="https://github.com/MonicaPoveda/Proyecto_MachineL" target="_blank" rel="noopener noreferrer">
+                        <span class="text-primary fw-bold d-block mb-2">Project repository</span>
+                        <span class="text-light small">Source code, datasets, model artifacts, tests, and documentation.</span>
+                    </a>
+                </div>
+                <div class="col-12 col-md-6">
+                    <a class="d-block p-4 rounded-3 border border-primary border-opacity-25 text-decoration-none h-100" style="background-color: #00152a;" href="https://cypherlink-1rnq.onrender.com/" target="_blank" rel="noopener noreferrer">
+                        <span class="text-primary fw-bold d-block mb-2">Published application</span>
+                        <span class="text-light small">Public PGC and protected operational platform.</span>
+                    </a>
+                </div>
+                <div class="col-12 col-md-6">
+                    <a class="d-block p-4 rounded-3 border border-primary border-opacity-25 text-decoration-none h-100" style="background-color: #00152a;" href="https://github.com/MonicaPoveda/Proyecto_MachineL/blob/main/README.md" target="_blank" rel="noopener noreferrer">
+                        <span class="text-primary fw-bold d-block mb-2">User and reproduction documentation</span>
+                        <span class="text-light small">Local setup, application use, deployment, limitations, and reproducible commands.</span>
+                    </a>
+                </div>
+                <div class="col-12">
+                    <a class="d-block p-4 rounded-3 border border-primary border-opacity-25 text-decoration-none" style="background-color: #00152a;" href="{{ url_for('application_platform') }}">
+                        <span class="text-primary fw-bold d-block mb-2">CRISP-ML evidence and operational module</span>
+                        <span class="text-light small">Open the protected URL analysis platform. Registration or sign-in is required.</span>
+                    </a>
+                </div>
+            </div>
+            <p class="text-light small mt-3 mb-0">
+                The presentation video link must be added after the final 20-minute
+                recording is published and verified. It should not be represented
+                as available until it has an accessible URL.
+            </p>
         </div>
     </section>
 
@@ -442,23 +675,116 @@ PGC Guidelines | Faculty of Engineering
             <p class="text-primary text-uppercase fw-bold small mb-2">Further Reading</p>
             <h2 class="h3 text-white fw-bold mb-4">Bibliographic References <span class="text-white-50 fs-6"></span></h2>
             
-            <ul class="list-unstyled d-flex flex-column gap-3 mb-0" style="font-size: 0.95rem; line-height: 1.6;">
+            <ol class="d-flex flex-column gap-3 mb-0 ps-4" style="font-size: 0.95rem; line-height: 1.6;">
                 <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
-                    Chapman, P., Clinton, J., Kerber, R., Khabaza, T., Reinartz, T., Shearer, C., & Wirth, R. (2000). <em>CRISP-DM 1.0: Step-by-step data mining guide</em>. SPSS Inc.
+                    Alkhalil, Z., Hewage, C., Nawaf, L., &amp; Khan, I. (2021). Phishing attacks: A recent comprehensive study and a new anatomy. <em>Frontiers in Computer Science</em>, 3, Article 563060. <a href="https://doi.org/10.3389/fcomp.2021.563060" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.3389/fcomp.2021.563060</a>
                 </li>
                 <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
-                    Jain, A. K., & Gupta, B. B. (2019). A machine learning based approach for phishing detection using hyperlinks information. <em>Journal of Ambient Intelligence and Humanized Computing</em>, 10(5), 2015–2028. <a href="https://doi.org/10.1007/s12652-018-0798-z" class="text-info text-decoration-none fw-semibold" target="_blank" rel="noopener noreferrer">https://doi.org/10.1007/s12652-018-0798-z</a>
+                    Anti-Phishing Working Group. (n.d.). <em>Phishing activity trends reports</em>. <a href="https://apwg.org/trendsreports/" class="text-info" target="_blank" rel="noopener noreferrer">https://apwg.org/trendsreports/</a>
                 </li>
                 <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
-                    Ministry of Information Technologies and Communications [MinTIC]. (2023). <em>Indicators of Compromise (IoC)</em> [Dataset]. Open Data Colombia. <a href="https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data" class="text-info text-decoration-none fw-semibold" target="_blank" rel="noopener noreferrer">https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data</a>
+                    Berners-Lee, T., Fielding, R., &amp; Masinter, L. (2005). <em>Uniform Resource Identifier (URI): Generic syntax</em> (RFC 3986). Internet Engineering Task Force. <a href="https://www.rfc-editor.org/info/rfc3986" class="text-info" target="_blank" rel="noopener noreferrer">https://www.rfc-editor.org/info/rfc3986</a>
                 </li>
                 <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
-                    Sahingoz, O. K., Buber, E., Demir, O., & Diri, B. (2019). Machine learning based phishing detection from URLs. <em>Expert Systems with Applications</em>, 117, 345–357. <a href="https://doi.org/10.1016/j.eswa.2018.09.029" class="text-info text-decoration-none fw-semibold" target="_blank" rel="noopener noreferrer">https://doi.org/10.1016/j.eswa.2018.09.029</a>
+                    Breiman, L. (2001). Random forests. <em>Machine Learning</em>, 45(1), 5–32. <a href="https://doi.org/10.1023/A:1010933404324" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1023/A:1010933404324</a>
                 </li>
                 <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
-                    Silva, M., Santos, R., & Lima, J. (2022). Prediction and prevention of phishing attacks: An approach using the CRISP-DM methodology and Machine Learning. <em>Journal of Cybersecurity and Data Science</em>, 4(2), 45–60.
+                    Breiman, L., Friedman, J. H., Olshen, R. A., &amp; Stone, C. J. (1984). <em>Classification and regression trees</em>. Wadsworth.
                 </li>
-            </ul>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Chapman, P., Clinton, J., Kerber, R., Khabaza, T., Reinartz, T., Shearer, C., &amp; Wirth, R. (2000). <em>CRISP-DM 1.0: Step-by-step data mining guide</em>. SPSS Inc.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Chawla, N. V., Bowyer, K. W., Hall, L. O., &amp; Kegelmeyer, W. P. (2002). SMOTE: Synthetic minority over-sampling technique. <em>Journal of Artificial Intelligence Research</em>, 16, 321–357. <a href="https://doi.org/10.1613/jair.953" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1613/jair.953</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Chen, T., &amp; Guestrin, C. (2016). XGBoost: A scalable tree boosting system. In <em>Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em> (pp. 785–794). ACM. <a href="https://doi.org/10.1145/2939672.2939785" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1145/2939672.2939785</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    National Council of Economic and Social Policy. (2020). <em>CONPES Document 3995: National policy of trust and digital security</em>. National Planning Department.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Cortes, C., &amp; Vapnik, V. (1995). Support-vector networks. <em>Machine Learning</em>, 20(3), 273–297. <a href="https://doi.org/10.1007/BF00994018" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1007/BF00994018</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    CypherLink. (2026b). <em>Data understanding</em>. <a href="https://cypherlink-1rnq.onrender.com/methodology/data-understanding/" class="text-info" target="_blank" rel="noopener noreferrer">https://cypherlink-1rnq.onrender.com/methodology/data-understanding/</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    CypherLink. (2026c). <em>Deployment</em>. <a href="https://cypherlink-1rnq.onrender.com/methodology/deployment/" class="text-info" target="_blank" rel="noopener noreferrer">https://cypherlink-1rnq.onrender.com/methodology/deployment/</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    CypherLink. (2026d). <em>Evaluation</em>. <a href="https://cypherlink-1rnq.onrender.com/methodology/evaluation/" class="text-info" target="_blank" rel="noopener noreferrer">https://cypherlink-1rnq.onrender.com/methodology/evaluation/</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    CypherLink. (2026e). <em>PGC guidelines: Developing a web system to detect phishing risks</em>. <a href="https://cypherlink-1rnq.onrender.com/pgc/" class="text-info" target="_blank" rel="noopener noreferrer">https://cypherlink-1rnq.onrender.com/pgc/</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Dhamija, R., Tygar, J. D., &amp; Hearst, M. (2006). Why phishing works. In <em>Proceedings of the SIGCHI Conference on Human Factors in Computing Systems</em> (pp. 581–590). ACM.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Hannousse, A., &amp; Yahiouche, S. (2021). Towards benchmark datasets for machine learning based website phishing detection: An experimental study. <em>Engineering Applications of Artificial Intelligence</em>, 104, Article 104347. <a href="https://doi.org/10.1016/j.engappai.2021.104347" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1016/j.engappai.2021.104347</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Hong, J. (2012). The state of phishing attacks. <em>Communications of the ACM</em>, 55(1), 74–81.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Jain, A. K., &amp; Gupta, B. B. (2019). A machine learning based approach for phishing detection using hyperlinks information. <em>Journal of Ambient Intelligence and Humanized Computing</em>, 10(5), 2015–2028. <a href="https://doi.org/10.1007/s12652-018-0798-z" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1007/s12652-018-0798-z</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Kumaraguru, P., Rhee, Y., Acquisti, A., Cranor, L. F., Hong, J., &amp; Nunge, E. (2007). Protecting people from phishing: The design and evaluation of an embedded training email system. In <em>Proceedings of the SIGCHI Conference on Human Factors in Computing Systems</em> (pp. 905–914). ACM.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Le Pochat, V., Van Goethem, T., Tajalizadehkhoob, S., Korczyński, M., &amp; Joosen, W. (2019). Tranco: A research-oriented top sites ranking hardened against manipulation. In <em>Proceedings of the 26th Annual Network and Distributed System Security Symposium</em>. Internet Society.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Le, H., Pham, Q., Sahoo, D., &amp; Hoi, S. C. H. (2018). URLNet: Learning a URL representation with deep learning for malicious URL detection. <em>arXiv</em>. <a href="https://arxiv.org/abs/1802.03162" class="text-info" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/1802.03162</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Ma, J., Saul, L. K., Savage, S., &amp; Voelker, G. M. (2009a). Beyond blacklists: Learning to detect malicious web sites from suspicious URLs. In <em>Proceedings of the 15th ACM SIGKDD International Conference on Knowledge Discovery and Data Mining</em> (pp. 1245–1254). ACM.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Ma, J., Saul, L. K., Savage, S., &amp; Voelker, G. M. (2009b). Identifying suspicious URLs: An application of large-scale online learning. In <em>Proceedings of the 26th International Conference on Machine Learning</em> (pp. 681–688). ACM.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Mamun, M. S. I., Rathore, M. A., Lashkari, A. H., Stakhanova, N., &amp; Ghorbani, A. A. (2016). Detecting malicious URLs using lexical analysis. In <em>Network and System Security</em> (pp. 467–482). Springer.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Ministry of Information and Communication Technologies [MinTIC]. (2023). <em>Commitment Indicators (IoC)</em> [Dataset]. Open Data Colombia. <a href="https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data" class="text-info" target="_blank" rel="noopener noreferrer">https://www.datos.gov.co/Ciencia-Tecnolog-a-e-Innovaci-n/Indicadores-de-Compromiso-IoC/8zmi-ic7j/about_data</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Mohammad, R. M., Thabtah, F., &amp; McCluskey, L. (2014). Intelligent rule-based phishing websites classification. <em>IET Information Security</em>, 8(3), 153–160.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Pedregosa, F., Varoquaux, G., Gramfort, A., Michel, V., Thirion, B., Grisel, O., ... Duchesnay, E. (2011). Scikit-learn: Machine learning in Python. <em>Journal of Machine Learning Research</em>, 12, 2825–2830.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Sahoo, D., Liu, C., &amp; Hoi, S. C. H. (2017). Malicious URL detection using machine learning: A survey. <em>arXiv preprint arXiv:1701.07179</em>. <a href="https://arxiv.org/abs/1701.07179" class="text-info" target="_blank" rel="noopener noreferrer">https://arxiv.org/abs/1701.07179</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Sahingoz, O. K., Buber, E., Demir, O., &amp; Diri, B. (2019). Machine learning based phishing detection from URLs. <em>Expert Systems with Applications</em>, 117, 345–357. <a href="https://doi.org/10.1016/j.eswa.2018.09.029" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1016/j.eswa.2018.09.029</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Saito, T., &amp; Rehmsmeier, M. (2015). The precision-recall plot is more informative than the ROC plot when evaluating binary classifiers on imbalanced datasets. <em>PLOS ONE</em>, 10(3), Article e0118432. <a href="https://doi.org/10.1371/journal.pone.0118432" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1371/journal.pone.0118432</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Schröer, C., Kruse, F., &amp; Gómez, J. M. (2021). A systematic literature review on applying CRISP-DM process model. <em>Procedia Computer Science</em>, 181, 526–534. <a href="https://doi.org/10.1016/j.procs.2021.01.199" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.1016/j.procs.2021.01.199</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Shearer, C. (2000). The CRISP-DM model: The new blueprint for data mining. <em>Journal of Data Warehousing</em>, 5(4), 13–22.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Sheng, S., Holbrook, M., Kumaraguru, P., Cranor, L. F., &amp; Downs, J. (2010). Who falls for phish? A demographic analysis of phishing susceptibility and effectiveness of interventions. In <em>Proceedings of the SIGCHI Conference on Human Factors in Computing Systems</em> (pp. 373–382). ACM.
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Studer, S., Bui, T. B., Drescher, C., Hanuschkin, A., Winkler, L., Peters, S., &amp; Müller, K.-R. (2021). Towards CRISP-ML(Q): A machine learning process model with quality assurance methodology. <em>Machine Learning and Knowledge Extraction</em>, 3(2), 392–413. <a href="https://doi.org/10.3390/make3020020" class="text-info" target="_blank" rel="noopener noreferrer">https://doi.org/10.3390/make3020020</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Verizon. (2024). <em>2024 Data Breach Investigations Report</em>. <a href="https://www.verizon.com/business/resources/reports/dbir/" class="text-info" target="_blank" rel="noopener noreferrer">https://www.verizon.com/business/resources/reports/dbir/</a>
+                </li>
+                <li class="p-4 rounded-3 border border-primary border-opacity-25 text-light" style="background-color: #00152a;">
+                    Web Hypertext Application Technology Working Group. (n.d.). <em>HTML Living Standard: The iframe element (sandbox attribute)</em>. <a href="https://html.spec.whatwg.org/multipage/iframe-embed-object.html" class="text-info" target="_blank" rel="noopener noreferrer">https://html.spec.whatwg.org/multipage/iframe-embed-object.html</a>
+                </li>
+            </ol>
         </div>
     </section>
 
