@@ -1,16 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Business Understanding | CRISP-DM{% endblock %}
+{% block title %}Business and Data Understanding | CRISP-ML{% endblock %}
 
 {% block content %}
 <section class="hero pb-4">
     <div class="container">
-        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 01 of 06</p>
-        <h1 class="mb-3">Business Understanding</h1>
+        <p class="eyebrow mb-3">CRISP-ML(Q) Methodology · Phase 01 of 06</p>
+        <h1 class="mb-3">Understanding the Business and Data</h1>
         <p class="research-intro mb-0">
-            This project develops a web application that estimates how likely a submitted
-            URL is to be phishing. It returns a risk estimate with a plain-language
-            explanation: probable phishing, probable legitimate, or undetermined.
+            This phase defines the phishing-risk problem, intended stakeholders, business
+            and machine-learning objectives, data sources, constraints, and measurable
+            success criteria. The current platform provides a binary URL estimate, not an
+            undetermined outcome.
         </p>
     </div>
 </section>
@@ -31,10 +32,12 @@
                     <p class="mb-0">
                         The project addresses this problem: a user submits a URL, the
                         application analyzes the characteristics of the link itself, and it
-                        returns an understandable risk estimate. The application analyzes
-                        links only; email addresses, email messages, and message content are
-                        outside its scope. A page preview is a supporting feature, not proof
-                        that a site is safe or malicious.
+                        returns an understandable risk estimate. Intended beneficiaries
+                        include people checking unfamiliar links and organizations seeking
+                        an initial signal. The application analyzes links only; email
+                        addresses, email messages, and message content are outside its scope.
+                        Potential consequences include credential theft, financial loss,
+                        exposure of personal information, and unauthorized account access.
                     </p>
                 </article>
             </div>
@@ -44,15 +47,13 @@
                     <h2 class="h3">Support safer decisions</h2>
                     <p>
                         The objective is a web-based machine-learning application that
-                        classifies a submitted URL as probable phishing or probable
-                        legitimate, shows the probability behind that result, explains the
-                        main reasons in plain language, and offers cautious next-step
-                        guidance.
+                        classifies a submitted URL as possible phishing or likely
+                        legitimate, shows the estimated phishing probability, and presents
+                        available Random Forest path conditions. It is a decision-support
+                        tool and does not replace security software or expert investigation.
                     </p>
                     <p class="mb-0">
-                        It is aimed at people who need a quick, accessible first check. The
-                        application is a decision-support tool and does not replace security
-                        software or expert investigation.
+                        It is aimed at people who need a quick, accessible first check.
                     </p>
                 </article>
             </div>
@@ -63,25 +64,24 @@
             <h2>What the application reports</h2>
             <p>
                 The application estimates a probability that a URL is phishing and presents
-                it as one of three outcomes. The result is always an estimate: the
+                it as one of two outcomes. The result is always an estimate: the
                 application never states that a link is safe or confirmed legitimate.
             </p>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle mb-0">
+                <table class="table align-middle mb-0">
                     <thead>
                         <tr><th scope="col">Outcome</th><th scope="col">Meaning</th><th scope="col">What the user sees</th></tr>
                     </thead>
                     <tbody>
-                        <tr><th scope="row">Probable phishing</th><td>The estimated phishing probability is high.</td><td>A warning, the probability, the main characteristics that raised the risk, and advice not to open or enter data on the link.</td></tr>
-                        <tr><th scope="row">Undetermined</th><td>The estimate falls in an intermediate range where the model is not reliable enough to decide.</td><td>A caution message, the probability, and guidance to verify the link through an official channel.</td></tr>
-                        <tr><th scope="row">Probable legitimate</th><td>The estimated phishing probability is low.</td><td>A low-risk indication with a reminder that this is not a guarantee of safety.</td></tr>
+                        <tr><th scope="row">Possible phishing</th><td>The binary classifier predicts the phishing class.</td><td>A warning, estimated phishing probability when available, and URL characteristics reflected in Random Forest tree paths.</td></tr>
+                        <tr><th scope="row">Likely legitimate</th><td>The binary classifier predicts the legitimate class; this is not a safety certification.</td><td>A low-risk estimate and a reminder that the URL may still be unsafe.</td></tr>
                     </tbody>
                 </table>
             </div>
             <p class="mt-3 mb-0">
-                The thresholds that separate the three outcomes are set during the
-                evaluation phase. A match with a known malicious indicator takes priority
-                over the model's estimate.
+                The current application uses the model's binary prediction. It does not
+                implement a third "undetermined" outcome, calibrated risk bands, or a live
+                lookup that gives IoC matches priority over the model.
             </p>
         </article>
 
@@ -90,11 +90,11 @@
             <h2>What the project aims to deliver</h2>
             <ul class="objective-list mb-0">
                 <li>Build a binary classifier that estimates whether a submitted URL is phishing, using characteristics of the URL itself such as length, structure, subdomains, special characters, and suspicious words.</li>
-                <li>Return a probability and one of three outcomes (probable phishing, undetermined, probable legitimate) instead of an absolute verdict.</li>
-                <li>Explain each result in plain language by showing which characteristics contributed most to the estimate.</li>
-                <li>Evaluate the model with metrics that expose weaknesses in each class, and report results separately for different URL forms so that strong performance on easy cases does not hide weak performance on hard ones.</li>
+                <li>Return a binary class and estimated phishing probability instead of an absolute verdict.</li>
+                <li>Present available Random Forest path conditions as supporting details, without treating them as causal explanations.</li>
+                <li>Evaluate the model using class-sensitive metrics and document that domain- and time-separated evaluation remains future work.</li>
                 <li>Never label a URL as safe or confirmed legitimate; always communicate the uncertainty of the estimate.</li>
-                <li>Offer a page preview through a controlled, isolated mechanism that does not expose the user or the application server to the submitted site.</li>
+                <li>Offer a browser-side preview for public HTTPS URLs using a restricted iframe, while warning that the user's browser still connects to the destination.</li>
             </ul>
         </article>
 
@@ -107,7 +107,7 @@
                         <li><strong>Usability:</strong> the application accepts a URL and shows an understandable result without requiring cybersecurity expertise.</li>
                         <li><strong>Timeliness:</strong> the estimate is returned promptly, and the user is told when analysis is unavailable.</li>
                         <li><strong>Privacy:</strong> retention of submitted URLs is minimized, and the application does not collect credentials or browse as the user.</li>
-                        <li><strong>Preview safety:</strong> previews run in an isolated sandbox or trusted preview service; the application server never fetches arbitrary submitted URLs.</li>
+                        <li><strong>Preview safety:</strong> the preview runs in the user's browser in a sandboxed iframe; it is not a remote browser or virtual machine, and the browser connects to the destination.</li>
                         <li><strong>Transparency:</strong> the application states that predictions can be wrong, that "probable legitimate" is not a safety guarantee, and what the model's limitations are.</li>
                         <li><strong>Scope:</strong> only web URLs and links are assessed. Email addresses, email messages, and message content are not analyzed. The application is not a general malware scanner or a guarantee of site reputation.</li>
                     </ul>
@@ -118,17 +118,16 @@
                     <p class="eyebrow mb-2">Model decision</p>
                     <h2 class="h3">Binary classification with a probability score</h2>
                     <p>
-                        Logistic Regression is the main algorithm. It classifies a URL as
-                        phishing or not phishing and produces a probability that drives the
-                        three outcomes shown to the user. Support Vector Machine is an
-                        optional comparison.
+                        Logistic Regression, Random Forest, and Gradient Boosting were
+                        compared using stratified cross-validation. Random Forest was
+                        selected by mean F1 and is used by the current application.
                     </p>
                     <p class="mb-0">
                         The model estimates similarity to the patterns of known phishing
                         links; it does not verify who owns a site or what it contains, so a
-                        low score does not prove legitimacy. K-means may be used to explore
-                        groups of similar URLs, but a cluster is not a label. Only the
-                        permitted algorithms are used.
+                        low score does not prove legitimacy. SVM, K-means, multiclass threat
+                        categorization, and a third indeterminate class are not implemented
+                        in the current pipeline.
                     </p>
                 </article>
             </div>
@@ -138,46 +137,69 @@
             <p class="eyebrow mb-2">Success criteria</p>
             <h2>Acceptance measures</h2>
             <p>
-                These are the initial targets set for the project. They are goals, not
-                measured results, and will be reported against the final model in the
-                evaluation phase.
+                The project established initial acceptance targets and compared them
+                with the saved Random Forest's reported results on the reserved,
+                balanced test set. Passing these criteria describes that test set only;
+                it is not a guarantee of production performance.
             </p>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle mb-0">
+                <table class="table align-middle mb-0">
                     <thead>
-                        <tr><th scope="col">Area</th><th scope="col">Proposed criterion</th><th scope="col">Why it matters</th></tr>
+                        <tr><th scope="col">Criterion</th><th scope="col">Target</th><th scope="col">Reported test result</th><th scope="col">Interpretation</th></tr>
                     </thead>
                     <tbody>
-                        <tr><th scope="row">Detection</th><td>Phishing-class recall ≥ 0.80 on a held-out test set</td><td>Measures how many phishing links are missed.</td></tr>
-                        <tr><th scope="row">Trustworthiness</th><td>Phishing-class precision ≥ 0.85 and false-positive rate ≤ 0.05</td><td>Reduces unnecessary warnings on legitimate links.</td></tr>
-                        <tr><th scope="row">Evaluation</th><td>Confusion matrix, per-class precision/recall/F1, and ROC-AUC, reported overall and by URL form</td><td>Prevents accuracy alone from hiding weak results on harder links.</td></tr>
-                        <tr><th scope="row">Honest reporting</th><td>Every result carries a probability and a stated limitation; no URL is reported as safe</td><td>Prevents users from reading a low score as a guarantee.</td></tr>
-                        <tr><th scope="row">User experience</th><td>A clear outcome, the main reasons, limitations, and a safe-preview status</td><td>Helps users act without implying certainty.</td></tr>
-                        <tr><th scope="row">Safety and privacy</th><td>No direct server-side visit to submitted URLs; documented retention and preview controls</td><td>Reduces exposure to malicious content and unwanted data collection.</td></tr>
+                        <tr><th scope="row">Phishing recall</th><td>≥ 80%</td><td>94.46% — met</td><td>Measures the share of phishing examples detected.</td></tr>
+                        <tr><th scope="row">Phishing precision</th><td>≥ 85%</td><td>97.35% — met</td><td>Measures the share of phishing predictions that were correct.</td></tr>
+                        <tr><th scope="row">False-positive rate</th><td>≤ 5%</td><td>2.57% — met</td><td>Measures legitimate examples incorrectly flagged as phishing.</td></tr>
+                        <tr><th scope="row">Honest reporting</th><td>Show the estimate and limitations; do not claim a URL is safe</td><td>Implemented</td><td>A likely legitimate result is not a safety guarantee.</td></tr>
+                        <tr><th scope="row">Model metrics</th><td>Report confusion matrix, precision, recall, F1, ROC-AUC, and accuracy</td><td>Reported</td><td>Results are for a balanced held-out test set.</td></tr>
                     </tbody>
                 </table>
             </div>
+        </article>
+
+        <article class="info-card mb-4">
+            <p class="eyebrow mb-2">Data context</p>
+            <h2>Sources, labels, and analytical questions</h2>
+            <ul>
+                <li>The IoC file contains 106,881 rows and 8 fields. The project pipeline uses IoC records of type URL and FQDN as the phishing class.</li>
+                <li><code>urls_leg.csv</code> supplies the legitimate class. The repository also contains <code>top-1m.csv</code>, but it is not used in training or inference.</li>
+                <li>The target is <code>is_phishing</code> (1 = phishing, 0 = legitimate). IoC labels are source-provided threat labels, not independent confirmation that each URL is phishing.</li>
+                <li>Initial analysis found 55,288 exact duplicate IoC rows, 69,500 repeated values, one missing IoC type, and no benign class in the IoC source.</li>
+            </ul>
+            <p>
+                The model addresses three practical questions: does the submitted URL resemble
+                phishing examples in the training data; what probability does the model assign
+                to the phishing class; and what URL conditions appear in the selected Random
+                Forest's decision paths? A detailed dataset profile is available in
+                <a class="reference-link" href="{{ url_for('methodology_data_profile') }}">the supporting data-profile page</a>.
+            </p>
+            <p class="mb-0">
+                The test data contains 8,484 rows, balanced 50/50. Its random record-level
+                split does not establish generalization to unseen domains, future campaigns,
+                or real-world phishing prevalence.
+            </p>
         </article>
 
         <article class="info-card">
             <p class="eyebrow mb-2">Work plan</p>
             <h2>Project planning and deliverables</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle mb-0">
+                <table class="table align-middle mb-0">
                     <thead>
                         <tr><th scope="col">Step</th><th scope="col">Work</th><th scope="col">Deliverable</th></tr>
                     </thead>
                     <tbody>
-                        <tr><th scope="row">1. Business understanding</th><td>Define users, scope, the three outcomes, privacy, preview safeguards, and acceptance targets.</td><td>Objectives, requirements, and project plan (this phase).</td></tr>
-                        <tr><th scope="row">2. Data understanding</th><td>Document the data sources, their labels, and their quality.</td><td>Source documentation, exploratory analysis, and data-quality diagnosis; see <a class="reference-link" href="{{ url_for('methodology_phase', phase_slug='data-understanding') }}">Phase 02</a>.</td></tr>
-                        <tr><th scope="row">3. Data preparation</th><td>Normalize URLs, remove duplicates, build URL features, balance classes, and split data by domain.</td><td>Documented, leakage-resistant training and test datasets.</td></tr>
-                        <tr><th scope="row">4. Modeling</th><td>Train Logistic Regression and compare with SVM where useful.</td><td>Selected model, parameters, and reproducible training record.</td></tr>
-                        <tr><th scope="row">5. Evaluation</th><td>Measure performance overall and by URL form, set the outcome thresholds, and test usability and safe-preview behavior.</td><td>Metrics, error analysis, and acceptance decision.</td></tr>
-                        <tr><th scope="row">6. Deployment</th><td>Integrate the model, the three-outcome result, explanations, recommendations, and isolated preview into the web application.</td><td>Tested application and update plan.</td></tr>
+                        <tr><th scope="row">1. Understanding the business and data</th><td>Define the problem, users, URL-only scope, sources, risks, and acceptance targets.</td><td>Business objectives, data profile, source limitations, and success criteria.</td></tr>
+                        <tr><th scope="row">2. Data engineering</th><td>Normalize and deduplicate URL records, balance classes, extract 31 features, and create stratified train/test partitions.</td><td>Prepared dataset and documented pipeline; see <a class="reference-link" href="{{ url_for('methodology_phase', phase_slug='data-engineering') }}">Phase 02</a>.</td></tr>
+                        <tr><th scope="row">3. Model engineering</th><td>Train and compare Logistic Regression, Random Forest, and Gradient Boosting using stratified cross-validation.</td><td>Selected model, parameters, and reproducible training artifacts.</td></tr>
+                        <tr><th scope="row">4. Model evaluation</th><td>Evaluate the selected model on the reserved test set and document errors and generalization risks.</td><td>Metrics, confusion matrix, and acceptance decision.</td></tr>
+                        <tr><th scope="row">5. Model deployment</th><td>Integrate the binary classifier, authenticated workflow, explanation, and restricted HTTPS browser preview.</td><td>Interactive web application and user guidance.</td></tr>
+                        <tr><th scope="row">6. Monitoring and maintenance</th><td>Define monitoring indicators and a controlled process for model updates and rollback.</td><td>Documented future plan; automated monitoring and retraining remain pending.</td></tr>
                     </tbody>
                 </table>
             </div>
-            <div class="alert alert-warning mt-4 mb-0" role="note">
+            <div class="alert alert-info mt-4 mb-0" role="note">
                 <strong>Key limitation:</strong> the application returns an estimate, not a
                 verdict. A "probable legitimate" result means the link does not resemble known
                 phishing patterns; it does not confirm that the site is safe. Users should

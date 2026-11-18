@@ -382,6 +382,56 @@
             text-decoration: underline;
             text-underline-offset: 0.2em;
         }
+
+        .methodology-page .table {
+            --bs-table-bg: #00152a;
+            --bs-table-color: #ffffff;
+            --bs-table-border-color: rgba(110, 168, 254, 0.45);
+        }
+
+        .methodology-page .table thead th {
+            color: #ffffff !important;
+            background-color: #08254a;
+        }
+
+        .methodology-page .table > :not(caption) > * > * {
+            box-shadow: none;
+        }
+
+        .methodology-page .table tbody tr:nth-child(odd) > * {
+            background-color: #00152a;
+        }
+
+        .methodology-page .table tbody tr:nth-child(even) > * {
+            background-color: #08254a;
+        }
+
+        .methodology-page .table tbody th,
+        .methodology-page .table tbody td {
+            color: #ffffff !important;
+            border-color: rgba(110, 168, 254, 0.45);
+        }
+
+        .methodology-page .table tbody th {
+            color: #9ec5fe !important;
+        }
+
+        .methodology-page .text-primary {
+            color: #9ec5fe !important;
+        }
+
+        .methodology-page .alert {
+            --bs-alert-color: #ffffff;
+            --bs-alert-bg: #00152a;
+            --bs-alert-border-color: rgba(110, 168, 254, 0.65);
+            color: #ffffff;
+            background-color: #00152a;
+            border-color: rgba(110, 168, 254, 0.65);
+        }
+
+        .methodology-page .alert-link {
+            color: #9ec5fe;
+        }
     </style>
 </head>
 <body>
@@ -401,7 +451,7 @@
                    {% if request.endpoint == 'pgc' %}aria-current="page"{% endif %}>PGC</a>
                 <details class="methodology-menu">
                     <summary class="site-nav-link{% if request.endpoint == 'methodology_phase' %} active{% endif %}"
-                             aria-haspopup="true">CRISP-DM</summary>
+                             aria-haspopup="true">CRISP-ML</summary>
                     <div class="methodology-dropdown">
                         {% for phase in methodology_phases %}
                         <a href="{{ url_for('methodology_phase', phase_slug=phase.slug) }}"
@@ -432,7 +482,7 @@
         </div>
     </header>
 
-    <main>
+    <main class="{% if request.endpoint in ['methodology_phase', 'methodology_data_profile'] %}methodology-page{% endif %}">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
             <div class="container pt-4">
@@ -446,6 +496,33 @@
             {% endif %}
         {% endwith %}
         {% block content %}{% endblock %}
+        {% if phase %}
+        <nav class="container py-4" aria-label="CRISP-ML phase navigation">
+            <div class="d-flex flex-column flex-sm-row flex-wrap justify-content-between gap-3">
+                {% if previous_phase %}
+                <a class="btn btn-outline-primary"
+                   href="{{ url_for('methodology_phase', phase_slug=previous_phase.slug) }}">
+                    <i class="bi bi-arrow-left me-2" aria-hidden="true"></i>
+                    Previous: {{ previous_phase.name }}
+                </a>
+                {% else %}
+                <span></span>
+                {% endif %}
+                <span class="text-center text-light align-self-center">
+                    Phase {{ phase_number }} of {{ total_phases }}
+                </span>
+                {% if next_phase %}
+                <a class="btn btn-primary"
+                   href="{{ url_for('methodology_phase', phase_slug=next_phase.slug) }}">
+                    Next: {{ next_phase.name }}
+                    <i class="bi bi-arrow-right ms-2" aria-hidden="true"></i>
+                </a>
+                {% else %}
+                <span></span>
+                {% endif %}
+            </div>
+        </nav>
+        {% endif %}
     </main>
 
     <footer class="py-5">

@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Evaluation | CRISP-DM{% endblock %}
+{% block title %}Model Evaluation | CRISP-ML{% endblock %}
 
 {% block content %}
 <section class="hero pb-4">
     <div class="container">
-        <p class="eyebrow mb-3">CRISP-DM Methodology · Phase 05 of 06</p>
-        <h1 class="mb-3">Evaluation</h1>
+        <p class="eyebrow mb-3">CRISP-ML(Q) Methodology · Phase 04 of 06</p>
+        <h1 class="mb-3">Model Evaluation</h1>
         <p class="research-intro mb-0">
-            Evaluate the Random Forest selected in Phase 4 on the reserved test set,
+            Evaluate the Random Forest selected in Phase 3 on the reserved test set,
             compare it with the project objectives, and document its errors and limits.
         </p>
     </div>
@@ -20,16 +20,16 @@
             <p class="eyebrow mb-2">1. Evaluation procedure</p>
             <h2 class="h3">One final evaluation on data not used for model selection</h2>
             <ul class="mb-0">
-                <li>Phase 3 created a stratified 80/20 split. Phase 4 trained and selected models using only <code>train.csv</code>.</li>
-                <li>Phase 4 used shuffled, stratified 3-fold cross-validation within the training set to tune and compare the candidate models.</li>
-                <li>The selected Random Forest is evaluated on <code>outputs/phase3_output/test.csv</code>, which was not used for Phase 4 selection.</li>
+                <li>Phase 2 created a stratified 80/20 split. Phase 3 trained and selected models using only <code>train.csv</code>.</li>
+                <li>Phase 3 used shuffled, stratified 3-fold cross-validation within the training set to tune and compare the candidate models.</li>
+                <li>The selected Random Forest is evaluated on <code>outputs/phase3_output/test.csv</code>, which was not used during model selection.</li>
                 <li>The test set contains 8,484 rows: 4,242 legitimate and 4,242 phishing examples, with the same 31 features.</li>
                 <li>Metrics appropriate for binary classification include phishing precision and recall, F1, ROC-AUC, accuracy, false-positive rate, and the confusion matrix.</li>
             </ul>
             <p class="small mt-3 mb-0">
-                The results shown here were calculated from the current saved model and
-                test file. The repository does not yet include a standalone Phase 5
-                evaluation script to regenerate this report automatically.
+                The results shown here were calculated from the project model and test
+                file. The repository does not currently include an evaluation script
+                that regenerates this report automatically.
             </p>
         </article>
 
@@ -40,17 +40,17 @@
                 These results come from the saved model in
                 <code>outputs/phase4_output/models/random_forest.joblib</code>, evaluated
                 on the test file. They are distinct from the cross-validation metrics
-                reported in Phase 4.
+                reported in Phase 3.
             </p>
             <div class="row g-3 text-center">
-                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-info bg-opacity-10"><h3 class="text-info">95.95%</h3><p class="mb-0">Accuracy</p></div></div>
-                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-success bg-opacity-10"><h3 class="text-success">97.35%</h3><p class="mb-0">Phishing precision</p></div></div>
-                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-warning bg-opacity-10"><h3 class="text-warning">94.46%</h3><p class="mb-0">Phishing recall</p></div></div>
-                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-danger bg-opacity-10"><h3 class="text-danger">95.88%</h3><p class="mb-0">F1 score</p></div></div>
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-primary bg-opacity-10"><h3 class="text-primary">95.95%</h3><p class="mb-0">Accuracy</p></div></div>
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-primary bg-opacity-10"><h3 class="text-primary">97.35%</h3><p class="mb-0">Phishing precision</p></div></div>
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-primary bg-opacity-10"><h3 class="text-primary">94.46%</h3><p class="mb-0">Phishing recall</p></div></div>
+                <div class="col-6 col-lg-3"><div class="p-3 rounded-3 bg-primary bg-opacity-10"><h3 class="text-primary">95.88%</h3><p class="mb-0">F1 score</p></div></div>
             </div>
             <div class="row g-3 text-center mt-1">
-                <div class="col-6"><div class="p-3 rounded-3 bg-info bg-opacity-10"><h3 class="text-info">98.49%</h3><p class="mb-0">ROC-AUC</p></div></div>
-                <div class="col-6"><div class="p-3 rounded-3 bg-warning bg-opacity-10"><h3 class="text-warning">2.57%</h3><p class="mb-0">False-positive rate</p></div></div>
+                <div class="col-6"><div class="p-3 rounded-3 bg-primary bg-opacity-10"><h3 class="text-primary">98.49%</h3><p class="mb-0">ROC-AUC</p></div></div>
+                <div class="col-6"><div class="p-3 rounded-3 bg-primary bg-opacity-10"><h3 class="text-primary">2.57%</h3><p class="mb-0">False-positive rate</p></div></div>
             </div>
         </article>
 
@@ -58,7 +58,7 @@
             <p class="eyebrow mb-2">3. Cross-validation and generalization</p>
             <h2 class="h3">Stable across these folds, with a measurable train-validation gap</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-bordered align-middle">
+                <table class="table table-bordered align-middle">
                     <thead><tr><th scope="col">Measure</th><th scope="col">Random Forest result</th><th scope="col">Interpretation</th></tr></thead>
                     <tbody>
                         <tr><th scope="row">Cross-validation</th><td>3 stratified folds; shuffled with random state 42</td><td>Each fold preserves the class balance while evaluating on a different subset of the training data.</td></tr>
@@ -81,14 +81,14 @@
             <p class="eyebrow mb-2">4. Comparison with project objectives</p>
             <h2 class="h3">The measured test results meet the stated thresholds</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-bordered align-middle">
+                <table class="table table-bordered align-middle">
                     <thead>
                         <tr><th scope="col">Criterion</th><th scope="col">Objective</th><th scope="col">Test result</th><th scope="col">Status</th></tr>
                     </thead>
                     <tbody>
-                        <tr><th scope="row">Phishing recall</th><td>&ge; 80%</td><td>94.46%</td><td class="text-success">Met</td></tr>
-                        <tr><th scope="row">Phishing precision</th><td>&ge; 85%</td><td>97.35%</td><td class="text-success">Met</td></tr>
-                        <tr><th scope="row">False-positive rate</th><td>&le; 5%</td><td>2.57%</td><td class="text-success">Met</td></tr>
+                        <tr><th scope="row">Phishing recall</th><td>&ge; 80%</td><td>94.46%</td><td class="text-primary">Met</td></tr>
+                        <tr><th scope="row">Phishing precision</th><td>&ge; 85%</td><td>97.35%</td><td class="text-primary">Met</td></tr>
+                        <tr><th scope="row">False-positive rate</th><td>&le; 5%</td><td>2.57%</td><td class="text-primary">Met</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -103,11 +103,11 @@
             <p class="eyebrow mb-2">5. Confusion matrix</p>
             <h2 class="h3">Correct predictions and errors</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-bordered text-center align-middle">
+                <table class="table table-bordered text-center align-middle">
                     <thead><tr><th scope="col">Actual class</th><th scope="col">Predicted legitimate</th><th scope="col">Predicted phishing</th></tr></thead>
                     <tbody>
-                        <tr><th scope="row">Legitimate</th><td class="text-success">4,133 true negatives</td><td class="text-danger">109 false positives</td></tr>
-                        <tr><th scope="row">Phishing</th><td class="text-danger">235 false negatives</td><td class="text-success">4,007 true positives</td></tr>
+                        <tr><th scope="row">Legitimate</th><td class="text-primary">4,133 true negatives</td><td class="text-primary">109 false positives</td></tr>
+                        <tr><th scope="row">Phishing</th><td class="text-primary">235 false negatives</td><td class="text-primary">4,007 true positives</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -121,7 +121,7 @@
             <p class="eyebrow mb-2">6. Risk analysis</p>
             <h2 class="h3">Overfitting, underfitting, sampling bias, and scope</h2>
             <div class="table-responsive">
-                <table class="table table-dark table-striped align-middle">
+                <table class="table align-middle">
                     <thead><tr><th scope="col">Risk</th><th scope="col">Evidence and impact</th></tr></thead>
                     <tbody>
                         <tr><th scope="row">Overfitting</th><td>The 2.90-point mean train-validation F1 gap indicates some overfitting. The similar held-out F1 is encouraging for this split, but random splitting may leave related domains or patterns in both partitions.</td></tr>
@@ -146,9 +146,8 @@
                 appropriate for the intended users.
             </p>
             <p class="small mb-0">
-                The project treats this review as a release check, not as a completed
-                approval. This reflects the emphasis on rigorous real-world evaluation
-                in the KDnuggets (2025) reference supplied for this evaluation.
+                This review is a recommended future release check, not a completed
+                approval.
             </p>
         </article>
 
@@ -168,7 +167,7 @@
             <h2 class="h3">Random Forest selected for the project</h2>
             <p>
                 Random Forest is selected because it achieved the highest mean
-                cross-validation F1 among the three Phase 4 candidates and met the
+                cross-validation F1 among the three Phase 3 candidates and met the
                 project thresholds on the reserved test set. The application loads this
                 saved model from <code>outputs/phase4_output/models/</code>.
             </p>

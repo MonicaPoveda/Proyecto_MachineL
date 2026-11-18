@@ -9,7 +9,7 @@ from urllib.parse import urlsplit
 import joblib
 from sklearn.ensemble import RandomForestClassifier
 import pandas as pd
-from flask import Flask, abort, render_template, request
+from flask import Flask, abort, redirect, render_template, request, url_for
 
 from auth import auth_bp, login_required, validate_csrf
 from db import close_db, init_db
@@ -76,19 +76,27 @@ FEATURE_REPORT = {
 }
 
 METHODOLOGY_PHASES = (
-    {"slug": "business-understanding", "name": "Business Understanding",
+    {"slug": "business-understanding", "name": "Business and Data Understanding",
      "template": "methodology/phase 1/business_understanding.html"},
-    {"slug": "data-understanding", "name": "Data Understanding",
-     "template": "methodology/phase 2/data_understanding.html"},
-    {"slug": "data-preparation", "name": "Data Preparation",
+    {"slug": "data-engineering", "name": "Data Engineering",
      "template": "methodology/phase3/data_preparation.html"},
-    {"slug": "modeling", "name": "Modeling",
+    {"slug": "model-engineering", "name": "Model Engineering",
      "template": "methodology/phase4/modeling.html"},
-    {"slug": "evaluation", "name": "Evaluation",
+    {"slug": "model-evaluation", "name": "Model Evaluation",
      "template": "methodology/phase 5/evaluation.html"},
-    {"slug": "deployment", "name": "Deployment",
+    {"slug": "model-deployment", "name": "Model Deployment",
      "template": "methodology/phase 6/deployment.html"},
+    {"slug": "monitoring-maintenance", "name": "Monitoring and Maintenance",
+     "template": "methodology/phase 6/monitoring_maintenance.html"},
 )
+
+LEGACY_METHODOLOGY_SLUGS = {
+    "data-understanding": "data-profile",
+    "data-preparation": "data-engineering",
+    "modeling": "model-engineering",
+    "evaluation": "model-evaluation",
+    "deployment": "model-deployment",
+}
 
 
 @app.context_processor
@@ -317,6 +325,15 @@ def predict_url(normalized_url):
 
 @app.route("/methodology/<phase_slug>/")
 def methodology_phase(phase_slug):
+    legacy_target = LEGACY_METHODOLOGY_SLUGS.get(phase_slug)
+    if legacy_target == "data-profile":
+        return redirect(url_for("methodology_data_profile"), code=301)
+    if legacy_target:
+        return redirect(
+            url_for("methodology_phase", phase_slug=legacy_target),
+            code=301,
+        )
+
     phase_index = next(
         (
             index
@@ -340,6 +357,11 @@ def methodology_phase(phase_slug):
         ),
         total_phases=len(METHODOLOGY_PHASES),
     )
+
+
+@app.route("/methodology/data-profile/")
+def methodology_data_profile():
+    return render_template("methodology/phase 2/data_understanding.html")
 
 
 if __name__ == "__main__":
