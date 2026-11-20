@@ -465,10 +465,6 @@
                     <summary class="site-nav-link{% if request.endpoint in ['application_context', 'application_platform'] %} active{% endif %}"
                              aria-haspopup="true">Application</summary>
                     <div class="methodology-dropdown">
-                        <a href="{{ url_for('application_context') }}"
-                           {% if request.endpoint == 'application_context' %}aria-current="page"{% endif %}>
-                            Context
-                        </a>
                         <a href="{{ url_for('application_platform') }}"
                            {% if request.endpoint == 'application_platform' %}aria-current="page"{% endif %}>
                             Platform
